@@ -49,12 +49,13 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(max_length=12, blank=True)
     password = models.CharField(max_length=128)
-    role = models.PositiveSmallIntegerField(choices=ROLE_CHOICE, blank=True, null=True,default='1')
+    
+    role = models.IntegerField(choices=ROLE_CHOICE,default='1')
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_superadmin = models.BooleanField(default=False)
-
+    
     
     REQUIRED_FIELDS = ['phone']
 
@@ -69,6 +70,9 @@ class CustomUser(AbstractUser):
     def has_module_perms(self, app_label):
         return True
     
+    def set_hospital_role(self):
+        self.role = CustomUser.HOSPITAL
+        self.save()
 
 class Donor(models.Model):
     full_name = models.CharField(max_length=100)

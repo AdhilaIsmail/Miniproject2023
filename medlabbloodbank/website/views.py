@@ -47,6 +47,7 @@ def testimonial(request):
 
 ##checking
 from django.contrib.auth import authenticate, login
+from .models import CustomUser 
 
 def loginn(request):
     if request.method == "POST":
@@ -56,14 +57,14 @@ def loginn(request):
         
         if user is not None:
             login(request, user)
-            if user.is_superuser:  # Check if the user is a superuser (admin)
+            if CustomUser.is_superuser:  # Check if the user is a superuser (admin)
                 return redirect('adminindex')  # Redirect to the admin dashboard
             elif user.role == CustomUser.HOSPITAL:
-                return redirect('hospitalregistration')
+                return redirect('hospitalhome')
             else:
                 return redirect('index')  # Redirect to the custom dashboard for non-admin users
         else:
-            messages.info(request, "Invalid Login")
+            messages.error(request, "Invalid Login")
             return redirect('loginn')
     else:
         return render(request, 'login.html')
@@ -369,6 +370,29 @@ def hospitalabout(request):
 from django.shortcuts import render, redirect
 
 
+# def hospital_registration(request):
+#     if request.method == 'POST':
+#         hospitalName = request.POST.get('hospitalName')
+#         contactPerson = request.POST.get('contactPerson')
+#         email = request.POST.get('email')
+#         phone = request.POST.get('phone')
+#         location = request.POST.get('location')
+#         gpsCoordinates = request.POST.get('gpsCoordinates')
+#         ownership = request.POST.get('ownership')
+#         hospitalURL = request.POST.get('hospitalURL')
+#         password = request.POST.get('password')
+        
+#         roles = CustomUser.HOSPITAL
+#         print(roles)
+#         if CustomUser.objects.filter(email=email,role=roles).exists():
+#             return render(request, 'mainuser/hospitalregistration.html')
+#         else:
+#             user=CustomUser.objects.create_user(email=email,phone=phone,password=password,role=roles)
+#             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
+#             hospitalRegister.save()
+
+#             return redirect('registeredhospitaltable')
+
 def hospital_registration(request):
     if request.method == 'POST':
         hospitalName = request.POST.get('hospitalName')
@@ -380,18 +404,55 @@ def hospital_registration(request):
         ownership = request.POST.get('ownership')
         hospitalURL = request.POST.get('hospitalURL')
         password = request.POST.get('password')
-        role = CustomUser.HOSPITAL
-        if CustomUser.objects.filter(email=email,role=role).exists():
+        
+        roles = CustomUser.HOSPITAL
+        print(roles)
+        if CustomUser.objects.filter(email=email,role=CustomUser.HOSPITAL).exists():
             return render(request, 'mainuser/hospitalregistration.html')
         else:
-            user=CustomUser.objects.create_user(email=email,phone=phone,password=password,role=role)
+            user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
+            user.role = CustomUser.HOSPITAL
+            user.save()
             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
             hospitalRegister.save()
 
             return redirect('registeredhospitaltable')
+
         
     else:
         return render(request, 'mainuser/hospitalregistration.html')
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         # form = HospitalRegisterForm(request.POST)
     #     if form.is_valid():
     #         form.save()  # Save the data to the database
