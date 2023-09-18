@@ -38,7 +38,7 @@
          
              <!-- <h3 style="color: blue">messages </h3> -->
          
-          <form  action="#" id="loginForm" method="POST">
+          <form  action="{% url 'loginn' %}" id="loginForm" method="POST">
             {% csrf_token %}
         
             <div class="form-group">

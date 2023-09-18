@@ -176,20 +176,39 @@ from django.shortcuts import render, redirect
 from .models import DonorResponse
 from .forms import DonorForm  # Import the DonorForm
 
+# def registereddonorresponse(request):
+#     if request.method == 'POST':
+#         form = DonorForm(request.POST)  # Create a form instance with POST data
+#         if form.is_valid():
+#             form.save()  # Save the data to the database
+#             # You can add a success message or redirect to a thank you page here.
+#             return redirect('notificationfordonation')
+#     else:
+#         form = DonorForm()  # Create an empty form instance for GET requests
+
+#     return render(request, 'donatenow.html', {'form': form})
+
+# def notificationfordonation(request):
+#     return render(request, 'notificationfordonation.html')
+
+
 def registereddonorresponse(request):
     if request.method == 'POST':
-        form = DonorForm(request.POST)  # Create a form instance with POST data
+        form = DonorForm(request.POST)
         if form.is_valid():
-            form.save()  # Save the data to the database
-            # You can add a success message or redirect to a thank you page here.
+            form.save()
             return redirect('notificationfordonation')
     else:
-        form = DonorForm()  # Create an empty form instance for GET requests
+        # Fetch the data from the database (assuming you want to prefill the last entry)
+        latest_entry = DonorResponse.objects.last()
+        initial_data = {
+            'name': latest_entry.name,
+            'bloodType': latest_entry.bloodType,
+            # Add other fields as needed
+        }
+        form = DonorForm(initial=initial_data)
 
     return render(request, 'donatenow.html', {'form': form})
-
-def notificationfordonation(request):
-    return render(request, 'notificationfordonation.html')
 
 
 # from twilio.rest import Client
@@ -327,7 +346,8 @@ def bloodinventory(request):
 def addnewgroup(request):
     return render(request, 'mainuser/addnewgroup.html')
 
-
+def notificationfordonation(request):
+    return render(request, 'notificationfordonation.html')
 
 
 def hospitalhome(request):
