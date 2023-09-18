@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    def create_user(self, phone, email, password=None):
+    def create_user(self, phone, email, role=None, password=None):
         if not email:
             raise ValueError('User must have an email address')
 
@@ -111,18 +111,21 @@ class UploadedFile(models.Model):
 
 from django.db import models
 
+
 class HospitalRegister(models.Model):
     hospitalName = models.CharField(max_length=100,unique=True)
     contactPerson = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=20)
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    # email = models.EmailField(unique=True)
+    # phone = models.CharField(max_length=20)
     location = models.TextField()
     gpsCoordinates = models.CharField(max_length=50)
     ownership = models.CharField(max_length=100)
     hospitalURL = models.URLField(blank=True)
     status = models.CharField(max_length=20, default='Active')
-    password = models.CharField(max_length=128)
+    # password = models.CharField(max_length=128)
 
+    
     def __str__(self):
         return self.hospitalName
 

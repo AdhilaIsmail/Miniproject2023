@@ -104,7 +104,7 @@
       }
     }
   
-    function validatePassword() {
+    {% comment %} function validatePassword() {
       const passwordValue = passwordInput.value;
       const passwordError = document.getElementById('passwordError');
   
@@ -116,7 +116,7 @@
         passwordError.textContent = '';
         return true;
       }
-    }
+    } {% endcomment %}
   
     emailInput.addEventListener('keyup', validateEmail);
     passwordInput.addEventListener('keyup', validatePassword);

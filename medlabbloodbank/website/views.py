@@ -58,6 +58,8 @@ def loginn(request):
             login(request, user)
             if user.is_superuser:  # Check if the user is a superuser (admin)
                 return redirect('adminindex')  # Redirect to the admin dashboard
+            elif user.role == CustomUser.HOSPITAL:
+                return redirect('hospitalregistration')
             else:
                 return redirect('index')  # Redirect to the custom dashboard for non-admin users
         else:
@@ -365,19 +367,40 @@ def hospitalabout(request):
 
 
 from django.shortcuts import render, redirect
-from .forms import HospitalRegisterForm
+
 
 def hospital_registration(request):
     if request.method == 'POST':
-        form = HospitalRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()  # Save the data to the database
-            # Redirect to a success page or do something else
-            return redirect('adminindex')  # Replace with your success page URL name
-    else:
-        form = HospitalRegisterForm()
+        hospitalName = request.POST.get('hospitalName')
+        contactPerson = request.POST.get('contactPerson')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        location = request.POST.get('location')
+        gpsCoordinates = request.POST.get('gpsCoordinates')
+        ownership = request.POST.get('ownership')
+        hospitalURL = request.POST.get('hospitalURL')
+        password = request.POST.get('password')
+        role = CustomUser.HOSPITAL
+        if CustomUser.objects.filter(email=email,role=role).exists():
+            return render(request, 'mainuser/hospitalregistration.html')
+        else:
+            user=CustomUser.objects.create_user(email=email,phone=phone,password=password,role=role)
+            hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
+            hospitalRegister.save()
 
-    return render(request, 'mainuser/hospitalregistration.html', {'form': form})
+            return redirect('registeredhospitaltable')
+        
+    else:
+        return render(request, 'mainuser/hospitalregistration.html')
+        # form = HospitalRegisterForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()  # Save the data to the database
+    #         # Redirect to a success page or do something else
+    #         return redirect('adminindex')  # Replace with your success page URL name
+    # else:
+    #     form = HospitalRegisterForm()
+
+    # return render(request, 'mainuser/hospitalregistration.html', {'form': form})
 
 
 #neededone
