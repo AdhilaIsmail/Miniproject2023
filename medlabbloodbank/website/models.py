@@ -151,7 +151,7 @@ class BloodRequest(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     blood_group = models.CharField(max_length=5)
-    quantity = models.CharField(max_length=10)
+    quantity = models.CharField(max_length=10,null=True,blank=True)
     purpose = models.TextField()
     
 

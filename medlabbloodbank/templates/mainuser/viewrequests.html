@@ -1,7 +1,7 @@
 {% load static %}
 <html>
 <head>
-    <title>Donor Profiles</title>
+    <title>Medlab Blood Bank - Registered Hospitals</title>
     <!-- Add Bootstrap CSS or your CSS framework's CSS here -->
     
         <meta charset="utf-8">
@@ -12,12 +12,39 @@
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/style.css' %}">
+        <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.js"></script>
+
         <style>
-            
+            /* Reduce the padding of table cells */
+            .table th, .table td {
+                padding: 6px 5px;
+            }
+        
+            /* Reduce the font size of table headers */
+            .table thead th {
+                font-size: 14px;
+                color:#a16767;
+            }
+        
+            /* Reduce the font size of table data */
+            .table tbody td {
+                font-size: 11px;
+            }
+
+            .table tbody tr:nth-child(odd) {
+                background-color: #eddddd; /* Change to the color you prefer */
+            }
+        
+            /* Apply background color to even rows */
+            .table tbody tr:nth-child(even) {
+                background-color: #ffffff; /* Change to the color you prefer */
+            }
             .sidebar {
                 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
                 top: 50px;
-                width: 230px;
+                width: 210px;
                 z-index: 1039;
                 background-color: #d4a5a5;
                 bottom: 0;
@@ -82,6 +109,20 @@
             .sidebar-menu ul ul a.active {
                 color: #009efb;
                 text-decoration: underline;
+            }
+            .status-active {
+                background-color: #4CAF50; /* Green color */
+                color: white;
+                padding: 4px 8px;
+                border-radius: 4px;
+            }
+            
+            /* Define the style for Inactive status */
+            .status-inactive {
+                background-color: #FF5733; /* Red color */
+                color: white;
+                padding: 4px 8px;
+                border-radius: 4px;
             }
         </style>   
   
@@ -164,11 +205,11 @@
 						<li>
                             <a href="{% url 'doctors' %}"><i class="fa fa-users"></i> <span>Donors</span></a>
                         </li>
-                        <li class="active">
+                        <li >
                             <a href="{% url 'registereddonortable' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
                         <li>
-                            <a href=""><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
+                            <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
                         </li>
                         <!-- <li>
                             <a href="doctors.html"><i class="fa fa-calendar-check-o"></i> <span>Staffs</span></a>
@@ -179,7 +220,7 @@
                         <li>
                             <a href="{% url 'appointments' %}"><i class="fa fa-list-alt"></i> <span>View Appointements</span></a>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="{% url 'requests' %}"><i class="fa fa-list-alt"></i> <span>View Requests</span></a>
                         </li>
                         <li>
@@ -196,76 +237,154 @@
             </div>
         </div>
         <div class="page-wrapper">
-            <h3 style="color:black;" > Registered Donor Profiles</h3>
+            <div class="col-sm-6 col-2 text-left m-b-15">
+                <h3 style="color: #a16767;margin-top: 20px;">Registered Hospitals</h3>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="text-right m-b-20">
+                        
+                        <button id="toggle-active" class="btn btn-primary btn-rounded"><i class="fa fa-filter"></i> Show Active Hospitals</button>
+                       
+                        <a href="{% url 'hospital_registration' %}" class="btn btn-success btn-rounded"><i class="fa fa-plus"></i> Add Hospital</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped custom-table datatable mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Contact Person</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>GPS Coordinates</th>
+                                    <th>Ownership</th>
+                                    {% comment %} <th>Password</th> {% endcomment %}
+                                    <th>Status</th>
+            
+                                    <th class="text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for hospital in hospitals %}
+                                <tr class="hospital-row">
+                                    <td>{{ hospital.hospitalName }}</td>
+                                    <td>{{ hospital.contactPerson }}</td>
+                                    <td>{{ hospital.user.email }}</td>
+                                    <td>{{ hospital.user.phone }}</td>
+                                    <td>{{ hospital.location }}</td>
+                                    <td>{{ hospital.gpsCoordinates }}</td>
+                                    <td>{{ hospital.ownership }}</td>
+                                    {% comment %} <td>{{ hospital.password }}</td> {% endcomment %}
+                                    <td>
+                                    {% if hospital.status == "Active" %}
+                                    <span class="status-active">{{ hospital.status }}</span>
+                                    {% else %}
+                                    <span class="status-inactive">{{ hospital.status }}</span>
+                                    {% endif %}</td>
+                                    <td class="text-right">
+                                        <div class="dropdown dropdown-action">
+                                            <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a href="#" class="dropdown-item"><i class="fa fa-pencil m-r-5"></i>Edit</a>
 
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-lg-6 col-xl-5">
-                    <div class="dash-widget">
-                        <span class="dash-widget-bg2"><i class="fa fa-user-o"></i></span>
-                        <div class="dash-widget-info text-right">
-                            <h3>{{ donor_count }}</h3>
-                            <span class="widget-title2">Registered Donors </span>
-                        </div>
+                                                {% comment %} <a class="dropdown-item" ><i class="fa fa-pencil m-r-5"></i> Edit</a> {% endcomment %}
+                                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_hospital_{{ hospital.id }}"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Add a delete modal for each hospital here -->
+                                <div id="delete_hospital_{{ hospital.id }}" class="modal fade delete-modal" role="dialog">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-body text-center">
+                                                <img src="{% static 'mainuser/img/sent.png' %}" alt="" width="50" height="46">
+                                                <h3>Are you sure you want to delete {{ hospital.hospitalName }}?</h3>
+                                                <div class="m-t-20">
+                                                    <a href="{% static 'registeredhospitaltable' %}" class="btn btn-white" data-dismiss="modal">Close</a>
+                                                    <button type="button" class="btn btn-danger delete-hospital" data-hospital-id="{{ hospital.id }}">Delete</button>
+
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <!-- Search Form for Name -->
-                <div class="col-md-4">
-                    <form method="get" action="{% url 'search_by_name' %}">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="name" placeholder="Donor Name">
-                        </div>
-                        <button type="submit" class="btn btn-danger">Search by Name</button>
-                    </form>
-                </div>
+        </div>
     
-                <!-- Search Form for Place -->
-                <div class="col-md-4">
-                    <form method="get" action="{% url 'search_by_place' %}">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="place" placeholder="Place">
-                        </div>
-                        <button type="submit" class="btn btn-danger">Search by Place</button>
-                    </form>
-                </div>
-    
-                <!-- Search Form for Blood Group -->
-                <div class="col-md-4">
-                    <form method="get" action="{% url 'search_by_blood_group' %}">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="blood_group" placeholder="Blood Group">
-                        </div>
-                        <button type="submit" class="btn btn-danger">Search by Blood Group</button>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-            {% for donor in donors %}
-            <div class="col-md-4 col-sm-4 col-lg-3">
-                <div class="profile-widget">
-                    <div class="doctor-img">
-                        <!-- You can add a donor image if available -->
-                        <!-- <a class="avatar" href="{% url 'profile' %}"><img alt="" src="{{ donor.image.url }}"></a> -->
-                    </div>
-                    <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile' %} ">{{ donor.full_name }}</a></h4>
-                    <div class="doc-prof">{{ donor.blood_group }}</div>
-                    <div class="user-country">
-                        <i class="fa fa-map-marker"></i> {{ donor.place }}
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div> 
-    </div>
     <!-- Add Bootstrap JavaScript or your JavaScript framework's JavaScript here -->
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
     <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>
-    <script src="{% static 'mainuser/js/Chart.bundle.js' %}"></script>
-    <script src="{% static 'mainuser/js/chart.js' %}"></script>
+   
     <script src="{% static 'mainuser/js/app.js' %}"></script>
+    <script>
+    // Get the CSRF token value
+    var csrfToken = $('[name=csrfmiddlewaretoken]').val();
+
+    $(document).ready(function () {
+        // Handle delete button click
+        $('.delete-hospital').click(function (e) {
+            e.preventDefault();
+            var rowToDelete = $(this).closest('tr');
+            var hospitalId = $(this).data('hospital-id');
+
+            // Display a confirmation dialog
+            if (confirm('Are you sure you want to mark this hospital as inactive?')) {
+                // Perform AJAX request to update hospital status
+                $.ajax({
+                    url: '/update_hospital_status/' + hospitalId + '/',
+                    type: 'POST',
+                    data: {
+                        'status': 'Inactive',
+                        'csrfmiddlewaretoken': csrfToken, // Include the CSRF token
+                    },
+                    success: function () {
+                        // Remove the table row from the list
+                        rowToDelete.remove();
+                    },
+                    error: function () {
+                        alert('Error updating hospital status.');
+                    }
+                });
+            }
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        // Initially, show all hospitals
+        $(".hospital-row").show();
+        
+        $("#toggle-active").click(function () {
+            var buttonText = $(this).text();
+            
+            // Toggle button text and action
+            if (buttonText.includes("Active")) {
+                $(this).text("Show All Hospitals");
+                // Hide inactive hospitals
+                $(".status-inactive").closest("tr").hide();
+            } else {
+                $(this).text("Show Active Hospitals");
+                // Show all hospitals
+                $(".hospital-row").show();
+            }
+        });
+    });
+    </script>
+
+    
 </body>
 </html>

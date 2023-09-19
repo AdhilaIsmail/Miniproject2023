@@ -57,12 +57,20 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{% url 'index' %}" class="nav-item nav-link ">Home</a>
-                <a href="{% url 'about' %}" class="nav-item nav-link active">About</a>
-                <a href="{% url 'service' %}" class="nav-item nav-link">Service</a>
-                <a href="{% url 'testimonial' %}" class="nav-item nav-link">Testimonial</a>
+                <a href="{% url 'index' %}" class="nav-item nav-link">Home</a>
+                {% if user.is_authenticated %}
+                <a href="{% url 'bloodavailability' %}" class="nav-item nav-link">Blood Availability</a>
+                <a href="{% url 'requestblood' %}" class="nav-item nav-link">Blood Request</a>
+               
+                {% endif %}
+                <a href="{% url 'hospitalabout' %}" class="nav-item nav-link active">About Us</a>
                 <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
-                <a href="{% url 'loginn' %}" class="nav-item nav-link">Login</a>
+                {% if user.is_authenticated %}
+                <a href="#" class="nav-item nav-link">{{user.email}}</a>
+                <a class="nav-item nav-link" href="{% url 'loggout' %}">Logout</a>
+                {% else %}
+                <a class="nav-item nav-link" href="{% url 'loginn' %}">Login</a>
+                {% endif %}
             </div>
         </div>
     </nav>

@@ -57,7 +57,7 @@ def loginn(request):
         
         if user is not None:
             login(request, user)
-            if CustomUser.is_superuser:  # Check if the user is a superuser (admin)
+            if user.is_superadmin:  # Check if the user is a superuser (admin)
                 return redirect('adminindex')  # Redirect to the admin dashboard
             elif user.role == CustomUser.HOSPITAL:
                 return redirect('hospitalhome')
@@ -83,10 +83,11 @@ def register(request):
                 return render(request, 'registration.html', {'error_message': error_message})
             
             else:
+                print('Enydsgv')
                 user = User(email=email, phone=phone, role=role)
                 user.set_password(password)  # Set the password securely
                 user.save()
-                return redirect('login')  
+                return redirect('loginn')  
             
     return render(request, 'registration.html')
 
@@ -111,6 +112,7 @@ def registration(request):
             #     return redirect('registration')
             
             else:
+                
                 user = User.objects.create_user(username=username, password=password)
                 user.save()
                 # messages.success(request, 'Registration successful. You can now log in.')
@@ -360,8 +362,14 @@ def hospitalhome(request):
 def requestblood(request):
     return render(request, 'hospital/requestblood.html')
 
+
+
+from .models import BloodType
 def bloodavailability(request):
-    return render(request, 'hospital/bloodavailability.html')
+    blood_types = BloodType.objects.all()
+
+    # Pass the blood_types to the template context
+    return render(request, 'hospital/bloodavailability.html', {'blood_types': blood_types})
 
 def hospitalabout(request):
     return render(request, 'hospital/hospitalabout.html')
@@ -580,17 +588,18 @@ def bloodrequest(request):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         blood_group = request.POST.get('blood_group')
-        
+        quantity = request.POST.get('quantity')
         purpose = request.POST.get('purpose')
 
         # Create and save a new BloodRequest instance
-        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group, purpose=purpose)
+        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group,quantity=quantity, purpose=purpose)
         blood_request.save()
 
         # Redirect or render a success page
         return redirect('hospitalhome')
     
     return render(request, 'hospital/requestblood.html')
+
 
 
 

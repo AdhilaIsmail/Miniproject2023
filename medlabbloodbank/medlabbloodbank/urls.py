@@ -96,10 +96,11 @@ urlpatterns = [
     #hospital
     path('hospitalhome', hospitalhome, name='hospitalhome'),
     path('requestblood', requestblood, name='requestblood'),
+    
     path('bloodavailability', bloodavailability, name='bloodavailability'),
     path('hospitalabout', hospitalabout, name='hospitalabout'),
     path('bloodrequest', bloodrequest, name='bloodrequest'),
-
+    
   
 
   
