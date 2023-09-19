@@ -127,19 +127,20 @@
 
 
                                                     <div class="mb-3">
-                                                        <select id="bloodType" name="bloodType" class="form-control"  value={{ donor.blood_group }} required>
-                                                        <option value="">----</option>
-                                                        <option value="A+">A+</option>
-                                                        <option value="A-">A-</option>
-                                                        <option value="B+">B+</option>
-                                                        <option value="B-">B-</option>
-                                                        <option value="O+">O+</option>
-                                                        <option value="O-">O-</option>
-                                                        <option value="AB+">AB+</option>
-                                                        <option value="AB-">AB-</option>
+                                                        <select id="bloodType" name="bloodType" class="form-control" required>
+                                                            <option value="">----</option>
+                                                            <option value="A+" {% if donor.blood_group == "A+" %}selected{% endif %}>A+</option>
+                                                            <option value="A-" {% if donor.blood_group == "A-" %}selected{% endif %}>A-</option>
+                                                            <option value="B+" {% if donor.blood_group == "B+" %}selected{% endif %}>B+</option>
+                                                            <option value="B-" {% if donor.blood_group == "B-" %}selected{% endif %}>B-</option>
+                                                            <option value="O+" {% if donor.blood_group == "O+" %}selected{% endif %}>O+</option>
+                                                            <option value="O-" {% if donor.blood_group == "O-" %}selected{% endif %}>O-</option>
+                                                            <option value="AB+" {% if donor.blood_group == "AB+" %}selected{% endif %}>AB+</option>
+                                                            <option value="AB-" {% if donor.blood_group == "AB-" %}selected{% endif %}>AB-</option>
                                                         </select>
                                                         <div class="error" data-error-for="bloodgroup"></div>
                                                     </div>
+                                                    
 
                                                     <div class="mb-3">
                                                         <input type="number" id="weight" name="weight" class="form-control" placeholder="Weight(in kg)" required><br><br>

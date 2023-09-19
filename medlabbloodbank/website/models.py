@@ -74,6 +74,7 @@ class CustomUser(AbstractUser):
         self.save()
 
 class Donor(models.Model):
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,null=True,blank=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)

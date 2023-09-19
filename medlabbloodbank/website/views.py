@@ -4,6 +4,8 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages,auth
 from django.contrib.auth import get_user_model
 from .models import Donor
+from django.contrib.auth.decorators import login_required
+
 
 # from django.core.mail import send_mail
 # from django.shortcuts import redirect
@@ -140,8 +142,8 @@ from .models import CustomUser
 
 def donatenow(request):
     if request.user.is_authenticated and request.user.role == CustomUser.REGISTEREDDONOR:
-        # Render the "Donate Now" page for Registered Donors
-        return render(request, 'donatenow.html')
+        donor = request.user.donor
+        return render(request, 'donatenow.html', {'donor':donor})
     else:
         # Redirect or render the "Register as Donor" page for others
         return redirect('registerasdonor') 
@@ -247,10 +249,14 @@ from django.http import HttpResponse
 from twilio.rest import Client
 from django.conf import settings
 
+from twilio.rest import Client
+from django.conf import settings
+from django.http import HttpResponse
+
 def send_sms(request):
     if request.method == 'POST':
         phone_number = request.POST['phone']
-        message = "Get a free sample blood test and upload the results in the site."
+        message = "Get your sample test done and upload your results on the website.HAPPY DONATION.."
 
         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
         try:
@@ -259,12 +265,13 @@ def send_sms(request):
                 from_=settings.TWILIO_PHONE_NUMBER,
                 to=phone_number
             )
-            # If the SMS is sent successfully, redirect to another page
-            return redirect('uploadresult')  # Replace 'success_page' with the URL name of the page you want to redirect to
+            return HttpResponse("SMS sent successfully!")
         except Exception as e:
             return HttpResponse(f"SMS failed to send: {str(e)}")
 
     return HttpResponse("Invalid request method")
+
+
 
 # def uploadresult(request):
 #     return render(request, 'uploadresult.html')

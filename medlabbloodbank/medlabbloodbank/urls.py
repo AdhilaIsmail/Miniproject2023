@@ -46,7 +46,7 @@ urlpatterns = [
     path('send_sms/', send_sms, name='send_sms'),
     path('uploadresult', uploadresult, name='uploadresult'),
 
-
+    
     #  path('successful-login/', successful_login, name='successful_login'),
     # path('register_donor/', views.register_donor, name='register_donor'),
     
