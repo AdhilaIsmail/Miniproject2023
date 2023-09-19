@@ -259,7 +259,7 @@
                                     <th>Location</th>
                                     <th>GPS Coordinates</th>
                                     <th>Ownership</th>
-                                    <th>Password</th>
+                                    {% comment %} <th>Password</th> {% endcomment %}
                                     <th>Status</th>
             
                                     <th class="text-right">Action</th>
@@ -270,12 +270,12 @@
                                 <tr class="hospital-row">
                                     <td>{{ hospital.hospitalName }}</td>
                                     <td>{{ hospital.contactPerson }}</td>
-                                    <td>{{ hospital.email }}</td>
-                                    <td>{{ hospital.phone }}</td>
+                                    <td>{{ hospital.user.email }}</td>
+                                    <td>{{ hospital.user.phone }}</td>
                                     <td>{{ hospital.location }}</td>
                                     <td>{{ hospital.gpsCoordinates }}</td>
                                     <td>{{ hospital.ownership }}</td>
-                                    <td>{{ hospital.password }}</td>
+                                    {% comment %} <td>{{ hospital.password }}</td> {% endcomment %}
                                     <td>
                                     {% if hospital.status == "Active" %}
                                     <span class="status-active">{{ hospital.status }}</span>

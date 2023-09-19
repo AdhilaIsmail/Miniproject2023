@@ -569,6 +569,28 @@ def bloodinventory(request):
     return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types})
 
 
+from django.shortcuts import render, redirect
+from .models import BloodRequest  # Import your model
+from django.views.decorators.csrf import csrf_exempt  # Import csrf_exempt for this example
+
+@csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
+def bloodrequest(request):
+    if request.method == 'POST':
+        # Extract data from the request
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        blood_group = request.POST.get('blood_group')
+        
+        purpose = request.POST.get('purpose')
+
+        # Create and save a new BloodRequest instance
+        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group, purpose=purpose)
+        blood_request.save()
+
+        # Redirect or render a success page
+        return redirect('hospitalhome')
+    
+    return render(request, 'hospital/requestblood.html')
 
 
 

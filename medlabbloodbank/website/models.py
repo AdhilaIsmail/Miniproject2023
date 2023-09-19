@@ -49,7 +49,6 @@ class CustomUser(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     phone = models.CharField(max_length=12, blank=True)
     password = models.CharField(max_length=128)
-    
     role = models.IntegerField(choices=ROLE_CHOICE,default='1')
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -146,4 +145,15 @@ class BloodType(models.Model):
 
     def __str__(self):
         return self.blood_type
+    
+
+class BloodRequest(models.Model):
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    blood_group = models.CharField(max_length=5)
+    quantity = models.CharField(max_length=10)
+    purpose = models.TextField()
+    
+
+
 
