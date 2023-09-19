@@ -30,7 +30,32 @@
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     
-
+<style>
+    .autocomplete {
+        position: relative;
+      }
+      
+      #placeSelect {
+        position: absolute;
+        width: 100%;
+        z-index: 1;
+        display: none;
+        border: 1px solid #ccc;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: white;
+      }
+      
+      #placeSelect option {
+        padding: 5px;
+        cursor: pointer;
+      }
+      
+      #placeSelect option:hover {
+        background-color: #f2f2f2;
+      }
+      
+</style>
 </head>
 
 <body>

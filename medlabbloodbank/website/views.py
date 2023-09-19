@@ -28,6 +28,7 @@ def registerasdonor(request):
 def appointmentschedule(request):
     return render(request, 'appointmentschedule.html')
 def homebloodbank(request):
+    
     return render(request, 'homebloodbank.html')
 def testimonial(request):
     return render(request, 'testimonial.html')
@@ -198,6 +199,8 @@ from .forms import DonorForm  # Import the DonorForm
 
 
 def registereddonorresponse(request):
+    donor = request.user.donor
+    print(donor)
     if request.method == 'POST':
         form = DonorForm(request.POST)
         if form.is_valid():
@@ -213,7 +216,7 @@ def registereddonorresponse(request):
         }
         form = DonorForm(initial=initial_data)
 
-    return render(request, 'donatenow.html', {'form': form})
+    return render(request, 'donatenow.html', {'form': form, 'donor': donor})
 
 
 # from twilio.rest import Client
@@ -450,17 +453,6 @@ def hospital_registration(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
         # form = HospitalRegisterForm(request.POST)
     #     if form.is_valid():
     #         form.save()  # Save the data to the database
@@ -602,6 +594,14 @@ def bloodrequest(request):
 
 
 
+def requests(request):
+    return render(request, 'mainuser/viewrequests.html')
 
 
 
+from django.shortcuts import render
+from .models import BloodRequest  # Import the BloodRequest model
+
+def blood_request_list(request):
+    blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
+    return render(request, 'mainuser/viewrequests.html', {'blood_requests': blood_requests})

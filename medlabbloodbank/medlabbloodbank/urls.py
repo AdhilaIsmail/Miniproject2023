@@ -22,8 +22,8 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
 from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest
-from website.views import bloodinventory, addnewgroup, addblood
-from website.views import hospitalhome, requestblood, bloodavailability, hospitalabout
+from website.views import bloodinventory, addnewgroup, addblood, requests
+from website.views import hospitalhome, requestblood, bloodavailability, hospitalabout,blood_request_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -87,7 +87,8 @@ urlpatterns = [
     path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
-  
+    path('requests', requests, name='requests'),
+    path('blood_request_list', blood_request_list, name='blood_request_list'),
     
 
    

@@ -116,18 +116,18 @@
                                                 <form action="{% url 'registereddonorresponse' %}" method="post" class="animated slideInUp" id="questionsForm">
                                                     {% csrf_token %}
                                                     <div class="mb-3">
-                                                        <input type="text" class="form-control"  name="name" placeholder="Full Name"  required>
+                                                        <input type="text" class="form-control"  name="name" placeholder="Full Name"  value={{ donor.full_name }} required>
                                                         <div class="error" data-error-for="name"></div>
                                                     </div>
 
                                                     <div class="mb-3"> 
-                                                        <input type="text" id="age" name="age" class="form-control" placeholder="Age" required>
+                                                        <input type="text" id="age" name="age" class="form-control"  placeholder="Age" required>
                                                         <div class="error" data-error-for="age"></div>
                                                     </div>
 
 
                                                     <div class="mb-3">
-                                                        <select id="bloodType" name="bloodType" class="form-control"  required>
+                                                        <select id="bloodType" name="bloodType" class="form-control"  value={{ donor.blood_group }} required>
                                                         <option value="">----</option>
                                                         <option value="A+">A+</option>
                                                         <option value="A-">A-</option>
