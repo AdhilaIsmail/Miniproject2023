@@ -494,7 +494,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
-import smtplib
+
 
 
 @csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
@@ -510,10 +510,18 @@ def bloodrequest(request, is_immediate):
 
 
         otp = get_random_string(length=6, allowed_chars='1234567890')
-
+        
         print(f"OTP: {otp}")
 
         request.session['hospital_otp'] = otp
+        
+        subject = 'Your OTP for Blood Request: Medlab Blood Bank'
+        message = f'Your OTP is: {otp}'
+        from_email = 'adhilaismail2@gmail.com'  # Replace with your email
+        recipient_list = [user.email]  # Assuming you want to send the OTP to the user's email address
+
+        # Use send_mail to send the OTP email
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
         requested_date = datetime.now().date()
         requested_time = datetime.now().time()
@@ -531,11 +539,10 @@ def bloodrequest(request, is_immediate):
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
-
 # Assuming you have stored the OTP in the session as 'hospital_otp'
-
 from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.core.mail import send_mail  # Import send_mail
+from django.utils.crypto import get_random_string
 
 def verify_hospital(request):
     if request.method == 'POST':

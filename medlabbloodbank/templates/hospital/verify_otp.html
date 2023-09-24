@@ -74,6 +74,8 @@
             background-color: #0056b3;
         }
         
+          
+        </style>
 
     </style>
 </head>
@@ -81,6 +83,8 @@
     <h1>Medlab Blood Bank</h1>
     <div class="container">
         <h2>OTP Verification</h2>
+        
+      
         <form method="post" action="{% url 'verify_hospital' %}">
             {% csrf_token %}
             <div class="form-group">
