@@ -148,8 +148,9 @@ class BloodType(models.Model):
 from datetime import datetime 
 
 class BloodRequest(models.Model):
-    email = models.EmailField()
-    phone = models.CharField(max_length=15)
+    # email = models.EmailField()
+    # phone = models.CharField(max_length=15)
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
     blood_group = models.CharField(max_length=5)
     quantity = models.CharField(max_length=10,null=True,blank=True)
     purpose = models.TextField()
@@ -157,10 +158,9 @@ class BloodRequest(models.Model):
 
     requested_date = models.DateField(default=datetime.now)
     requested_time = models.TimeField(default=datetime.now)
-    # requested_date = models.DateField(auto_now_add=True, editable=False)
-    # requested_time = models.TimeField(auto_now_add=True, editable=False)
+    
     
     def __str__(self):
-        return f"{self.email} - Requested on {self.requested_date} at {self.requested_time}"
+        return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
 
 

@@ -446,53 +446,6 @@ def hospital_registration(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # form = HospitalRegisterForm(request.POST)
-    #     if form.is_valid():
-    #         form.save()  # Save the data to the database
-    #         # Redirect to a success page or do something else
-    #         return redirect('adminindex')  # Replace with your success page URL name
-    # else:
-    #     form = HospitalRegisterForm()
-
-    # return render(request, 'mainuser/hospitalregistration.html', {'form': form})
-
-
-#neededone
-#hospital registration
-# from django.shortcuts import render, redirect
-# from .forms import HospitalForm
-
-# def hospitalregister(request):
-#     if request.method == 'POST':
-#         form = HospitalForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('registeredhospitaltable')  # Redirect to a success page
-#     else:
-#         form = HospitalForm()
-#     return render(request, 'mainuser/hospitalregister.html', {'form': form})
-
-
-
-# views.py
-#needed one
 from django.shortcuts import render
 from .models import HospitalRegister
 
@@ -502,54 +455,9 @@ def registeredhospitaltable(request):
 
 
 
-# views.py
-
-# views.py
-#needd one
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from .models import HospitalRegister
-
-# @csrf_exempt  # Use csrf_exempt for simplicity. You may want to implement CSRF protection properly in your project.
-# def update_hospital_status(request, hospital_id):
-#     if request.method == 'POST':
-#         try:
-#             hospital = HospitalRegister.objects.get(pk=hospital_id)
-#             hospital.status = 'Inactive'
-#             hospital.save()
-#             return JsonResponse({'message': 'Hospital status updated successfully'})
-#         except HospitalRegister.DoesNotExist:
-#             return JsonResponse({'error': 'Hospital not found'}, status=404)
-#     else:
-#         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 
-# from django.shortcuts import render, get_object_or_404
-# from .models import HospitalRegister  # Import your Hospital model
 
-# def edit_hospital(request, hospital_id):
-#     hospital = get_object_or_404(HospitalRegister, id=hospital_id)  # Replace 'Hospital' with your actual model name
-#     context = {'hospital': hospital}
-#     return render(request, 'mainuser/hospitalregistration.html', context)
-
-# from django.shortcuts import render, redirect, get_object_or_404
-# from .models import HospitalRegister
-# from .forms import HospitalForm
-
-# def edit_hospital(request, hospital_id):
-#     hospital = get_object_or_404(HospitalRegister, pk=hospital_id)
-    
-#     if request.method == 'POST':
-#         form = HospitalForm(request.POST, instance=hospital)
-#         if form.is_valid():
-#             form.save()  # This will update the existing hospital record
-#             return redirect('registeredhospitaltable')  # Redirect to the hospital list view or another appropriate page
-#     else:
-#         form = HospitalForm(instance=hospital)
-    
-#     return render(request, 'mainuser/hospitalregistration.html', {'form': form, 'hospital': hospital})
-
-# views.py
 
 from django.shortcuts import render, redirect
 from .forms import BloodTypeForm
@@ -582,7 +490,12 @@ def bloodinventory(request):
 from django.shortcuts import render, redirect
 from .models import BloodRequest  # Import your model
 from datetime import datetime 
-from django.views.decorators.csrf import csrf_exempt  # Import csrf_exempt for this example
+
+from django.contrib import messages
+from django.utils.crypto import get_random_string
+from django.views.decorators.csrf import csrf_exempt
+import smtplib
+
 
 @csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
 
@@ -590,23 +503,60 @@ def bloodrequest(request, is_immediate):
     print(f"is_immediate: {is_immediate}")  # Debug statement
 
     if request.method == 'POST':
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
+        user = request.user
         blood_group = request.POST.get('blood_group')
         quantity = request.POST.get('quantity')
         purpose = request.POST.get('purpose')
+
+
+        otp = get_random_string(length=6, allowed_chars='1234567890')
+
+        print(f"OTP: {otp}")
+
+        request.session['hospital_otp'] = otp
 
         requested_date = datetime.now().date()
         requested_time = datetime.now().time()
 
         is_immediate = is_immediate.lower() == 'true'
         # Create and save a new BloodRequest instance
-        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group,quantity=quantity, purpose=purpose,  requested_date=requested_date, requested_time=requested_time, is_immediate=is_immediate)
+        blood_request = BloodRequest(user=user, blood_group=blood_group,quantity=quantity, purpose=purpose,  requested_date=requested_date, requested_time=requested_time, is_immediate=is_immediate)
         blood_request.save()
 
-        return redirect('hospitalhome')
+        return redirect('verify_hospital')
+
 
     return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+# Assuming you have stored the OTP in the session as 'hospital_otp'
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
+def verify_hospital(request):
+    if request.method == 'POST':
+        # Get the entered OTP from the form
+        entered_otp = request.POST.get('otp')
+        
+        # Get the OTP stored in the session
+        stored_otp = request.session.get('hospital_otp')
+
+        if entered_otp == stored_otp:
+            # OTP is correct, clear it from the session
+            del request.session['hospital_otp']
+
+            # Redirect to the hospital home page
+            return redirect('hospitalhome')
+        else:
+            # OTP is incorrect, display an error message
+            messages.error(request, 'Invalid OTP. Please try again.')
+
+    # Render the OTP verification page
+    return render(request, 'hospital/verify_otp.html')
 
 
 def requests(request):
@@ -623,47 +573,4 @@ def blood_request_list(request):
 
 
 
-#otp sending for blood request
 
-from django.conf import settings
-from twilio.rest import Client
-import random
-
-# Your existing imports and view code
-
-def send_otp_sms(phone_number, otp):
-    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-
-    message = client.messages.create(
-        to=phone_number,
-        from_=settings.TWILIO_PHONE_NUMBER,
-        body=f'Your OTP is: {otp}'
-    )
-
-def bloodrequest(request, is_immediate):
-    if request.method == 'POST':
-        # Extract data from the request
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        blood_group = request.POST.get('blood_group')
-        quantity = request.POST.get('quantity')
-        purpose = request.POST.get('purpose')
-
-        # Generate OTP
-        otp = ''.join(random.choice('0123456789') for i in range(6))  # Generate a 6-digit OTP
-
-        # Create and save a new BloodRequest instance
-        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group, quantity=quantity, purpose=purpose, is_immediate=is_immediate)
-        blood_request.save()
-
-        # Send OTP via SMS
-        send_otp_sms(phone, otp)
-
-        # Store the OTP with the blood request (you may need to add an OTP field to your model)
-        blood_request.otp = otp
-        blood_request.save()
-
-        # Redirect to OTP verification page with blood request ID as a parameter
-        return redirect('verify_otp', blood_request_id=blood_request.id)
-
-    return render(request, 'hospital/requestblood.html')
