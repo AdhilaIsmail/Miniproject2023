@@ -134,9 +134,6 @@ class HospitalRegister(models.Model):
         return self.hospitalName
 
 
-
-
-
 # models.py
 
 from django.db import models
@@ -148,13 +145,22 @@ class BloodType(models.Model):
         return self.blood_type
     
 
+from datetime import datetime 
+
 class BloodRequest(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     blood_group = models.CharField(max_length=5)
     quantity = models.CharField(max_length=10,null=True,blank=True)
     purpose = models.TextField()
-    
+    is_immediate = models.BooleanField(default=False)
 
+    requested_date = models.DateField(default=datetime.now)
+    requested_time = models.TimeField(default=datetime.now)
+    # requested_date = models.DateField(auto_now_add=True, editable=False)
+    # requested_time = models.TimeField(auto_now_add=True, editable=False)
+    
+    def __str__(self):
+        return f"{self.email} - Requested on {self.requested_date} at {self.requested_time}"
 
 

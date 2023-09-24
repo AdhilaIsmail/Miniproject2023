@@ -281,6 +281,104 @@
         
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
+
+    <script>
+        const hospitalNameInput = document.getElementById('hospitalName');
+        const contactPersonInput = document.getElementById('contactPerson');
+        const emailInput = document.getElementById('email');
+        const phoneInput = document.getElementById('phone');
+        const locationInput = document.getElementById('location');
+        const gpsCoordinatesInput = document.getElementById('gpsCoordinates');
+        const ownershipInput = document.getElementById('ownership');
+        const hospitalURLInput = document.getElementById('hospitalURL');
+        const passwordInput = document.getElementById('password');
+    
+        hospitalNameInput.addEventListener('keyup', validateHospitalName);
+        contactPersonInput.addEventListener('keyup', validateContactPerson);
+        emailInput.addEventListener('keyup', validateEmail);
+        phoneInput.addEventListener('keyup', validatePhone);
+        locationInput.addEventListener('keyup', validateLocation);
+        gpsCoordinatesInput.addEventListener('keyup', validateGpsCoordinates);
+        ownershipInput.addEventListener('keyup', validateOwnership);
+        hospitalURLInput.addEventListener('keyup', validateHospitalURL);
+        passwordInput.addEventListener('keyup', validatePassword);
+    
+        function validateHospitalName() {
+            if (hospitalNameInput.value.trim() === '') {
+                hospitalNameInput.classList.add('is-invalid');
+            } else {
+                hospitalNameInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validateContactPerson() {
+            if (contactPersonInput.value.trim() === '') {
+                contactPersonInput.classList.add('is-invalid');
+            } else {
+                contactPersonInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validateEmail() {
+            const emailValue = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+            if (emailValue === '' || !emailRegex.test(emailValue)) {
+                emailInput.classList.add('is-invalid');
+            } else {
+                emailInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validatePhone() {
+            const phoneValue = phoneInput.value.trim();
+            const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number
+    
+            if (phoneValue === '' || !phoneRegex.test(phoneValue)) {
+                phoneInput.classList.add('is-invalid');
+            } else {
+                phoneInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validateLocation() {
+            if (locationInput.value.trim() === '') {
+                locationInput.classList.add('is-invalid');
+            } else {
+                locationInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validateGpsCoordinates() {
+            // You can add specific validation for GPS coordinates here
+            // For example, check if they match a certain pattern
+            // If invalid, add 'is-invalid' class; otherwise, remove it
+        }
+    
+        function validateOwnership() {
+            // Add validation for ownership here if needed
+        }
+    
+        function validateHospitalURL() {
+            const urlValue = hospitalURLInput.value.trim();
+            const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    
+            if (urlValue !== '' && !urlRegex.test(urlValue)) {
+                hospitalURLInput.classList.add('is-invalid');
+            } else {
+                hospitalURLInput.classList.remove('is-invalid');
+            }
+        }
+    
+        function validatePassword() {
+            if (passwordInput.value.trim() === '') {
+                passwordInput.classList.add('is-invalid');
+            } else {
+                passwordInput.classList.remove('is-invalid');
+            }
+        }
+    </script>
+    
     <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
     <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>

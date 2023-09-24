@@ -22,8 +22,8 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
 from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest
-from website.views import bloodinventory, addnewgroup, addblood, requests
-from website.views import hospitalhome, requestblood, bloodavailability, hospitalabout,blood_request_list
+from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood
+from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,6 +33,7 @@ urlpatterns = [
     path('testimonial',testimonial, name='testimonial'),
     path('contact',contact, name='contact'),
     path('loginn', loginn, name='loginn'),
+   
     path('registerasdonor',registerasdonor, name='registerasdonor'),
     path('register_donor/', register_donor, name='register_donor'),
     # path('questionnaire/', questionnaire, name='questionnaire'),
@@ -100,7 +101,8 @@ urlpatterns = [
     
     path('bloodavailability', bloodavailability, name='bloodavailability'),
     path('hospitalabout', hospitalabout, name='hospitalabout'),
-    path('bloodrequest', bloodrequest, name='bloodrequest'),
+    path('bloodrequest/<str:is_immediate>/', bloodrequest, name='bloodrequest'),
+
     
   
 

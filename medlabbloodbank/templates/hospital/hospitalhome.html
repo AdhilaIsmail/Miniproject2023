@@ -30,6 +30,29 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        /* Styles for the blinking button */
+.blinking-button {
+    animation: pulse 0.2s infinite alternate; /* Create a pulsating effect */
+}
+
+/* Keyframes for the pulsating animation */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.2;
+    }
+}
+
+/* Position the button in the top right corner */
+.immediate-request-button {
+    position: absolute;
+    top: 20px; /* Adjust the top value as needed */
+    right: 20px; /* Adjust the right value as needed */
+}
+</style>
 </head>
 
 <body>
@@ -91,26 +114,21 @@
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Empowering Hospitals Through Digital Blood Bank Management: Efficient, Lifesaving, and Connected"</h5>
-                            <h4 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Blood Requests, Swift Responses – Enhancing Hospital Care</h4>
+                            <h6 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Blood Requests, Swift Responses – Enhancing Hospital Care</h6>
                             {% if user.role == user.HOSPITAL %}
-                                <a href="{% url 'requestblood' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Request Blood</a>
+                                <a href="{% url 'bloodrequest' is_immediate='false' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Request Blood</a>
+                                <a href="{% url 'bloodrequest' is_immediate='true' %}" class="btn btn-danger py-md-3 px-md-5 me-3 blinking-button immediate-request-button">Immediate Request</a>
                             {% endif %}
+
+
+                                {% comment %} <a href="{% url 'requestblood' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Request Blood</a>
+                                <a href="{% url 'requestblood' %}" class="btn btn-danger py-md-3 px-md-5 me-3 blinking-button immediate-request-button">Immediate Request</a> {% endcomment %}
+
+                         
                         </div>
                     </div>
-                    
                 </div>
-                
             </div>
-            {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button> {% endcomment %}
         </div>
     </div>
     <!-- Carousel End -->

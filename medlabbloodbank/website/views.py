@@ -71,6 +71,9 @@ def loginn(request):
             return redirect('loginn')
     else:
         return render(request, 'login.html')
+    
+
+
   
 
 def register(request):
@@ -578,27 +581,32 @@ def bloodinventory(request):
 
 from django.shortcuts import render, redirect
 from .models import BloodRequest  # Import your model
+from datetime import datetime 
 from django.views.decorators.csrf import csrf_exempt  # Import csrf_exempt for this example
 
 @csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
-def bloodrequest(request):
+
+def bloodrequest(request, is_immediate):
+    print(f"is_immediate: {is_immediate}")  # Debug statement
+
     if request.method == 'POST':
-        # Extract data from the request
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         blood_group = request.POST.get('blood_group')
         quantity = request.POST.get('quantity')
         purpose = request.POST.get('purpose')
 
+        requested_date = datetime.now().date()
+        requested_time = datetime.now().time()
+
+        is_immediate = is_immediate.lower() == 'true'
         # Create and save a new BloodRequest instance
-        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group,quantity=quantity, purpose=purpose)
+        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group,quantity=quantity, purpose=purpose,  requested_date=requested_date, requested_time=requested_time, is_immediate=is_immediate)
         blood_request.save()
 
-        # Redirect or render a success page
         return redirect('hospitalhome')
-    
-    return render(request, 'hospital/requestblood.html')
 
+    return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
 
 
 def requests(request):
@@ -612,3 +620,50 @@ from .models import BloodRequest  # Import the BloodRequest model
 def blood_request_list(request):
     blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
     return render(request, 'mainuser/viewrequests.html', {'blood_requests': blood_requests})
+
+
+
+#otp sending for blood request
+
+from django.conf import settings
+from twilio.rest import Client
+import random
+
+# Your existing imports and view code
+
+def send_otp_sms(phone_number, otp):
+    client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+
+    message = client.messages.create(
+        to=phone_number,
+        from_=settings.TWILIO_PHONE_NUMBER,
+        body=f'Your OTP is: {otp}'
+    )
+
+def bloodrequest(request, is_immediate):
+    if request.method == 'POST':
+        # Extract data from the request
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        blood_group = request.POST.get('blood_group')
+        quantity = request.POST.get('quantity')
+        purpose = request.POST.get('purpose')
+
+        # Generate OTP
+        otp = ''.join(random.choice('0123456789') for i in range(6))  # Generate a 6-digit OTP
+
+        # Create and save a new BloodRequest instance
+        blood_request = BloodRequest(email=email, phone=phone, blood_group=blood_group, quantity=quantity, purpose=purpose, is_immediate=is_immediate)
+        blood_request.save()
+
+        # Send OTP via SMS
+        send_otp_sms(phone, otp)
+
+        # Store the OTP with the blood request (you may need to add an OTP field to your model)
+        blood_request.otp = otp
+        blood_request.save()
+
+        # Redirect to OTP verification page with blood request ID as a parameter
+        return redirect('verify_otp', blood_request_id=blood_request.id)
+
+    return render(request, 'hospital/requestblood.html')
