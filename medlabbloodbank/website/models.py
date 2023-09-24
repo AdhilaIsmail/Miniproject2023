@@ -90,6 +90,7 @@ from django.db import models
 
 class DonorResponse(models.Model):
     name = models.CharField(max_length=255)
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
     age = models.IntegerField()
     bloodType = models.CharField(max_length=5)
     weight = models.FloatField()

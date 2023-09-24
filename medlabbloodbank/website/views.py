@@ -151,7 +151,11 @@ def donatenow(request):
         # Redirect or render the "Register as Donor" page for others
         return redirect('registerasdonor') 
     
-    
+
+def registereddonortodonatenow(request):
+    return render(request, 'registereddonortodonatenow.html')
+
+
 def register_donor(request):
     
 
@@ -185,67 +189,49 @@ def register_donor(request):
 
 from django.shortcuts import render, redirect
 from .models import DonorResponse
-from .forms import DonorForm  # Import the DonorForm
 
-# def registereddonorresponse(request):
-#     if request.method == 'POST':
-#         form = DonorForm(request.POST)  # Create a form instance with POST data
-#         if form.is_valid():
-#             form.save()  # Save the data to the database
-#             # You can add a success message or redirect to a thank you page here.
-#             return redirect('notificationfordonation')
-#     else:
-#         form = DonorForm()  # Create an empty form instance for GET requests
-
-#     return render(request, 'donatenow.html', {'form': form})
-
-# def notificationfordonation(request):
-#     return render(request, 'notificationfordonation.html')
 
 
 def registereddonorresponse(request):
     donor = request.user.donor
     print(donor)
     if request.method == 'POST':
-        form = DonorForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('notificationfordonation')
-    else:
-        # Fetch the data from the database (assuming you want to prefill the last entry)
-        latest_entry = DonorResponse.objects.last()
-        initial_data = {
-            'name': latest_entry.name,
-            'bloodType': latest_entry.bloodType,
-            # Add other fields as needed
-        }
-        form = DonorForm(initial=initial_data)
+        name = request.POST.get('name')
+        user = request.user
+        age = request.POST.get('age')
+        bloodType = request.POST.get('bloodType')
+        weight = request.POST.get('weight')
+        donorHistory = request.POST.get('donorHistory')
+        difficulty = request.POST.get('difficulty')
+        donated = request.POST.get('donated')
+        allergies = request.POST.get('allergies')
+        alcohol = request.POST.get('alcohol')
+        jail = request.POST.get('jail')
+        surgery = request.POST.get('surgery')
+        diseased = request.POST.get('diseased')
+        hivaids = request.POST.get('hivaids')
+        pregnant = request.POST.get('pregnant')
+        child = request.POST.get('child')
+        feelgood = request.POST.get('feelgood')
 
-    return render(request, 'donatenow.html', {'form': form, 'donor': donor})
+        # Create a DonorResponse instance and populate it with the data
+        donor_response = DonorResponse(name=name,user=user,age=age,bloodType=bloodType,weight=weight,donorHistory=donorHistory,difficulty=difficulty,donated=donated,allergies=allergies,alcohol=alcohol,jail=jail,surgery=surgery,diseased=diseased,hivaids=hivaids,pregnant=pregnant,child=child,feelgood=feelgood)
 
+        # Save the DonorResponse instance to the database
+        donor_response.save()
 
-# from twilio.rest import Client
-# from django.conf import settings
-# from django.http import HttpResponse
+        return redirect('notificationfordonation')
+    # else:
+    #     # Fetch the data from the database (assuming you want to prefill the last entry)
+    #     latest_entry = DonorResponse.objects.last()
+    #     initial_data = {
+    #         'name': latest_entry.name,
+    #         'bloodType': latest_entry.bloodType,
+    #         # Add other fields as needed
+    #     }
+    #     form = DonorForm(initial=initial_data)
 
-# def send_sms(request):
-#     if request.method == 'POST':
-#         phone_number = request.POST['phone']
-#         message = "Get a blood sample test"
-
-#         client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-#         try:
-#             message = client.messages.create(
-#                 body=message,
-#                 from_=settings.TWILIO_PHONE_NUMBER,
-#                 to=phone_number
-#             )
-#             return HttpResponse("SMS sent successfully!")
-#         except Exception as e:
-#             return HttpResponse(f"SMS failed to send: {str(e)}")
-
-#     return HttpResponse("Invalid request method")
-
+    return render(request, 'donatenow.html', {'donor': donor})
 
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
@@ -391,28 +377,7 @@ def hospitalabout(request):
 from django.shortcuts import render, redirect
 
 
-# def hospital_registration(request):
-#     if request.method == 'POST':
-#         hospitalName = request.POST.get('hospitalName')
-#         contactPerson = request.POST.get('contactPerson')
-#         email = request.POST.get('email')
-#         phone = request.POST.get('phone')
-#         location = request.POST.get('location')
-#         gpsCoordinates = request.POST.get('gpsCoordinates')
-#         ownership = request.POST.get('ownership')
-#         hospitalURL = request.POST.get('hospitalURL')
-#         password = request.POST.get('password')
-        
-#         roles = CustomUser.HOSPITAL
-#         print(roles)
-#         if CustomUser.objects.filter(email=email,role=roles).exists():
-#             return render(request, 'mainuser/hospitalregistration.html')
-#         else:
-#             user=CustomUser.objects.create_user(email=email,phone=phone,password=password,role=roles)
-#             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
-#             hospitalRegister.save()
 
-#             return redirect('registeredhospitaltable')
 
 def hospital_registration(request):
     if request.method == 'POST':

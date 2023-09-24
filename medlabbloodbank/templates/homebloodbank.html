@@ -108,7 +108,7 @@
                             {% endif %} {% endcomment %}
                             {% comment %} <a href="{% url 'registerasdonor' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a> {% endcomment %}
                             {% if user.role == user.REGISTEREDDONOR %}
-                                <a href="{% url 'donatenow' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
+                                <a href="{% url 'registereddonortodonatenow' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
                             {% else %}
                                 <a href="{% url 'registerasdonor' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
                             {% endif %}
@@ -127,7 +127,11 @@
                             {% else %}
                             <a class="nav-item nav-link" href="{% url 'loginn' %}">Login</a>
                             {% endif %} {% endcomment %}
-                            <a href="{% url 'registerasdonor' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
+                            {% if user.role == user.REGISTEREDDONOR %}
+                            <a href="{% url 'registereddonortodonatenow' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
+                            {% else %}
+                            <a href="{% url 'register_donor' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
+                            {% endif%}
                         </div>
                     </div>
                 </div>

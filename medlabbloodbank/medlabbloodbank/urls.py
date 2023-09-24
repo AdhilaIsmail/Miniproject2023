@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from website import views
-from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor, registereddonorresponse, notificationfordonation, send_sms, uploadresult, homebloodbank, appointmentschedule, register, loggout
+from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor, registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
 from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest
@@ -42,6 +42,7 @@ urlpatterns = [
     path('homebloodbank',homebloodbank, name='homebloodbank'),
     path('registration',register, name='registration'),
     path('register/', register_donor, name='register_donor'),
+    path('registereddonortodonatenow', registereddonortodonatenow, name='registereddonortodonatenow'),
     path('registereddonorresponse/', registereddonorresponse, name='registereddonorresponse'),
     path('notificationfordonation', notificationfordonation, name='notificationfordonation'),
     path('send_sms/', send_sms, name='send_sms'),

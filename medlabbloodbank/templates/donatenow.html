@@ -30,6 +30,7 @@
 
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
 </head>
 
 <body>
@@ -48,9 +49,9 @@
                 {% if user.is_authenticated %}
 
                     {% if user.role == user.REGISTEREDDONOR %}
-                        <a href="#" class="nav-item nav-link">Donate Blood</a>
+                        <a href="#" class="nav-item nav-link active">Donate Blood</a>
                     {% else %}
-                        <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a>
+                        <a href="{% url 'registerasdonor' %}" class="nav-item nav-link active">Donate Blood</a>
                     {% endif %}
 
                 {% comment %} <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a> {% endcomment %}
@@ -100,9 +101,9 @@
 
                     {% comment %} <img class="w-100" src="{% static 'img/bg22.jpg' %}" alt="Image"> {% endcomment %}
                     {% comment %} <div class="carousel-caption d-flex flex-column align-items-center justify-content-center"> {% endcomment %}
-                        <div class="p-6" style="max-width: 100%; background-color:lightgrey; color:black">
+                        <div class="p-6" style="max-width: 100%; background-color:#c47a7a; color:black">
                             {% comment %} <img class="w-100 h-25" src="{% static 'img/bg7.jpg' %}" alt="Image"> {% endcomment %}
-                            <div class="p-3" style="max-width: 70%; background-color:white; color:black; margin-left:180px">
+                            <div class="p-3" style="max-width: 70%; background-color:white; color:black; margin-left:180px;border-radius:0px 100px 0px 100px">
                                 <h5 id="h5donate" class="text-uppercase mb-3 animated slideInDown">Revolutionizing Healthcare</h5>  
                                 
                                 <div class="container py-10">

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Ready to donate</title>
+    <title>Medlab Blood Bank</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -33,7 +33,7 @@
 </head>
 
 <body>
-    
+   
 
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
@@ -47,7 +47,7 @@
             <div class="navbar-nav ms-auto py-0">
                 <a href="{% url 'homebloodbank' %}" class="nav-item nav-link">Home</a>
                 {% if user.is_authenticated %}
-                <a href="#" class="nav-item nav-link active">Donate Blood</a>
+                <a href="{% url 'registerasdonor' %}" class="nav-item nav-link active">Donate Blood</a>
                 <a href="{% url 'appointmentschedule' %}" class="nav-item nav-link">Appointment</a>
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
@@ -84,67 +84,31 @@
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="{% static 'img/bg1.avif' %} " alt="Image">
+                    <img class="w-100 h-50" src="{% static 'img/bg6.jpg' %} " alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"THANK YOU FOR RESPONDING QUESTIONNAIRE"</h5>
-                            <h5 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Connections, Lifesaving Contributions – Your Blood, Their Lifeline</h5>
-                            <h6 class="display-4 text-white mb-md-4 animated zoomIn">Get a sample test done from your nearest laboratory for free and upload lab results too..</h6>
-                            <form action="{% url 'send_sms' %}" method="POST">
-                                {% csrf_token %}
-                                <div class="form-group">
-                                    <label for="phone" class="text-white">Phone Number:</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
-                                </div>
-                                <label for="nearestLab">Select Nearest Lab:</label>
-                                <select id="nearestLab" name="nearestLab" class="form-control" required>
-                                    <option value="">Select Lab</option>
-                                    <option value="Lab 1">DDRC SRL Kottayam,K K Road,opposite to GH</option>
-                                    <option value="Lab 2">DDRC SRL Diagnostic Services,C.S.I Complex,Baker Junction,Opposite Sakthi Bar,Central Rd</option>
-                                    <option value="Lab 3">DDRC SRL Diagnostic Services Regional Lab, near Kottayam Medical College</option>
-                                    <option value="Lab 4">DDRC SRL Diagnostic Services,Ammanchery Junction,ICH Rd,Opposite ICH</option>
-
-                                    <option value="Lab 5">DDRC SRL,Sankranthi, Gandhi Nagar, Kottayam, Perumbaikad</option>
-                                    <option value="Lab 6">DDRC SRL Diagnostic Services,DDRC SRL Building, Kottayam - Kumily Rd, opposite Government Hospital, Kottayam, Kerala 686001</option>
-                                    <option value="Lab 7">DDRC SRL Diagnostic Services, Near Govt Hospital Rd, opp. South Indian Bank, Mundakayam, Kerala 686513</option>
-                                    <option value="Lab 8">DDRC SRL,S.N.Trade Centre, opp. to main gate of General Hospital, Kottayam, Kerala 686502</option>
-                                    <option value="Lab 9">DDRC SRL,Government Hospital Junction, Thottakkadu, Kerala 686539</option>
-                                    <option value="Lab 10">DDRC SRL,Payyalani Puthuparambil,National Junction, Ponkunnam, Kerala 686506</option>
-                                    <option value="Lab 11">DDRC SRL,Othalathumoottil Building, Sankranthi, Kottayam, Kerala 686028</option>
-                                    <option value="Lab 12">DDRC SRL,Grace Hospital Rd, Aymanam, Kerala 686105</option>
-                                    <option value="Lab 13">DDRC SRL,Manjappallil Building, Changanassery - Vazhoor Rd, near Mercy Nursing Home, Karukachal, Kerala 686540</option>
-                                    <option value="Lab 14">DDRC SRL,118/B , Ramavilasam Building, Kodungoor, Kerala 686504</option>
-                                    <option value="Lab 15">DDRC SRL,118/B , Ramavilasam Building, Kodungoor, Kerala 686504</option>
-                                    <option value="Lab 16">DDRC SRL,118/B , Ramavilasam Building, Kodungoor, Kerala 686504</option>
-
-                                 
-                                    <!-- Add more lab options as needed -->
-                                </select>
-                                <!-- Add a submit button -->
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </form>
-                          
+                            <h4 class="text-white text-uppercase mb-3 animated slideInDown">"You are a Registered Donor"</h4>
+                            <h7 class="text-white text-uppercase mb-3 animated slideInDown">"If you are ready to donate now, proceed by clicking 'DONATE NOW' "</h7><br>
+                            <br>
+                                
+                                {% if user.role == user.REGISTEREDDONOR %}
+                                    <a href="{% url 'donatenow' %}" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Donate Blood</a>
+                                {% endif %}
+                                
+                           
                         </div>
                     </div>
                 </div>
                 
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+           
         </div>
     </div>
+    
     <!-- Carousel End -->
 
-    <!-- About Start -->
-    {% comment %} <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+    {% comment %} <!-- About Start -->
+    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="row g-5">
                 <div class="col-lg-7">
@@ -181,46 +145,10 @@
     <!-- About End --> {% endcomment %}
 
 
-    <!-- Offer Start -->
-    {% comment %} <div class="container-fluid bg-offer my-5 py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-7 wow zoomIn" data-wow-delay="0.6s">
-                    <div class="offer-text text-center rounded p-5">
-                        <h1 class="display-5 text-white">Get Free Basic Health Checkup on Blood Donation</h1>
-                        <p class="text-white mb-4">Eirmod sed tempor lorem ut dolores sit kasd ipsum. Dolor ea et dolore et at sea ea at dolor justo ipsum duo rebum sea. Eos vero eos vero ea et dolore eirmod diam duo lorem magna sit dolore sed et.</p>
-                        <a href="" class="btn btn-light py-3 px-5">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
-    <!-- Offer End -->
+    
 
-    <!-- Testimonial Start -->
-    {% comment %} <div class="container-fluid bg-primary bg-testimonial py-5 my-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-7">
-                    <div class="owl-carousel testimonial-carousel rounded p-5 wow zoomIn" data-wow-delay="0.6s">
-                        <div class="testimonial-item text-center text-dark">
-                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-1.jpg' %}" alt="">
-                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
-                            <hr class="mx-auto w-25">
-                            <h4 class="text-dark mb-0">Client Name</h4>
-                        </div>
-                        <div class="testimonial-item text-center text-dark">
-                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-2.jpg' %}" alt="">
-                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
-                            <hr class="mx-auto w-25">
-                            <h4 class="text-dark mb-0">Client Name</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-     {% endcomment %}
+    
+    
     
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light py-5 wow fadeInUp" data-wow-delay="0.3s" style="margin-top: -75px;">
