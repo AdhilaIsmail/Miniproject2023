@@ -22,7 +22,7 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
 from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable
-from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff
+from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff, staff_registration
 from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex,registereddonortablestaff, departmentsstaff
 
 urlpatterns = [
@@ -33,10 +33,8 @@ urlpatterns = [
     path('testimonial',testimonial, name='testimonial'),
     path('contact',contact, name='contact'),
     path('loginn', loginn, name='loginn'),
-   
     path('registerasdonor',registerasdonor, name='registerasdonor'),
     path('register_donor/', register_donor, name='register_donor'),
-    # path('questionnaire/', questionnaire, name='questionnaire'),
     path('donatenow',donatenow, name='donatenow'),
     path('appointmentschedule',appointmentschedule, name='appointmentschedule'),
     path('homebloodbank',homebloodbank, name='homebloodbank'),
@@ -47,24 +45,15 @@ urlpatterns = [
     path('notificationfordonation', notificationfordonation, name='notificationfordonation'),
     path('send_sms/', send_sms, name='send_sms'),
     path('uploadresult', uploadresult, name='uploadresult'),
-
-    
-    #  path('successful-login/', successful_login, name='successful_login'),
-    # path('register_donor/', views.register_donor, name='register_donor'),
-    
-    
     path('loggout', loggout, name='loggout'),
-    # path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path("",include("allauth.urls")),
-
 
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+
 
 
     #admindashboard
@@ -73,8 +62,7 @@ urlpatterns = [
     path('appointments', appointments, name='appointments'),
     path('departments', departments, name='departments'),
     path('doctors', doctors, name='doctors'),
-    path('employees', employees, name='employees'),
-   
+    path('employees', employees, name='employees'), 
     path('profile', profile, name='profile'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortable', registereddonortable, name='registereddonortable'),
@@ -86,21 +74,19 @@ urlpatterns = [
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
     path('registeredhospitaltable/', registeredhospitaltable, name='registeredhospitaltable'),
-    # path('update_hospital_status/<int:hospital_id>/', update_hospital_status, name='update_hospital_status'),
     path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
     path('requests', requests, name='requests'),
     path('blood_request_list', blood_request_list, name='blood_request_list'),
+    path('staff_registration', staff_registration, name='staff_registration'),
     
 
    
     
-
     #hospital
     path('hospitalhome', hospitalhome, name='hospitalhome'),
-    path('requestblood', requestblood, name='requestblood'),
-    
+    path('requestblood', requestblood, name='requestblood'),  
     path('bloodavailability', bloodavailability, name='bloodavailability'),
     path('hospitalabout', hospitalabout, name='hospitalabout'),
     path('bloodrequest/<str:is_immediate>/', bloodrequest, name='bloodrequest'),
@@ -116,7 +102,6 @@ urlpatterns = [
     path('departmentsstaff', departmentsstaff, name='departmentsstaff'),
     path('doctors', doctors, name='doctors'),
     path('employees', employees, name='employees'),
-   
     path('profile', profile, name='profile'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortablestaff', registereddonortablestaff, name='registereddonortablestaff'),
@@ -127,7 +112,6 @@ urlpatterns = [
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
     path('registeredstafftable/', registeredstafftable, name='registeredstafftable'),
-    # path('update_hospital_status/<int:hospital_id>/', update_hospital_status, name='update_hospital_status'),
     path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),

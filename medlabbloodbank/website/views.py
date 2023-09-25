@@ -431,6 +431,53 @@ def registeredhospitaltable(request):
 
 
 
+from .models import Staff  # Import the Staff model
+
+def registeredstafftable(request):
+    # Retrieve the staff data from the database
+    staff_list = Staff.objects.all()
+
+    # Pass the staff data to the template
+    context = {'staff_list': staff_list}
+    
+    return render(request, 'mainuser/registeredstafftable.html', context)
+
+
+def staff_registration(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        age = request.POST.get('age')
+        gender = request.POST.get('gender')
+        dob = request.POST.get('dob')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        password = request.POST.get('password')
+        
+        if CustomUser.objects.filter(email=email).exists():
+            return render(request, 'staff_registration.html', {'error_message': 'Email address already exists.'})
+        
+        if not name or not age or not gender or not dob or not email or not phone or not password:
+            return render(request, 'staff_registration.html', {'error_message': 'Please fill in all required fields.'})
+        
+        try:
+            # Create a CustomUser instance
+            user = CustomUser.objects.create_user(email=email, phone=phone, password=password)
+            user.role = CustomUser.STAFF
+            user.save()
+
+            # Create a Staff instance and associate it with the user
+            staff = Staff(name=name, age=age, user=user, gender=gender, dob=dob)
+            staff.save()
+
+            return redirect('registeredstafftable')
+        
+        except IntegrityError as e:
+            return render(request, 'mainuser/staffregistration.html', {'error_message': 'An error occurred during registration.'})
+        
+    else:
+        return render(request, 'mainuser/staffregistration.html')
+
+
 from django.shortcuts import render, redirect
 from .forms import BloodTypeForm
 from django.db import IntegrityError  # Import IntegrityError

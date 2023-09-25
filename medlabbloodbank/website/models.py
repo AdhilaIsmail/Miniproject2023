@@ -73,6 +73,7 @@ class CustomUser(AbstractUser):
         self.role = CustomUser.HOSPITAL
         self.save()
 
+#donor model
 class Donor(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,null=True)
     full_name = models.CharField(max_length=100)
@@ -85,7 +86,7 @@ class Donor(models.Model):
     def __str__(self):
         return self.full_name
     
-
+#donor response model
 from django.db import models
 
 class DonorResponse(models.Model):
@@ -110,12 +111,11 @@ class DonorResponse(models.Model):
 #uploading result into database
 from django.db import models
 
-
 class UploadedFile(models.Model):
     file = models.FileField(upload_to='media/uploads/')
 
-from django.db import models
 
+#hospital registration model
 
 class HospitalRegister(models.Model):
     hospitalName = models.CharField(max_length=100,unique=True)
@@ -135,7 +135,7 @@ class HospitalRegister(models.Model):
         return self.hospitalName
 
 
-# models.py
+#blood type model
 
 from django.db import models
 
@@ -146,17 +146,17 @@ class BloodType(models.Model):
         return self.blood_type
     
 
+#blood request model
+
 from datetime import datetime 
 
 class BloodRequest(models.Model):
-    # email = models.EmailField()
-    # phone = models.CharField(max_length=15)
+
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
     blood_group = models.CharField(max_length=5)
     quantity = models.CharField(max_length=10,null=True,blank=True)
     purpose = models.TextField()
     is_immediate = models.BooleanField(default=False)
-
     requested_date = models.DateField(default=datetime.now)
     requested_time = models.TimeField(default=datetime.now)
     
@@ -165,3 +165,17 @@ class BloodRequest(models.Model):
         return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
 
 
+#staff registration model
+
+class Staff(models.Model):
+    name = models.CharField(max_length=255)
+    age = models.IntegerField()
+    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
+    dob = models.DateField()
+    # phone = models.CharField(max_length=10)
+    # email = models.EmailField(unique=True)
+    # password = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
