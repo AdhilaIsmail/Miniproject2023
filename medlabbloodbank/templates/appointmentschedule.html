@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Appoinment</title>
+    <title>Ready to donate</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    {% comment %} <link href="img/favicon.ico" rel="icon"> {% endcomment %}
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -37,7 +37,7 @@
 
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
-        <a href="index.html" class="navbar-brand p-0">
+        <a href="{% url 'homebloodbank' %}" class="navbar-brand p-0">
             <h4 class="m-0 text-danger"><img height="40px" width="70px" src="{% static 'img/logo.png' %}">Medlab Blood Bank</h4>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -45,9 +45,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="{% url 'homebloodbank' %}" class="nav-item nav-link ">Home</a>
+                <a href="{% url 'homebloodbank' %}" class="nav-item nav-link">Home</a>
                 {% if user.is_authenticated %}
-                <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a>
+                <a href="#" class="nav-item nav-link active">Donate Blood</a>
                 <a href="{% url 'appointmentschedule' %}" class="nav-item nav-link">Appointment</a>
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
@@ -56,13 +56,6 @@
                 <a class="nav-item nav-link" href="{% url 'loggout' %}">Logout</a>
                 <a href="#" class="nav-item nav-link">{{user.email}}</a>
                 {% endif %}
-                {% comment %} <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a>
-                <a href="{% url 'appointmentschedule' %}" class="nav-item nav-link active">Appointment</a>
-                {% comment %} <a href="donordashboard.html" class="nav-item nav-link">Dashboard</a>  {% endcomment %}
-                {% comment %} <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a> {% endcomment %}
-                <!-- <a href="testimonial.html" class="nav-item nav-link">Testimonial</a> -->
-                {% comment %} <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
-                <a href="{% url 'loginn' %}" class="nav-item nav-link">Login</a> {% endcomment %} 
             </div>
         </div>
     </nav>
@@ -86,79 +79,115 @@
     </div>
     <!-- Full Screen Search End -->
 
-   
+    <!-- Carousel Start -->
     <div class="container-fluid p-0">
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="{% static 'img/bg22.jpg' %}" alt="Image">
+                    <img class="w-100" src="{% static 'img/bg1.avif' %} " alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">Revolutionizing Healthcare</h5>
-                            <!-- <h4 class="display-1 text-white mb-md-4 animated zoomIn">Unifying Blood Bank and Laboratory Services for Enhanced Patient Care</h4> -->
-                            <form action="" method="post" class="animated slideInUp" id="registrationForm">
+                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"THANK YOU FOR RESPONDING QUESTIONNAIRE"</h5>
+                            <h5 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Connections, Lifesaving Contributions – Your Blood, Their Lifeline</h5>
+                            <h6 class="display-4 text-white mb-md-4 animated zoomIn">Get a sample test done from your nearest laboratory for free and upload lab results too..</h6>
+                            <form action="{% url 'send_sms' %}" method="POST">
                                 {% csrf_token %}
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" name="full_name" placeholder="Full Name" required>
-                                    <div class="error" data-error-for="full_name"></div>
+                                <div class="form-group">
+                                    <label for="phone" class="text-white">Phone Number:</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
                                 </div>
-                                <div class="mb-3">
-                                    <input type="email" class="form-control" name="email" placeholder="Email Address" required>
-                                    <div class="error" data-error-for="email"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="tel" class="form-control" name="phone" placeholder="Phone Number" required>
-                                    <div class="error" data-error-for="phone"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" name="blood_group" placeholder="Blood Group" required>
-                                    <div class="error" data-error-for="blood_group"></div>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="text" class="form-control" name="Place" placeholder="Place" required>
-                                    <div class="error" data-error-for="Place"></div>
-                                </div>
-                                <button type="submit" class="btn btn-danger py-md-3 px-md-5 me-3">Register as Donor</button>
-                               
-                                {% comment %} <button type="submit" class="btn btn-danger py-md-3 px-md-5 me-3">Register as Donor</button> {% endcomment %}
+                                <label for="nearestLab">Select Nearest Lab:</label>
+                                <select id="nearestLab" name="nearestLab" class="form-control" required>
+                                    <option value="">Select Lab</option>
+                                    <option value="Lab 1">DDRC SRL Kottayam,K K Road,opposite to GH</option>
+                                    <option value="Lab 2">DDRC SRL Diagnostic Services,C.S.I Complex,Baker Junction,Opposite Sakthi Bar,Central Rd</option>
+                                    <option value="Lab 3">DDRC SRL Diagnostic Services Regional Lab, near Kottayam Medical College</option>
+                                    <option value="Lab 4">DDRC SRL Diagnostic Services,Ammanchery Junction,ICH Rd,Opposite ICH</option>
+                                    <option value="Lab 5">DDRC SRL,Sankranthi, Gandhi Nagar, Kottayam, Perumbaikad</option>
+                                    <option value="Lab 6">DDRC SRL Diagnostic Services,DDRC SRL Building, Kottayam - Kumily Rd, opposite Government Hospital, Kottayam, Kerala 686001</option>
+                                    <option value="Lab 7">DDRC SRL Diagnostic Services, Near Govt Hospital Rd, opp. South Indian Bank, Mundakayam, Kerala 686513</option>
+                                    <option value="Lab 8">DDRC SRL,S.N.Trade Centre, opp. to main gate of General Hospital, Kottayam, Kerala 686502</option>
+                                    <option value="Lab 9">DDRC SRL,Government Hospital Junction, Thottakkadu, Kerala 686539</option>
+                                    <option value="Lab 10">DDRC SRL,Payyalani Puthuparambil,National Junction, Ponkunnam, Kerala 686506</option>
+                                    <option value="Lab 11">DDRC SRL,Othalathumoottil Building, Sankranthi, Kottayam, Kerala 686028</option>
+                                    <option value="Lab 12">DDRC SRL,Grace Hospital Rd, Aymanam, Kerala 686105</option>
+                                    <option value="Lab 13">DDRC SRL,Manjappallil Building, Changanassery - Vazhoor Rd, near Mercy Nursing Home, Karukachal, Kerala 686540</option>
+                                    <option value="Lab 14">DDRC SRL Diagnostics - Karukachal, Kottayam, Manjappallil Building, Changanassery - Vazhoor Rd, near Mercy Nursing Home, Karukachal, Kerala 686540</option>
+                                    <option value="Lab 15">DDRC SRL,Kanjirappally, Kerala 686506</option>
+                                    <option value="Lab 16">DDRC SRL Diagnosis,Ramavilasam Building, Kodungoor, Kerala 686504</option>
+                                    <option value="Lab 17">DDRC SRL,Kollam - Theni Hwy, South Pampady, Pampady, Kerala 686502</option>
+                                    <option value="Lab 18">DDRC SRL,Kidangoor - Manarcadu Rd, Kerala 686501</option>
+                                    <option value="Lab 19">DDRC SRL Diagnosis,st marys hospital, Manarcadu, Kerala</option>
+                                    <option value="Lab 20">DDRC SRL Diagnostics,C.C.M.Tourist Home, Ground Floor, Erattupetta, Kerala 686122</option>
+                                    <option value="Lab 21">DDRC SRL Diagnostics,Junction, opp. St Mary's GHS Church, Athirampuzha, Kerala 686562</option>
+                                    <option value="Lab 22">DDRC SRL Diagnostics,Paikattu Building, Central Junction, SH 1, Changanassery, Kerala 686105</option>
+                                    <option value="Lab 23">DDRC SRL,SH 1, Baker Hill, Kottayam, Kerala 686001</option>
+                                    <option value="Lab 24">DDRC SRL,Kuravilagadu Building No. 2/36 A B C, Kerala 686633</option>
+                                    <option value="Lab 25">DDRC SRL,Uzhavoor, Kerala 686634</option>
+                                    <option value="Lab 26">DDRC SRL,Ground floor, Ponmankal Arcade, Ettumanoor, Kerala 686631</option>
+                                    <option value="Lab 27">DDRC SRL,Illimoola jn, Ayarkunnam, Kerala 686564</option>
+                                    <option value="Lab 28">DDRC SRL Diagnostic Services,Vimala Hospital, Ettumanoor, Kerala 686631</option>
+                                    <option value="Lab 29">DDRC SRL,Ramapuram-Pizhaku Rd, Ramapuram, Kerala 686576</option>
+                                    <option value="Lab 30">DDRC SRL Building No. 1775 Mariyan Medical Mall, opp. Govt.Hospital, Kerala 686575</option>
+                                    <option value="Lab 31">DDRC SRL,Puthuppally Rd, Kanjikuzhi, Kottayam, Kerala 686002</option>
+                                    <option value="Lab 32">DDRC SRL,Malliyoor Bypass, Manjoor, Kerala 686603</option>
+                                    <option value="Lab 33">DDRC SRL,Taluk hospital junction, Kuravilangad, Kerala 686633</option>
+                                    <option value="Lab 34">DDRC SRL Diagnostic,Munthirikavala, Bus Stop, Vadakkekkara Rd, Changanassery, Kerala 686104</option>
+                                    <option value="Lab 35">DDRC SRL,Devamatha hospital Junction, SH 1, Koothattukulam, Kerala 686662</option>
+                                    <option value="Lab 36">DDRC SRL,Railway Station Rd, Thiruvalla, Kerala 689111</option>
+                                   
+
+                                 
+                                    <!-- Add more lab options as needed -->
+                                </select>
+                                <!-- Add a submit button -->
+                                <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
-                            
+                          
                         </div>
                     </div>
                 </div>
-                <!-- ... (other carousel items) ... -->
+                
             </div>
-            <!-- ... (carousel controls) ... -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
-    
     <!-- Carousel End -->
 
-   
-    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <!-- About Start -->
+    {% comment %} <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container">
             <div class="row g-5">
                 <div class="col-lg-7">
                     <div class="section-title mb-4">
-                        <h5 class="position-relative d-inline-block text-primary text-uppercase">The Power of Blood Donation</h5>
-                        <h1 class="display-5 mb-0">Empowering Lives: Donate Blood, Save Lives</h1>
+                        <h5 class="position-relative d-inline-block text-primary text-uppercase">About Our Online Blood Bank Management System</h5>
+                        <h1 class="display-5 mb-0">Empowering Lifesaving: The Leading Online Blood Bank Management Solution</h1>
                     </div>
-                    <h4 class="text-body fst-italic mb-4">Your contribution can make a significant impact on healthcare.</h4>
-                    <p class="mb-4">By donating blood, you become a lifeline for those in need. Your generosity ensures a steady supply of blood for medical emergencies, surgeries, and treatments. Here are the key benefits of blood donation:</p>
-                    <ul class="mb-4">
-                        <li><i class="fa fa-check-circle text-primary me-2"></i> Saves Lives: Donated blood is essential for accident victims, patients undergoing surgeries, and those with medical conditions requiring frequent transfusions.</li>
-                        <li><i class="fa fa-check-circle text-primary me-2"></i> Health Benefits: Regular blood donation can reduce the risk of certain health conditions and stimulate the production of fresh, healthy blood cells.</li>
-                        <li><i class="fa fa-check-circle text-primary me-2"></i> Community Impact: Your contribution strengthens the community's health and emergency response capabilities.</li>
-                    </ul>
-                    <h4 class="mb-3">Eligibility Criteria for Blood Donation:</h4>
-                    <ul class="mb-4">
-                        <li><i class="fa fa-circle me-2"></i> Age between 18 and 65 years</li>
-                        <li><i class="fa fa-circle me-2"></i> Minimum weight of 50 kg</li>
-                        <li><i class="fa fa-circle me-2"></i> Good general health</li>
-                        <li><i class="fa fa-circle me-2"></i> Adequate hemoglobin level</li>
-                        <li><i class="fa fa-circle me-2"></i> Not donated blood in the last 8 weeks</li>
-                    </ul>
-                    <p>Join us in making a difference. Your blood donation can save lives and improve the well-being of countless individuals.</p>
+                    <h4 class="text-body fst-italic mb-4">Advancing blood donation and healthcare for better lives.</h4>
+                    <p class="mb-4">Our state-of-the-art online platform seamlessly connects blood donors, recipients, and medical professionals, forming a unified system that accelerates blood donation processes and enhances patient care. Our commitment to excellence drives us to provide:</p>
+                    <div class="row g-3">
+                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.3s">
+                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Efficient Blood Matching</h5>
+                            <p>From blood typing and compatibility checking to real-time availability tracking, our comprehensive services ensure successful and timely blood transfusions.</p>
+                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>User-Friendly Interface</h5>
+                            <p>Our user-friendly platform allows donors and recipients to easily navigate and manage their profiles, appointments, and blood requests with convenience.</p>
+                        </div>
+                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.6s">
+                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Rapid Response</h5>
+                            <p>Time is critical in emergencies, and our online system ensures swift communication between donors, recipients, and medical facilities, expediting the blood donation process.</p>
+                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Data Security</h5>
+                            <p>We prioritize the security of donor and recipient information. Our robust system ensures the confidentiality and integrity of sensitive data.</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-5" style="min-height: 500px;">
                     <div class="position-relative h-100">
@@ -169,77 +198,11 @@
         </div>
     </div>
     
-    <!-- About End -->
+    <!-- About End --> {% endcomment %}
 
-    <!-- Service Start -->
-    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="row g-5 mb-5">
-                <div class="col-lg-7">
-                    <div class="section-title mb-5">
-                        <h5 class="position-relative d-inline-block text-primary text-uppercase">Our Services</h5>
-                        <h1 class="display-5 mb-0">We Offer The Best Quality Dental Services</h1>
-                    </div>
-                    <div class="row g-5">
-                        <div class="col-md-6 service-item wow zoomIn" data-wow-delay="0.6s">
-                            <div class="rounded-top overflow-hidden">
-                                <img class="img-fluid" src="{% static 'img/bg13.avif' %}" alt="">
-                            </div>
-                            <div class="position-relative bg-light rounded-bottom text-center p-4">
-                                <h5 class="m-0">Blood Donation</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-6 service-item wow zoomIn" data-wow-delay="0.9s">
-                            <div class="rounded-top overflow-hidden">
-                                <img class="img-fluid" src="{% static 'img/bg14.avif' %}" alt="">
-                            </div>
-                            <div class="position-relative bg-light rounded-bottom text-center p-4">
-                                <h5 class="m-0">Diagnostic Testing</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5 service-item wow zoomIn" data-wow-delay="0.1s">
-                    <div class="position-relative bg rounded h-100 d-flex flex-column align-items-center justify-content-center text-center p-4">
-                        <img class="img-fluid" src="{% static 'img/bg18.jpg' %}" alt="">
-                    </div>
-                </div>
-            </div>
-            <div class="row g-5 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="col-lg-7">
-                    <div class="row g-5">
-                        <div class="col-md-6 service-item wow zoomIn" data-wow-delay="0.3s">
-                            <div class="rounded-top overflow-hidden">
-                                <img class="img-fluid" src="{% static 'img/service-3.jpg' %}" alt="">
-                            </div>
-                            <div class="position-relative bg-light rounded-bottom text-center p-4">
-                                <h5 class="m-0">Dental Bridges</h5>
-                            </div>
-                        </div>
-                        <div class="col-md-6 service-item wow zoomIn" data-wow-delay="0.6s">
-                            <div class="rounded-top overflow-hidden">
-                                <img class="img-fluid" src="{% static 'img/service-4.jpg' %}" alt="">
-                            </div>
-                            <div class="position-relative bg-light rounded-bottom text-center p-4">
-                                <h5 class="m-0">Teeth Whitening</h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5 service-item wow zoomIn" data-wow-delay="0.9s">
-                    <div class="position-relative bg-primary rounded h-100 d-flex flex-column align-items-center justify-content-center text-center p-4">
-                        <h3 class="text-white mb-3">Make Appointment</h3>
-                        <p class="text-white mb-3">Clita ipsum magna kasd rebum at ipsum amet dolor justo dolor est magna stet eirmod</p>
-                        <h2 class="text-white mb-0">+012 345 6789</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Service End -->
 
     <!-- Offer Start -->
-    <div class="container-fluid bg-offer my-5 py-5 wow fadeInUp" data-wow-delay="0.1s">
+    {% comment %} <div class="container-fluid bg-offer my-5 py-5 wow fadeInUp" data-wow-delay="0.1s">
         <div class="container py-5">
             <div class="row justify-content-center">
                 <div class="col-lg-7 wow zoomIn" data-wow-delay="0.6s">
@@ -251,11 +214,33 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> {% endcomment %}
     <!-- Offer End -->
 
-
-        
+    <!-- Testimonial Start -->
+    {% comment %} <div class="container-fluid bg-primary bg-testimonial py-5 my-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-7">
+                    <div class="owl-carousel testimonial-carousel rounded p-5 wow zoomIn" data-wow-delay="0.6s">
+                        <div class="testimonial-item text-center text-dark">
+                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-1.jpg' %}" alt="">
+                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
+                            <hr class="mx-auto w-25">
+                            <h4 class="text-dark mb-0">Client Name</h4>
+                        </div>
+                        <div class="testimonial-item text-center text-dark">
+                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-2.jpg' %}" alt="">
+                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
+                            <hr class="mx-auto w-25">
+                            <h4 class="text-dark mb-0">Client Name</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     {% endcomment %}
     
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light py-5 wow fadeInUp" data-wow-delay="0.3s" style="margin-top: -75px;">
@@ -283,7 +268,7 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h3 class="text-white mb-4">Get In Touch</h3>
-                    <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>123 Street, New York, USA</p>
+                    <p class="mb-2"><i class="bi bi-geo-alt text-primary me-2"></i>123 Street, Kottayam</p>
                     <p class="mb-2"><i class="bi bi-envelope-open text-primary me-2"></i>info@example.com</p>
                     <p class="mb-0"><i class="bi bi-telephone text-primary me-2"></i>+012 345 67890</p>
                 </div>
@@ -297,7 +282,7 @@
                 <div class="col-md-6 text-center text-md-start">
                     <p class="mb-md-0">&copy; <a class="text-white border-bottom" href="#">Medlab Blood Bank</a>. All Rights Reserved.</p>
                 </div>
-                
+               
             </div>
         </div>
     </div>
@@ -305,83 +290,21 @@
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
-    
-    
-    
-    <script>
-        const registrationForm = document.getElementById('registrationForm');
-    
-        registrationForm.addEventListener('keyup', function (event) {
-            if (event.target.tagName === 'INPUT') {
-                validateInput(event.target);
-            }
-        });
-    
-        function validateInput(input) {
-            const inputValue = input.value.trim();
-            const fieldName = input.getAttribute('name');
-            const errorElement = document.querySelector(`[data-error-for="${fieldName}"]`);
-    
-            if (inputValue === '') {
-                errorElement.textContent = 'This field is required.';
-            } else {
-                errorElement.textContent = '';
-            }
-    
-            // Add specific validation for each field
-            switch (fieldName) {
-                case 'full_name':
-                    // Check if full name contains only letters and spaces
-                    if (!/^[A-Za-z\s]+$/.test(inputValue)) {
-                        errorElement.textContent = 'Full Name must contain only letters and spaces.';
-                    }
-                    break;
-                case 'email':
-                    // Check if email format is valid
-                    if (!/\S+@\S+\.\S+/.test(inputValue)) {
-                        errorElement.textContent = 'Invalid Email Address.';
-                    }
-                    break;
-                case 'phone':
-                    // Check if phone number contains only digits
-                    if (!/^\d+$/.test(inputValue)) {
-                        errorElement.textContent = 'Phone Number must contain only digits.';
-                    }
-                    break;
-                case 'blood_group':
-                    // Check if blood group format is valid (e.g., A+, AB-, etc.)
-                    if (!/^(A|B|AB|O)[+-]$/.test(inputValue)) {
-                        errorElement.textContent = 'Invalid Blood Group format.';
-                    }
-                    break;
-                case 'Place':
-                    // Example: Check if place contains only letters and spaces
-                    if (!/^[A-Za-z\s]+$/.test(inputValue)) {
-                        errorElement.textContent = 'Place must contain only letters and spaces.';
-                    }
-                    break;
-                // Add validation for other fields similarly
-            }
-        }
-    </script>
-    
-
-     <!-- JavaScript Libraries -->
+    <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
-    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
-    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
-    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
-    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-    <script src="{% static 'lib/twentytwenty/jquery.event.move.js' %}"></script>
-    <script src="{% static 'lib/twentytwenty/jquery.twentytwenty.js' %}"></script>
-
+    <script src="lib/wow/wow.min.js"></script>
+    <script src="lib/easing/easing.min.js"></script>
+    <script src="lib/waypoints/waypoints.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="lib/tempusdominus/js/moment.min.js"></script>
+    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
+    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="lib/twentytwenty/jquery.event.move.js"></script>
+    <script src="lib/twentytwenty/jquery.twentytwenty.js"></script>
 
     <!-- Template Javascript -->
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="js/main.js"></script>
 </body>
-</html>
 
+</html>

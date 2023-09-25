@@ -145,7 +145,8 @@ from .models import CustomUser
 
 def donatenow(request):
     if request.user.is_authenticated and request.user.role == CustomUser.REGISTEREDDONOR:
-        donor = request.user.donor
+        donor = Donor.objects.get(user=request.user)
+        print(donor)
         return render(request, 'donatenow.html', {'donor':donor})
     else:
         # Redirect or render the "Register as Donor" page for others
@@ -164,11 +165,16 @@ def register_donor(request):
         form = DonorRegistrationForm(request.POST)
         if form.is_valid():
             # Save the form data to create a new Donor record
+            user = request.user
+            user.email = form.cleaned_data['email']
+            user.phone = form.cleaned_data['phone']
+            user.save()
             donor = form.save(commit=False)
 
 
             
-            donor.email = request.user.email  # Set the email based on the logged-in user
+            donor.email = request.user.email 
+            donor.user_id = request.user.id # Set the email based on the logged-in user
             donor.save()
 
             # Update the user's role to "Registered Donor"
@@ -177,7 +183,7 @@ def register_donor(request):
                 request.user.save()
 
             # Redirect to a success page or perform other actions
-            return redirect('donatenow')  # Change 'success_page' to the actual success page URL
+            return redirect('registereddonortodonatenow')  # Change 'success_page' to the actual success page URL
 
     else:
         # form = DonorRegistrationForm()
@@ -347,6 +353,11 @@ def search_by_blood_group(request):
 def bloodinventory(request):
     return render(request, 'mainuser/bloodinventory.html')
 
+def registeredstafftable(request):
+    return render(request, 'mainuser/registeredstafftable.html')
+
+
+
 def addnewgroup(request):
     return render(request, 'mainuser/addnewgroup.html')
 
@@ -417,9 +428,6 @@ from .models import HospitalRegister
 def registeredhospitaltable(request):
     hospitals = HospitalRegister.objects.all()
     return render(request, 'mainuser/registeredhospitaltable.html', {'hospitals': hospitals})
-
-
-
 
 
 
@@ -545,4 +553,142 @@ def blood_request_list(request):
 
 
 
+#staff
+def staffindex(request):
+    return render(request, 'staff/index.html')
 
+def activities(request):
+    return render(request, 'staff/activities.html')
+
+def appointments(request):
+    return render(request, 'staff/appointments.html')
+
+def departments(request):
+    return render(request, 'staff/departments.html')
+
+def doctors(request):
+    return render(request, 'staff/doctors.html')
+
+def addhospitals(request):
+    return render(request, 'staff/add-hospitals.html')
+
+def hospitalregistration(request):
+    return render(request, 'staff/hospitalregistration.html')
+
+def employees(request):
+    return render(request, 'staff/employees.html')
+
+def profile(request):
+    return render(request, 'staff/profile.html')
+
+def editprofile(request):
+    return render(request, 'staff/edit-profile.html')
+
+def registereddonortable(request):
+    donors = Donor.objects.all()
+    donor_count = donors.count()  # Get the count of registered donors
+    # return render(request, 'donor_table.html', {'donors': donors, 'donor_count': donor_count})
+    return render(request, 'staff/registereddonortable.html', {'donors': donors, 'donor_count': donor_count})
+
+def search_by_name(request):
+    name = request.GET.get('name', '')
+    donors = Donor.objects.filter(full_name__icontains=name)
+    return render(request, 'staff/registereddonortable.html', {'donors': donors})
+
+def search_by_place(request):
+    place = request.GET.get('place', '')
+    donors = Donor.objects.filter(place__icontains=place)
+    return render(request, 'staff/registereddonortable.html', {'donors': donors})
+
+def search_by_blood_group(request):
+    blood_group = request.GET.get('blood_group', '')
+    donors = Donor.objects.filter(blood_group__iexact=blood_group)
+    return render(request, 'staff/registereddonortable.html', {'donors': donors})
+
+
+def bloodinventory(request):
+    return render(request, 'staff/bloodinventory.html')
+
+def addnewgroup(request):
+    return render(request, 'staff/addnewgroup.html')
+
+def hospital_registration(request):
+    if request.method == 'POST':
+        hospitalName = request.POST.get('hospitalName')
+        contactPerson = request.POST.get('contactPerson')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        location = request.POST.get('location')
+        gpsCoordinates = request.POST.get('gpsCoordinates')
+        ownership = request.POST.get('ownership')
+        hospitalURL = request.POST.get('hospitalURL')
+        password = request.POST.get('password')
+        
+        roles = CustomUser.HOSPITAL
+        print(roles)
+        if CustomUser.objects.filter(email=email,role=CustomUser.HOSPITAL).exists():
+            return render(request, 'staff/hospitalregistration.html')
+        else:
+            user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
+            user.role = CustomUser.HOSPITAL
+            user.save()
+            hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
+            hospitalRegister.save()
+
+            return redirect('registeredhospitaltable')
+
+        
+    else:
+        return render(request, 'staff/hospitalregistration.html')
+
+
+from django.shortcuts import render
+from .models import HospitalRegister
+
+# def registeredhospitaltable(request):
+#     hospitals = HospitalRegister.objects.all()
+#     return render(request, 'staff/registeredhospitaltable.html', {'hospitals': hospitals})
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .forms import BloodTypeForm
+from django.db import IntegrityError  # Import IntegrityError
+
+def addblood(request):
+    if request.method == 'POST':
+        form = BloodTypeForm(request.POST)
+        if form.is_valid():
+            try:
+                form.save()
+                return redirect('bloodinventory')
+            except IntegrityError:
+                form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
+    else:
+        form = BloodTypeForm()
+    return render(request, 'staff/addnewgroup.html', {'form': form})
+
+
+# views.py
+
+from django.shortcuts import render
+from .models import BloodType
+
+def bloodinventory(request):
+    blood_types = BloodType.objects.all()
+    return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
+
+
+def requests(request):
+    return render(request, 'staff/viewrequests.html')
+
+
+
+from django.shortcuts import render
+from .models import BloodRequest  # Import the BloodRequest model
+
+def blood_request_list(request):
+    blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
+    return render(request, 'staff/viewrequests.html', {'blood_requests': blood_requests})

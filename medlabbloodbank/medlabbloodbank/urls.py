@@ -21,9 +21,9 @@ from website import views
 from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor, registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
-from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest
+from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood
-from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital
+from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -81,6 +81,7 @@ urlpatterns = [
     path('addhospitals', addhospitals, name='addhospitals'),
     path('hospitalregistration', hospitalregistration, name='hospitalregistration'),
     path('hospital-registration/', hospital_registration, name='hospital_registration'),
+    path('registeredstafftable/', registeredstafftable, name='registeredstafftable'),
     path('search-by-name/', search_by_name, name='search_by_name'),
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
@@ -107,7 +108,30 @@ urlpatterns = [
 
     
   
+    #staff
 
-  
+    path('staffindex', staffindex, name='staffindex'),
+    path('activities', activities, name='activities'),
+    path('appointments', appointments, name='appointments'),
+    path('departments', departments, name='departments'),
+    path('doctors', doctors, name='doctors'),
+    path('employees', employees, name='employees'),
+   
+    path('profile', profile, name='profile'),
+    path('editprofile', editprofile, name='editprofile'),
+    path('registereddonortable', registereddonortable, name='registereddonortable'),
+    path('addhospitals', addhospitals, name='addhospitals'),
+    path('hospitalregistration', hospitalregistration, name='hospitalregistration'),
+    path('hospital-registration/', hospital_registration, name='hospital_registration'),
+    path('search-by-name/', search_by_name, name='search_by_name'),
+    path('search-by-place/', search_by_place, name='search_by_place'),
+    path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
+    path('registeredstafftable/', registeredstafftable, name='registeredstafftable'),
+    # path('update_hospital_status/<int:hospital_id>/', update_hospital_status, name='update_hospital_status'),
+    path('bloodinventory', bloodinventory, name='bloodinventory'),
+    path('addnewgroup', addnewgroup, name='addnewgroup'),
+    path('addblood/', addblood, name='addblood'),
+    path('requests', requests, name='requests'),
+    path('blood_request_list', blood_request_list, name='blood_request_list'),
  
 ]
