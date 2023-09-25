@@ -327,8 +327,7 @@ def editprofile(request):
 
 def registereddonortable(request):
     donors = Donor.objects.all()
-    donor_count = donors.count()  # Get the count of registered donors
-    # return render(request, 'donor_table.html', {'donors': donors, 'donor_count': donor_count})
+    donor_count = donors.count()  
     return render(request, 'mainuser/registereddonortable.html', {'donors': donors, 'donor_count': donor_count})
 
 
@@ -560,10 +559,10 @@ def staffindex(request):
 def activities(request):
     return render(request, 'staff/activities.html')
 
-def appointments(request):
+def appointmentsstaff(request):
     return render(request, 'staff/appointments.html')
 
-def departments(request):
+def departmentsstaff(request):
     return render(request, 'staff/departments.html')
 
 def doctors(request):
@@ -584,10 +583,9 @@ def profile(request):
 def editprofile(request):
     return render(request, 'staff/edit-profile.html')
 
-def registereddonortable(request):
+def registereddonortablestaff(request):
     donors = Donor.objects.all()
-    donor_count = donors.count()  # Get the count of registered donors
-    # return render(request, 'donor_table.html', {'donors': donors, 'donor_count': donor_count})
+    donor_count = donors.count()  
     return render(request, 'staff/registereddonortable.html', {'donors': donors, 'donor_count': donor_count})
 
 def search_by_name(request):
@@ -681,7 +679,7 @@ def bloodinventory(request):
     return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
 
 
-def requests(request):
+def requestsstaff(request):
     return render(request, 'staff/viewrequests.html')
 
 
