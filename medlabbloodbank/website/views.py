@@ -316,6 +316,10 @@ def addhospitals(request):
 def hospitalregistration(request):
     return render(request, 'mainuser/hospitalregistration.html')
 
+
+def assign_staff(request):
+    return render(request, 'mainuser/assigninggptostaff.html')
+
 def employees(request):
     return render(request, 'mainuser/employees.html')
 
@@ -329,8 +333,6 @@ def registereddonortable(request):
     donors = Donor.objects.all()
     donor_count = donors.count()  
     return render(request, 'mainuser/registereddonortable.html', {'donors': donors, 'donor_count': donor_count})
-
-
 
 
 def search_by_name(request):

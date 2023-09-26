@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'mainuser/img/favicon.ico' %}">
-    <title>Medlab Blood Bank</title>
+    <title>Add Gramapanchayats - Medlab Blood Bank</title>
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/select2.min.css' %}">
@@ -169,15 +169,13 @@
                         <li>
                             <a href="{% url 'registereddonortable' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
                         </li>
                         <li>
                             <a href="{% url 'registeredstafftable' %}"><i class="fa fa-address-book-o"></i> <span>Add Staffs</span></a>
                         </li>
-                        <!-- <li>
-                            <a href="doctors.html"><i class="fa fa-calendar-check-o"></i> <span>Staffs</span></a>
-                        </li> -->
+                       
                         <li>
                             <a href="{% url 'departments' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
                         </li>
@@ -194,7 +192,7 @@
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
 								<li><a href="{% url 'registeredstafftable' %}">Staffs List</a></li>
-                                <li><a href="{% url 'employees' %}">Add Gramapanchayats</a></li>
+                                <li class="active"><a href="{% url 'registeredstafftable' %}">Add Gramapanchayats</a></li>
 							</ul>
 						</li> 
                     </ul>
@@ -205,10 +203,10 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-4 col-3">
-                        <h4 class="page-title">Hospital Registration</h4>
+                        <h4 class="page-title">Staff Registration</h4>
                     </div>
                     <div class="col-sm-8 col-9 text-right m-b-20">
-                        <a href="{% url 'hospitalregistration' %}" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Hospital</a>
+                        <a href="{% url 'hospitalregistration' %}" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Staff</a>
                     </div>
                 </div>
 				<div class="row">
