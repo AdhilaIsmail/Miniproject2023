@@ -26,8 +26,8 @@ from website.views import adminindex, activities, appointments, doctors, departm
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff
-from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex
-from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration
+from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
+from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -88,8 +88,9 @@ urlpatterns = [
     path('listgps', listgps, name='listgps' ),
     path('addgps', addgps, name='addgps' ),
     path('grampanchayat_registration', grampanchayat_registration, name='grampanchayat_registration' ),
-
-    
+    path('validate-assign-grampanchayat/', validate_assign_grampanchayat, name='validate_assign_grampanchayat'),
+    path('api/grampanchayats/', grampanchayat_list, name='grampanchayat_list'),
+ 
 
    
     

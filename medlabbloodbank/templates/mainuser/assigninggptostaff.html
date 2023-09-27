@@ -256,47 +256,131 @@
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
    
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function () {
-                // Get references to the select fields
-                var grampanchayat1 = $('#grampanchayat1');
-                var grampanchayat2 = $('#grampanchayat2');
-                var grampanchayat3 = $('#grampanchayat3');
-                var grampanchayat4 = $('#grampanchayat4');
-                var grampanchayat5 = $('#grampanchayat5');
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- ... Your existing HTML ... -->
+    <script>
+        $(document).ready(function () {
+            var grampanchayat1 = $('#grampanchayat1');
+            var grampanchayat2 = $('#grampanchayat2');
+            var grampanchayat3 = $('#grampanchayat3');
+            var grampanchayat4 = $('#grampanchayat4');
+            var grampanchayat5 = $('#grampanchayat5');
         
-                // Clone the options from grampanchayat1 to other grampanchayats
-                function updateOptions(selectedOption) {
-                    // Clear existing options
-                    grampanchayat2.empty();
-                    grampanchayat3.empty();
-                    grampanchayat4.empty();
-                    grampanchayat5.empty();
+            var allGrampanchayats; // To store all Grampanchayats data
         
-                    // Clone the selected option and add it to all other dropdowns
-                    var clonedOption = selectedOption.clone();
-                    grampanchayat2.append(clonedOption);
-                    grampanchayat3.append(clonedOption.clone());
-                    grampanchayat4.append(clonedOption.clone());
-                    grampanchayat5.append(clonedOption.clone());
-                }
+            // Fetch the data from the server
+            $.ajax({
+                url: '/api/grampanchayats/',  // Replace with the actual URL endpoint for Grampanchayats
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    allGrampanchayats = data;
         
-                grampanchayat1.on('change', function () {
-                    var selectedOption = $(this).find('option:selected');
-                    updateOptions(selectedOption);
-                });
+                    // Populate dropdown options
+                    populateDropdown(grampanchayat1, allGrampanchayats);
+                    populateDropdown(grampanchayat2, allGrampanchayats);
+                    populateDropdown(grampanchayat3, allGrampanchayats);
+                    populateDropdown(grampanchayat4, allGrampanchayats);
+                    populateDropdown(grampanchayat5, allGrampanchayats);
         
-                // Initialize options based on the initially selected value of grampanchayat1
-                updateOptions(grampanchayat1.find('option:selected'));
-            });
-        </script>
+                    // Event listener for grampanchayat1 change
+                    grampanchayat1.on('change', function () {
+                        var selectedOption = $('option:selected', this);
         
+                        // Call the validation function
+                        checkIfOptionExists(selectedOption);
         
+                        // Filter data for other dropdowns based on the selected district
+                        var selectedDistrict = selectedOption.data('district');
+                        var filteredData = allGrampanchayats.filter(function (item) {
+                            return item.name_of_grampanchayat === selectedOption.text();
+                        });
         
-        
+                        // Populate other dropdowns with filtered data
+                       // populateDropdown(grampanchayat2, filteredData);
+                       // populateDropdown(grampanchayat3, filteredData);
+                       // populateDropdown(grampanchayat4, filteredData);
+                        //populateDropdown(grampanchayat5, filteredData); 
+                    });
+                    
+                    grampanchayat2.on('change', function () {
+                        var selectedOption = $('option:selected', this);
+                        checkIfOptionExists(selectedOption);
+                        // Additional logic if needed
+                    });
     
-    <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
+                   
+                    grampanchayat3.on('change', function () {
+                        var selectedOption = $('option:selected', this);
+                        checkIfOptionExists(selectedOption);
+                        // Additional logic if needed
+                    });
+        
+                    grampanchayat4.on('change', function () {
+                        var selectedOption = $('option:selected', this);
+                        checkIfOptionExists(selectedOption);
+                        // Additional logic if needed
+                    });
+        
+                    grampanchayat5.on('change', function () {
+                        var selectedOption = $('option:selected', this);
+                        checkIfOptionExists(selectedOption);
+                        // Additional logic if needed
+                    });
+                },
+                error: function (error) {
+                    console.error('Error fetching Grampanchayat data:', error);
+                }
+            });
+        
+            // Function to populate dropdown options
+            function populateDropdown(dropdown, data) {
+                dropdown.empty(); // Clear existing options
+                data.forEach(function (item) {
+                    dropdown.append($('<option>', {
+                        value: item.id,
+                        text: item.name_of_grampanchayat,
+                    }));
+                });
+            }
+        
+            // Function to check if the selected option already exists in the database
+            function checkIfOptionExists(selectedOption) {
+                // Make an AJAX request to the server for validation
+                $.ajax({
+                    url: '{% url "validate_assign_grampanchayat" %}',
+                    type: 'POST',
+                    data: { grampanchayatName: selectedOption.text() },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.exists) {
+                            // Option already exists, show an error message
+                            alert('Error: This Grampanchayat is already assigned.');
+                            // Optionally, you can disable the submit button or take other actions
+                        }
+                    },
+                    error: function () {
+                        console.error('Error validating AssignGrampanchayat.');
+                    }
+                });
+            }
+        
+            // ... (rest of the code)
+        });
+    </script>    
+    
+    
+
+<!-- ... Your existing HTML ... -->
+
+    
+    
+
+    
+    
+    
+    {% comment %} <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script> {% endcomment %}
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
     <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>

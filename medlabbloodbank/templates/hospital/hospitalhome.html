@@ -61,7 +61,7 @@
     <!-- Navbar Start -->
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
         <a href="{% url 'homebloodbank' %}" class="navbar-brand p-0">
-            <h4 class="m-0 text-danger"><img height="40px" width="70px" src="{% static 'img/logo.png' %}">Medlab Blood Bank</h4>
+            <h4 class="m-0 text-danger"><img height="40px" width="70px" src="{% static 'img/logo.png' %}" id="head4">Medlab Blood Bank</h4>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
@@ -113,7 +113,7 @@
                     <img class="w-100" src="{% static 'img/hsptlbg.jpg' %} " alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Empowering Hospitals Through Digital Blood Bank Management: Efficient, Lifesaving, and Connected"</h5>
+                            <h5 class="text-white text-uppercase mb-3 animated slideInDown" id="h5head">"Empowering Hospitals Through Digital Blood Bank Management: Efficient, Lifesaving, and Connected"</h5>
                             <h6 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Blood Requests, Swift Responses – Enhancing Hospital Care</h6>
                             {% if user.role == user.HOSPITAL %}
                                 <a href="{% url 'bloodrequest' is_immediate='false' %}" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Request Blood</a>

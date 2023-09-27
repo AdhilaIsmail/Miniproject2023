@@ -5,6 +5,10 @@ from django.contrib import messages,auth
 from django.contrib.auth import get_user_model
 from .models import Donor
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+
+
 
 
 # from django.core.mail import send_mail
@@ -368,6 +372,53 @@ def assign_staff(request):
         'grampanchayats': grampanchayats,
     }
     return render(request, 'mainuser/assigninggptostaff.html', context)
+
+
+# from django.http import JsonResponse
+# from .models import Grampanchayat
+
+# def get_grampanchayat_data(request):
+#     grampanchayats = Grampanchayat.objects.all()
+#     data = [{'id': gp.id, 'name_of_grampanchayat': gp.name_of_grampanchayat} for gp in grampanchayats]
+#     return JsonResponse(data, safe=False)
+
+# In views.py
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from .models import AssignGrampanchayat, Grampanchayat
+from django.db.models import Q
+@csrf_exempt
+@require_POST
+def validate_assign_grampanchayat(request):
+    grampanchayat_name = request.POST.get('grampanchayatName')
+
+    # Check if the Grampanchayat exists in AssignGrampanchayat model
+    try:
+        AssignGrampanchayat.objects.get(
+            Q(grampanchayat1__name_of_grampanchayat=grampanchayat_name) |
+            Q(grampanchayat2__name_of_grampanchayat=grampanchayat_name) |
+            Q(grampanchayat3__name_of_grampanchayat=grampanchayat_name) |
+            Q(grampanchayat4__name_of_grampanchayat=grampanchayat_name) |
+            Q(grampanchayat5__name_of_grampanchayat=grampanchayat_name)
+        )
+        exists = True
+    except AssignGrampanchayat.DoesNotExist:
+        exists = False
+
+    return JsonResponse({'exists': exists})
+
+
+
+from django.http import JsonResponse
+from .models import Grampanchayat
+
+def grampanchayat_list(request):
+    grampanchayats = Grampanchayat.objects.all()
+    data = [{'id': gp.id, 'name_of_grampanchayat': gp.name_of_grampanchayat} for gp in grampanchayats]
+    return JsonResponse(data, safe=False)
+
 
 
 def employees(request):
