@@ -18,12 +18,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from website import views
-from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor, registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, homebloodbank, appointmentschedule, register, loggout
+from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor
+from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult
+from website.views import homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
-from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile, registereddonortable
-from website.views import search_by_name, search_by_place,search_by_blood_group, addhospitals, hospitalregistration, hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable
-from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff, staff_registration
-from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex,registereddonortablestaff, departmentsstaff, assign_staff
+from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile
+from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration
+from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration
+from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff
+from website.views import hospitalhome, bloodavailability, hospitalabout,blood_request_list, verify_hospital, staffindex
+from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -81,6 +85,10 @@ urlpatterns = [
     path('blood_request_list', blood_request_list, name='blood_request_list'),
     path('staff_registration', staff_registration, name='staff_registration'),
     path('assign_staff', assign_staff, name='assign_staff'),
+    path('listgps', listgps, name='listgps' ),
+    path('addgps', addgps, name='addgps' ),
+    path('grampanchayat_registration', grampanchayat_registration, name='grampanchayat_registration' ),
+
     
 
    

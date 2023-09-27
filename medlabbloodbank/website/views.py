@@ -266,7 +266,8 @@ def send_sms(request):
 
     return HttpResponse("Invalid request method")
 
-
+def notificationfordonation(request):
+    return render(request, 'notificationfordonation.html')
 
 # def uploadresult(request):
 #     return render(request, 'uploadresult.html')
@@ -317,8 +318,57 @@ def hospitalregistration(request):
     return render(request, 'mainuser/hospitalregistration.html')
 
 
+# def assign_staff(request):
+#     staff_members = Staff.objects.all()
+#     grampanchayats = Grampanchayat.objects.all()
+#     context = {
+#         'staff_members': staff_members,
+#         'grampanchayats': grampanchayats,
+#     }
+#     return render(request, 'mainuser/assigninggptostaff.html', context)
+
+from django.shortcuts import render, redirect
+from .models import Staff, Grampanchayat, AssignGrampanchayat
+
 def assign_staff(request):
-    return render(request, 'mainuser/assigninggptostaff.html')
+    if request.method == 'POST':
+        staff_id = request.POST.get('staffName')
+        grampanchayat1_id = request.POST.get('grampanchayat1')
+        grampanchayat2_id = request.POST.get('grampanchayat2')
+        grampanchayat3_id = request.POST.get('grampanchayat3')
+        grampanchayat4_id = request.POST.get('grampanchayat4')
+        grampanchayat5_id = request.POST.get('grampanchayat5')
+
+        # Create AssignGrampanchayat objects
+        staff = Staff.objects.get(pk=staff_id)
+        grampanchayat1 = Grampanchayat.objects.get(pk=grampanchayat1_id)
+        grampanchayat2 = Grampanchayat.objects.get(pk=grampanchayat2_id)
+        grampanchayat3 = Grampanchayat.objects.get(pk=grampanchayat3_id)
+        grampanchayat4 = Grampanchayat.objects.get(pk=grampanchayat4_id)
+        grampanchayat5 = Grampanchayat.objects.get(pk=grampanchayat5_id)
+
+        # Create AssignGrampanchayat instances
+        assignment = AssignGrampanchayat.objects.create(
+            staff=staff,
+            grampanchayat1=grampanchayat1,
+            grampanchayat2=grampanchayat2,
+            grampanchayat3=grampanchayat3,
+            grampanchayat4=grampanchayat4,
+            grampanchayat5=grampanchayat5,
+        )
+
+        # Redirect to a success page or perform any other action
+        return redirect('adminindex')  # Replace 'success_page' with the actual URL
+
+    # If the request is not POST, render the form
+    staff_members = Staff.objects.all()
+    grampanchayats = Grampanchayat.objects.all()
+    context = {
+        'staff_members': staff_members,
+        'grampanchayats': grampanchayats,
+    }
+    return render(request, 'mainuser/assigninggptostaff.html', context)
+
 
 def employees(request):
     return render(request, 'mainuser/employees.html')
@@ -357,39 +407,43 @@ def bloodinventory(request):
 def registeredstafftable(request):
     return render(request, 'mainuser/registeredstafftable.html')
 
+def listgps(request):
+    return render(request, 'mainuser/listgps.html')
+
+def addgps(request):
+    return render(request, 'mainuser/add-grampanchayat.html')
+
+from .models import Grampanchayat
+from django.shortcuts import render, redirect
+
+def grampanchayat_registration(request):
+    error_message_id = ''
+    error_message_name = ''
+    
+    if request.method == 'POST':
+        grampanchayat_id = request.POST['grampanchayat_id']
+        name_of_grampanchayat = request.POST['name_of_grampanchayat']
+        
+        # Check if a Grampanchayat with the given ID already exists
+        if Grampanchayat.objects.filter(grampanchayat_id=grampanchayat_id).exists():
+            error_message_id = 'Grampanchayat with this ID already exists'
+        # Check if a Grampanchayat with the given name already exists
+        if Grampanchayat.objects.filter(name_of_grampanchayat=name_of_grampanchayat).exists():
+            error_message_name = 'Grampanchayat with this name already exists'
+        # If no errors, create a new Grampanchayat
+        if not error_message_id and not error_message_name:
+            grampanchayat = Grampanchayat(
+                grampanchayat_id=grampanchayat_id,
+                name_of_grampanchayat=name_of_grampanchayat
+            )
+            grampanchayat.save()
+            return redirect('adminindex')  # Redirect to a success page or list view
+
+    return render(request, 'mainuser/add-grampanchayat.html', {'error_message_id': error_message_id, 'error_message_name': error_message_name})
 
 
 def addnewgroup(request):
     return render(request, 'mainuser/addnewgroup.html')
-
-def notificationfordonation(request):
-    return render(request, 'notificationfordonation.html')
-
-
-def hospitalhome(request):
-    return render(request, 'hospital/hospitalhome.html')
-
-
-def requestblood(request):
-    return render(request, 'hospital/requestblood.html')
-
-
-
-from .models import BloodType
-def bloodavailability(request):
-    blood_types = BloodType.objects.all()
-
-    # Pass the blood_types to the template context
-    return render(request, 'hospital/bloodavailability.html', {'blood_types': blood_types})
-
-def hospitalabout(request):
-    return render(request, 'hospital/hospitalabout.html')
-
-
-from django.shortcuts import render, redirect
-
-
-
 
 def hospital_registration(request):
     if request.method == 'POST':
@@ -419,9 +473,6 @@ def hospital_registration(request):
         
     else:
         return render(request, 'mainuser/hospitalregistration.html')
-    
-
-
 
 from django.shortcuts import render
 from .models import HospitalRegister
@@ -430,20 +481,30 @@ def registeredhospitaltable(request):
     hospitals = HospitalRegister.objects.all()
     return render(request, 'mainuser/registeredhospitaltable.html', {'hospitals': hospitals})
 
-
-
-
 from .models import Staff  # Import the Staff model
-
 def registeredstafftable(request):
     # Retrieve the staff data from the database
     staff_list = Staff.objects.all()
-
     # Pass the staff data to the template
     context = {'staff_list': staff_list}
-    
     return render(request, 'mainuser/registeredstafftable.html', context)
 
+
+
+#hospital
+def hospitalhome(request):
+    return render(request, 'hospital/hospitalhome.html')
+
+def requestblood(request):
+    return render(request, 'hospital/requestblood.html')
+
+from .models import BloodType
+def bloodavailability(request):
+    blood_types = BloodType.objects.all()
+    return render(request, 'hospital/bloodavailability.html', {'blood_types': blood_types})
+
+def hospitalabout(request):
+    return render(request, 'hospital/hospitalabout.html')
 
 def staff_registration(request):
     if request.method == 'POST':

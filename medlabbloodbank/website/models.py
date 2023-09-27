@@ -179,3 +179,69 @@ class Staff(models.Model):
 
     def __str__(self):
         return self.name
+
+
+
+#add gramapanchayats
+class Grampanchayat(models.Model):
+    
+    name_of_grampanchayat = models.CharField(max_length=255, unique=True)
+    grampanchayat_id = models.CharField(max_length=10, unique=True)
+   
+   
+    def __str__(self):
+        return self.name
+
+
+from django.db import models
+from django.db.models import UniqueConstraint
+from .models import Staff, Grampanchayat
+
+class AssignGrampanchayat(models.Model):
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    grampanchayat1 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment1')
+    grampanchayat2 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment2')
+    grampanchayat3 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment3')
+    grampanchayat4 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment4')
+    grampanchayat5 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment5')
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=['staff', 'grampanchayat1'],
+                name='unique_assignment1',
+            ),
+            UniqueConstraint(
+                fields=['staff', 'grampanchayat2'],
+                name='unique_assignment2',
+            ),
+            UniqueConstraint(
+                fields=['staff', 'grampanchayat3'],
+                name='unique_assignment3',
+            ),
+            UniqueConstraint(
+                fields=['staff', 'grampanchayat4'],
+                name='unique_assignment4',
+            ),
+            UniqueConstraint(
+                fields=['staff', 'grampanchayat5'],
+                name='unique_assignment5',
+            ),
+        ]
+
+    def __str__(self):
+        return f"Assignments for {self.staff.name}"
+
+
+#assign gp to staffs
+# class AssignGramapanchayath(models.Model):
+#     staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+#     gramapanchayat1 = models.CharField(max_length=255)
+#     gramapanchayat2 = models.CharField(max_length=255)
+#     gramapanchayat3 = models.CharField(max_length=255)
+#     gramapanchayat4 = models.CharField(max_length=255)
+#     gramapanchayat5 = models.CharField(max_length=255)
+    
+
+#     def __str__(self):
+#         return f"Assignments for {self.staff.name}"

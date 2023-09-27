@@ -195,7 +195,8 @@
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
 								<li><a href="{% url 'registeredstafftable' %}">Staffs List</a></li>
-                                <li class="active"><a href="{% url 'assign_staff' %}">Add Gramapanchayats</a></li>
+								<li><a href="{% url 'listgps' %}">Add grampanchayats</a></li>
+								<li><a href="{% url 'assign_staff' %}">Assign Staffs</a></li>
 							</ul>
 						</li> 
                     </ul>
@@ -207,7 +208,7 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="page-title">Assigning Staffs To Gramapanchayat</h4>
+                            <h4 class="page-title">Assigning Staffs To grampanchayat</h4>
                             <!-- Add the button for viewing registered hospitals -->
                        
                         </div>
@@ -221,58 +222,27 @@
                                 <div class="col-sm-12">
                                     <div class="form-group">
                                         <label>Staff Name <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="staffName" required>
-                                    </div>
-                                </div>
-                                
-                                <!-- Dropdown Boxes for Gramapanchayats -->
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Gramapanchayat 1 <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramapanchayat1" required>
-                                            <option value="Gramapanchayat 1">Gramapanchayat 1</option>
-                                            <!-- Add more options for other gramapanchayats -->
+                                        <select class="form-control" name="staffName" required>
+                                            {% for staff in staff_members %}
+                                                <option value="{{ staff.id }}">{{ staff.name }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                        
+                                <!-- Dropdown Boxes for grampanchayats -->
+                                {% for i in "12345" %}
                                 <div class="col-sm-6">
                                     <div class="form-group">
-                                        <label>Gramapanchayat 2 <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramapanchayat2" required>
-                                            <option value="Gramapanchayat 2">Gramapanchayat 2</option>
-                                            <!-- Add more options for other gramapanchayats -->
+                                        <label>Grampanchayat {{ i }} <span class="text-danger">*</span></label>
+                                        <select class="form-control" id="grampanchayat{{ i }}" name="grampanchayat{{ i }}" required>
+                                            <!-- Options for grampanchayat{{ i }} will be dynamically generated using JavaScript -->
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Gramapanchayat 3 <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramapanchayat3" required>
-                                            <option value="Gramapanchayat 3">Gramapanchayat 3</option>
-                                            <!-- Add more options for other gramapanchayats -->
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Gramapanchayat 4 <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramapanchayat4" required>
-                                            <option value="Gramapanchayat 4">Gramapanchayat 4</option>
-                                            <!-- Add more options for other gramapanchayats -->
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Gramapanchayat 5 <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramapanchayat5" required>
-                                            <option value="Gramapanchayat 5">Gramapanchayat 5</option>
-                                            <!-- Add more options for other gramapanchayats -->
-                                        </select>
-                                    </div>
-                                </div>
+                                {% endfor %}
                             </div>
-                            
+                        
                             <div class="m-t-20 text-center">
                                 <button class="btn btn-primary submit-btn">Update Hospital</button>
                             </div>
@@ -285,8 +255,46 @@
         
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
-
    
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Get references to the select fields
+                var grampanchayat1 = $('#grampanchayat1');
+                var grampanchayat2 = $('#grampanchayat2');
+                var grampanchayat3 = $('#grampanchayat3');
+                var grampanchayat4 = $('#grampanchayat4');
+                var grampanchayat5 = $('#grampanchayat5');
+        
+                // Clone the options from grampanchayat1 to other grampanchayats
+                function updateOptions(selectedOption) {
+                    // Clear existing options
+                    grampanchayat2.empty();
+                    grampanchayat3.empty();
+                    grampanchayat4.empty();
+                    grampanchayat5.empty();
+        
+                    // Clone the selected option and add it to all other dropdowns
+                    var clonedOption = selectedOption.clone();
+                    grampanchayat2.append(clonedOption);
+                    grampanchayat3.append(clonedOption.clone());
+                    grampanchayat4.append(clonedOption.clone());
+                    grampanchayat5.append(clonedOption.clone());
+                }
+        
+                grampanchayat1.on('change', function () {
+                    var selectedOption = $(this).find('option:selected');
+                    updateOptions(selectedOption);
+                });
+        
+                // Initialize options based on the initially selected value of grampanchayat1
+                updateOptions(grampanchayat1.find('option:selected'));
+            });
+        </script>
+        
+        
+        
+        
     
     <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
@@ -301,5 +309,4 @@
 </body>
 
 
-<!-- add-patient24:07-->
 </html>
