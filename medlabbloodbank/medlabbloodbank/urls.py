@@ -90,6 +90,8 @@ urlpatterns = [
     path('grampanchayat_registration', grampanchayat_registration, name='grampanchayat_registration' ),
     path('validate-assign-grampanchayat/', validate_assign_grampanchayat, name='validate_assign_grampanchayat'),
     path('api/grampanchayats/', grampanchayat_list, name='grampanchayat_list'),
+
+    
  
 
    

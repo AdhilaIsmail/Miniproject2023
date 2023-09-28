@@ -374,16 +374,6 @@ def assign_staff(request):
     return render(request, 'mainuser/assigninggptostaff.html', context)
 
 
-# from django.http import JsonResponse
-# from .models import Grampanchayat
-
-# def get_grampanchayat_data(request):
-#     grampanchayats = Grampanchayat.objects.all()
-#     data = [{'id': gp.id, 'name_of_grampanchayat': gp.name_of_grampanchayat} for gp in grampanchayats]
-#     return JsonResponse(data, safe=False)
-
-# In views.py
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -418,6 +408,16 @@ def grampanchayat_list(request):
     grampanchayats = Grampanchayat.objects.all()
     data = [{'id': gp.id, 'name_of_grampanchayat': gp.name_of_grampanchayat} for gp in grampanchayats]
     return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
+
+
 
 
 

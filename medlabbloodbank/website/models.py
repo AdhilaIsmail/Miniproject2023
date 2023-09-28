@@ -198,7 +198,7 @@ from django.db.models import UniqueConstraint
 from .models import Staff, Grampanchayat
 
 class AssignGrampanchayat(models.Model):
-    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    staff = models.OneToOneField(Staff, on_delete=models.CASCADE)
     grampanchayat1 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment1')
     grampanchayat2 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment2')
     grampanchayat3 = models.ForeignKey(Grampanchayat, on_delete=models.CASCADE, related_name='assignment3')
