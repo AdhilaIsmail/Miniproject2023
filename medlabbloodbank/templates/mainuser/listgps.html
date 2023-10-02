@@ -13,13 +13,19 @@
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap-datetimepicker.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/style.css' %}">
     <style>
-            
+        body {
+            background-image: url("{% static 'img/bg6.jpg' %}"); /* Replace 'background.jpg' with your image file name */
+            background-repeat: no-repeat;
+            background-size: cover; /* You can adjust this property to control how the image is displayed */
+            color:white;
+         
+        }
         .sidebar {
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
             top: 50px;
             width: 230px;
             z-index: 1039;
-            background-color: #d4a5a5;
+            background-color:#d1bebc;
             bottom: 0;
             margin-top: 0px;
             position: fixed;
@@ -206,16 +212,17 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-4 col-3">
-                        <h4 class="page-title">Gramapanchayaths</h4>
+                        <h4 class="page-title" style="color:white;font-weight:bold">Grampanchayats</h4>
                     </div>
                     <div class="col-sm-8 col-9 text-right m-b-20">
-                        <a href="{% url 'addgps' %}" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Gramapanchayats</a>
+                        <a href="{% url 'addgps' %}" class="btn btn btn-primary btn-rounded float-right"><i class="fa fa-plus"></i> Add Grampanchayats</a>
                     </div>
                 </div>
 				<div class="row">
 					<div class="col-md-12">
+                        
 						<div class="table-responsive">
-							<table class="table table-border table-striped custom-table datatable mb-0">
+							<table id="grampanchayatsTable" class="table table-border table-striped custom-table datatable mb-0">
 								<thead>
 									<tr>
 										<th>Grampanchayat Name</th>
@@ -225,36 +232,36 @@
 									</tr>
 								</thead>
 								<!-- Replace the existing table body with the following code -->
-<tbody>
-    {% for grampanchayat in grampanchayats %}
-        <tr>
-            <td>{{ grampanchayat.name_of_grampanchayat }}</td>
-            <td>{{ grampanchayat.grampanchayat_id }}</td>
-            <!-- Add more columns if needed -->
+                                <tbody>
+                                    {% for grampanchayat in grampanchayats %}
+                                        <tr>
+                                            <td>{{ grampanchayat.name_of_grampanchayat }}</td>
+                                            <td>{{ grampanchayat.grampanchayat_id }}</td>
+                                            <!-- Add more columns if needed -->
 
-            <td class="text-right">
-                <div class="dropdown dropdown-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-ellipsis-v"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="{% url 'edit_grampanchayat' grampanchayat.id %}">
-                            <i class="fa fa-pencil m-r-5"></i> Edit
-                        </a>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_grampanchayat_{{ grampanchayat.id }}">
-                            <i class="fa fa-trash-o m-r-5"></i> Delete
-                        </a>
-                    </div>
-                </div>
-            </td>
-        </tr>
+                                            <td class="text-right">
+                                                <div class="dropdown dropdown-action">
+                                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                        <i class="fa fa-ellipsis-v"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" href="{% url 'edit_grampanchayat' grampanchayat.id %}">
+                                                            <i class="fa fa-pencil m-r-5"></i> Edit
+                                                        </a>
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_grampanchayat_{{ grampanchayat.id }}">
+                                                            <i class="fa fa-trash-o m-r-5"></i> Delete
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
 
-        <!-- Modal for delete confirmation -->
-        <div id="delete_grampanchayat_{{ grampanchayat.id }}" class="modal fade delete-modal" role="dialog">
-            <!-- Add your delete confirmation modal content here -->
-        </div>
-    {% endfor %}
-</tbody>
+                                        <!-- Modal for delete confirmation -->
+                                        <div id="delete_grampanchayat_{{ grampanchayat.id }}" class="modal fade delete-modal" role="dialog">
+                                            <!-- Add your delete confirmation modal content here -->
+                                        </div>
+                                    {% endfor %}
+                                </tbody>
 
 							</table>
 						</div>
@@ -281,7 +288,10 @@
 		</div>
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
-    <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+
+    {% comment %} <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script> {% endcomment %}
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
     <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>

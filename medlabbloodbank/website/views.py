@@ -483,7 +483,7 @@ def edit_grampanchayat(request, pk):
         grampanchayat.save()
         return redirect('listgps')  # Redirect to the list view after successful edit
 
-    return render(request, 'mainuser/edit_grampanchayat.html', {'grampanchayat': grampanchayat})
+    return render(request, 'mainuser/edit-grampanchayat.html', {'grampanchayat': grampanchayat})
 
 
 
