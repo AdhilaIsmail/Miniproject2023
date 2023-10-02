@@ -218,50 +218,44 @@
 							<table class="table table-border table-striped custom-table datatable mb-0">
 								<thead>
 									<tr>
-										<th>Name</th>
-										<th>Age</th>
-										<th>Address</th>
-										<th>Phone</th>
-										<th>Email</th>
-										<th class="text-right">Action</th>
+										<th>Grampanchayat Name</th>
+										<th>ID</th>
+										<th>Action</th>
+										
 									</tr>
 								</thead>
-								<tbody>
-									<tr>
-										<td><img width="28" height="28" src="assets/img/user.jpg" class="rounded-circle m-r-5" alt=""> Jennifer Robinson</td>
-										<td>35</td>
-										<td>1545 Dorsey Ln NE, Leland, NC, 28451</td>
-										<td>(207) 808 8863</td>
-										<td>jenniferrobinson@example.com</td>
-										<td class="text-right">
-											<div class="dropdown dropdown-action">
-												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-												<div class="dropdown-menu dropdown-menu-right">
-													<a class="dropdown-item" href="edit-patient.html"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_patient"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									
-									<tr>
-										<td><img width="28" height="28" src="assets/img/user.jpg" class="rounded-circle m-r-5" alt=""> Dennis Salazar</td>
-										<td>34</td>
-										<td>891 Juniper Drive, Saginaw, MI, 48603</td>
-										<td>(933) 137 6201</td>
-										<td>dennissalazar@example.com</td>
-										<td class="text-right">
-											<div class="dropdown dropdown-action">
-												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-												<div class="dropdown-menu dropdown-menu-right">
-													<a class="dropdown-item" href="edit-patient.html"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_patient"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-												</div>
-											</div>
-										</td>
-									</tr>
-									
-								</tbody>
+								<!-- Replace the existing table body with the following code -->
+<tbody>
+    {% for grampanchayat in grampanchayats %}
+        <tr>
+            <td>{{ grampanchayat.name_of_grampanchayat }}</td>
+            <td>{{ grampanchayat.grampanchayat_id }}</td>
+            <!-- Add more columns if needed -->
+
+            <td class="text-right">
+                <div class="dropdown dropdown-action">
+                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-ellipsis-v"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="{% url 'edit_grampanchayat' grampanchayat.id %}">
+                            <i class="fa fa-pencil m-r-5"></i> Edit
+                        </a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_grampanchayat_{{ grampanchayat.id }}">
+                            <i class="fa fa-trash-o m-r-5"></i> Delete
+                        </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Modal for delete confirmation -->
+        <div id="delete_grampanchayat_{{ grampanchayat.id }}" class="modal fade delete-modal" role="dialog">
+            <!-- Add your delete confirmation modal content here -->
+        </div>
+    {% endfor %}
+</tbody>
+
 							</table>
 						</div>
 					</div>

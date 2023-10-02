@@ -7,7 +7,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'mainuser/img/favicon.ico' %}">
-    <title>Medlab Blood Bank</title>
+    <title>Staff Registration - Medlab Blood Bank</title>
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/select2.min.css' %}">
@@ -89,13 +89,6 @@
             color: #009efb;
             text-decoration: underline;
         }
-        .header {
-            /* ... other styles ... */
-            background-color: #ffffff; /* Change this to the desired color */
-            /* ... other styles ... */
-            
-        }
-        
     </style>   
 
 </head>
@@ -105,7 +98,7 @@
         <div class="header">
 			<div class="header-left">
 				<a href="{% url 'adminindex' %}" class="logo">
-					<img src="{% static 'mainuser/img/logocopy.png' %}" width="75" height="40" alt=""> <span style="color:black;">Medlab Blood Bank</span>
+					<img src="{% static 'mainuser/img/logo.png' %}" width="35" height="35" alt=""> <span>Medlab Blood Bank</span>
 				</a>
 			</div>
 			<a id="toggle_btn" href="javascript:void(0);"><i class="fa fa-bars"></i></a>
@@ -181,10 +174,10 @@
                         <li>
                             <a href="{% url 'registereddonortable' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        <li class="active">
+                        <li >
                             <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
                         </li>
-                        <li>
+                        <li class="active">
                             <a href="{% url 'registeredstafftable' %}"><i class="fa fa-address-book-o"></i> <span>Add Staffs</span></a>
                         </li>
                         <!-- <li>
@@ -206,7 +199,7 @@
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
 								<li><a href="{% url 'registeredstafftable' %}">Staffs List</a></li>
-								<li><a href="{% url 'listgps' %}">Add grampanchayats</a></li>
+								<li><a href="{% url 'listgps' %}">Add Grampanchayats</a></li>
 								<li><a href="{% url 'assign_staff' %}">Assign Staffs</a></li>
 							</ul>
 						</li> 
@@ -219,211 +212,80 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="page-title">Assigning Staffs To grampanchayat</h4>
-                            <!-- Add the button for viewing registered hospitals -->
-                       
+                            <h4 class="page-title">Add Grampanchayat</h4>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <form action="{% url 'assign_staff' %}" method="POST">
-                            {% csrf_token %}
-                                <!-- Display form errors -->
-                            {% if form.errors %}
-                                <div class="alert alert-danger">
-                                    <strong>Error!</strong> Please correct the following errors:
-                                    <ul>
-                                        {% for field, error_list in form.errors.items %}
-                                            {% for error in error_list %}
-                                                <li>{{ error }}</li>
-                                            {% endfor %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label>Staff Name <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="staffName" required>
-                                            {% for staff in staff_members %}
-                                                <option value="{{ staff.id }}">{{ staff.name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                        
-                                <!-- Dropdown Boxes for grampanchayats -->
-                                {% for i in "12345" %}
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Grampanchayat {{ i }} <span class="text-danger">*</span></label>
-                                        <select class="form-control" id="grampanchayat{{ i }}" name="grampanchayat{{ i }}" required>
-                                            <!-- Options for grampanchayat{{ i }} will be dynamically generated using JavaScript -->
-                                        </select>
-                                    </div>
-                                </div>
-                                {% endfor %}
+                        {% if error_message %}
+                            <div class="alert alert-danger">
+                                {{ error_message }}
                             </div>
-                        
+                        {% endif %}
+                        {% if error_message_name %}
+                            <div class="alert alert-danger">
+                                {{ error_message_name }}
+                            </div>
+                        {% endif %}
+                        <form action="{% url 'edit_grampanchayat' grampanchayat.id %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="grampanchayat_id">Grampanchayat ID <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="grampanchayat_id" id="grampanchayat_id" value="{{ grampanchayat.grampanchayat_id }}" required>
+                                <div id="grampanchayat_id_error" class="text-danger"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="name_of_grampanchayat">Name of Grampanchayat <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="name_of_grampanchayat" id="name_of_grampanchayat" value="{{ grampanchayat.name_of_grampanchayat }}" required>
+                                <div id="name_of_grampanchayat_error" class="text-danger"></div>
+                            </div>
+                            </div>
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Update Hospital</button>
+                                <button class="btn btn-primary submit-btn">Save Changes</button>
                             </div>
                         </form>
                     </div>
-                    
                 </div>
             </div>
         </div>
         
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
-   
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-    <!-- ... Your existing HTML ... -->
     <script>
-        $(document).ready(function () {
-            
-            var grampanchayat1 = $('#grampanchayat1');
-            var grampanchayat2 = $('#grampanchayat2');
-            var grampanchayat3 = $('#grampanchayat3');
-            var grampanchayat4 = $('#grampanchayat4');
-            var grampanchayat5 = $('#grampanchayat5');
-        
-            var allGrampanchayats; // To store all Grampanchayats data
-        
-            // Fetch the data from the server
-            $.ajax({
-                url: '/api/grampanchayats/',  // Replace with the actual URL endpoint for Grampanchayats
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    allGrampanchayats = data;
-        
-                    // Populate dropdown options
-                    populateDropdown(grampanchayat1, allGrampanchayats);
-                    populateDropdown(grampanchayat2, allGrampanchayats);
-                    populateDropdown(grampanchayat3, allGrampanchayats);
-                    populateDropdown(grampanchayat4, allGrampanchayats);
-                    populateDropdown(grampanchayat5, allGrampanchayats);
-        
-                    // Event listener for grampanchayat1 change
-                    grampanchayat1.on('change', function () {
-                        var selectedOption = $('option:selected', this);
-        
-                        // Call the validation function
-                        checkIfOptionExists(selectedOption, grampanchayat1);
-        
-                        // Filter data for other dropdowns based on the selected district
-                        var selectedDistrict = selectedOption.data('district');
-                        var filteredData = allGrampanchayats.filter(function (item) {
-                            return item.name_of_grampanchayat === selectedOption.text();
-                        });
-        
-                        // Populate other dropdowns with filtered data
-                       // populateDropdown(grampanchayat2, filteredData);
-                       // populateDropdown(grampanchayat3, filteredData);
-                       // populateDropdown(grampanchayat4, filteredData);
-                        //populateDropdown(grampanchayat5, filteredData); 
-                    });
-                    
-                    grampanchayat2.on('change', function () {
-                        var selectedOption = $('option:selected', this);
-                        checkIfOptionExists(selectedOption, grampanchayat2);
-                        // Additional logic if needed
-                    });
+        const grampanchayatIdInput = document.getElementById('grampanchayat_id');
+        const nameOfGrampanchayatInput = document.getElementById('name_of_grampanchayat');
+        const grampanchayatIdError = document.getElementById('grampanchayat_id_error');
+        const nameOfGrampanchayatError = document.getElementById('name_of_grampanchayat_error');
     
-                   
-                    grampanchayat3.on('change', function () {
-                        var selectedOption = $('option:selected', this);
-                        checkIfOptionExists(selectedOption, grampanchayat3);
-                        // Additional logic if needed
-                    });
-        
-                    grampanchayat4.on('change', function () {
-                        var selectedOption = $('option:selected', this);
-                        checkIfOptionExists(selectedOption, grampanchayat4);
-                        // Additional logic if needed
-                    });
-        
-                    grampanchayat5.on('change', function () {
-                        var selectedOption = $('option:selected', this);
-                        checkIfOptionExists(selectedOption, grampanchayat5);
-                        // Additional logic if needed
-                    });
-                },
-                error: function (error) {
-                    console.error('Error fetching Grampanchayat data:', error);
-                }
-            });
-        
-            // Function to populate dropdown options
-            function populateDropdown(dropdown, data) {
-                dropdown.empty(); // Clear existing options
-                data.forEach(function (item) {
-                    dropdown.append($('<option>', {
-                        value: item.id,
-                        text: item.name_of_grampanchayat,
-                    }));
-                });
-            }
-        
-            // Function to check if the selected option already exists in the database
-            function checkIfOptionExists(selectedOption, dropdown) {
-                // Make an AJAX request to the server for validation
-                $.ajax({
-                    url: '{% url "validate_assign_grampanchayat" %}',
-                    type: 'POST',
-                    data: { grampanchayatName: selectedOption.text() },
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.exists) {
-                            // Option already exists, show an error message
-                            showErrorMessage(dropdown, 'Error: This Grampanchayat is already assigned.');
-                            //alert('Error: This Grampanchayat is already assigned.');
-                            // Optionally, you can disable the submit button or take other actions
-                        }
-                        else
-                        {
-                            hideErrorMessage(dropdown);
-                        }
-                    },
-                    error: function () {
-                        console.error('Error validating AssignGrampanchayat.');
-                    }
-                });
-            }
-            // Function to show an error message next to the dropdown
-            function showErrorMessage(dropdown, message) {
-                var errorMessageSpan = dropdown.next('.error-message');
-                if (!errorMessageSpan.length) {
-                    errorMessageSpan = $('<span class="error-message"></span>');
-                    dropdown.after(errorMessageSpan);
-                }
-                errorMessageSpan.text(message);
-            }
-
-            // Function to hide the error message next to the dropdown
-            function hideErrorMessage(dropdown) {
-                dropdown.next('.error-message').remove();
-            }
-
-            $('form').submit(function (event) {
-                // Check if there's any error message
-                if ($('.error-message').length > 0) {
-                    event.preventDefault(); // Prevent form submission
-                    alert('Please fix the errors before submitting.'); // You can replace this with a more user-friendly message
-                }
-            });
-        });
-            
+        grampanchayatIdInput.addEventListener('keyup', validateGrampanchayatId);
+        nameOfGrampanchayatInput.addEventListener('keyup', validateNameOfGrampanchayat);
     
-    </script>    
-   
+        function validateGrampanchayatId() {
+            const regex = /^GP\d{2}$/;
+            if (!regex.test(grampanchayatIdInput.value)) {
+                grampanchayatIdError.textContent = 'Grampanchayat ID should be in the format GP01, GP02, etc.';
+            } else {
+                grampanchayatIdError.textContent = '';
+            }
+        }
+    
+        function validateNameOfGrampanchayat() {
+            const regex = /^[a-zA-Z ]*$/;
+            if (!regex.test(nameOfGrampanchayatInput.value)) {
+                nameOfGrampanchayatError.textContent = 'Name should only contain alphabets and spaces.';
+            } else {
+                nameOfGrampanchayatError.textContent = '';
+            }
+        }
+    </script>
 
-    {% comment %} <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script> {% endcomment %}
+    
+
+<!-- ... Your existing HTML code ... -->
+
+    
+    <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
     <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>
@@ -436,4 +298,5 @@
 </body>
 
 
+<!-- add-patient24:07-->
 </html>

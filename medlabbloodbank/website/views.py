@@ -323,6 +323,7 @@ def hospitalregistration(request):
 
 
 # def assign_staff(request):
+
 #     staff_members = Staff.objects.all()
 #     grampanchayats = Grampanchayat.objects.all()
 #     context = {
@@ -330,7 +331,7 @@ def hospitalregistration(request):
 #         'grampanchayats': grampanchayats,
 #     }
 #     return render(request, 'mainuser/assigninggptostaff.html', context)
-
+#.....................................
 from django.shortcuts import render, redirect
 from .models import Staff, Grampanchayat, AssignGrampanchayat
 
@@ -414,7 +415,7 @@ def grampanchayat_list(request):
 
 
 
-
+#......................................................................................
 
 
 
@@ -458,8 +459,33 @@ def bloodinventory(request):
 def registeredstafftable(request):
     return render(request, 'mainuser/registeredstafftable.html')
 
+# def listgps(request):
+#     return render(request, 'mainuser/listgps.html')
+
+
+from django.shortcuts import render
+from .models import Grampanchayat
+
 def listgps(request):
-    return render(request, 'mainuser/listgps.html')
+    grampanchayats = Grampanchayat.objects.all()
+    return render(request, 'mainuser/listgps.html', {'grampanchayats': grampanchayats})
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Grampanchayat
+
+def edit_grampanchayat(request, pk):
+    grampanchayat = get_object_or_404(Grampanchayat, pk=pk)
+
+    if request.method == 'POST':
+        grampanchayat.grampanchayat_id = request.POST.get('grampanchayat_id')
+        grampanchayat.name_of_grampanchayat = request.POST.get('name_of_grampanchayat')
+        # Update other fields as needed
+        grampanchayat.save()
+        return redirect('listgps')  # Redirect to the list view after successful edit
+
+    return render(request, 'mainuser/edit_grampanchayat.html', {'grampanchayat': grampanchayat})
+
+
 
 def addgps(request):
     return render(request, 'mainuser/add-grampanchayat.html')
