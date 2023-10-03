@@ -4,10 +4,14 @@
 
 <!-- doctors23:12-->
 <head>
+
+
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <link rel="shortcut icon" type="image/x-icon" href="mainuser/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'mainuser/img/favicon.ico' %}">
     <title>Medlab Blood Bank</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/select2.min.css' %}">
@@ -15,9 +19,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/style.css' %}">
     <style>
         body {
-            background-image: url("{% static 'img/9.jpg' %}"); /* Replace 'background.jpg' with your image file name */
+            background-image: url("{% static 'img/9.jpg' %}"); 
             background-repeat: no-repeat;
-            background-size: cover; /* You can adjust this property to control how the image is displayed */
+            background-size: cover; 
         }
         .sidebar {
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
@@ -88,16 +92,14 @@
             color: #009efb;
             text-decoration: underline;
         }
-        .header{
-            background-color:white;
-        }
+        
     </style>   
 
 </head>
 
 <body>
     <div class="main-wrapper">
-        <div class="header" style="background-colr:white"> 
+        <div class="header"> 
 			<div class="header-left">
 				<a href="{% url 'adminindex' %}" class="logo" style="color: black;">
 					<img src="{% static 'mainuser/img/logocopy.png' %}" width="75" height="40" alt="" style="margin-left:15px"> <span style="color: maroon;font-size: 20px;margin-top:10px; margin-left:-10px;white-space: nowrap;">Medlab Blood Bank</span>
@@ -118,7 +120,7 @@
                                     <a href="{% url 'activities' %}">
                                         <div class="media">
 											<span class="avatar">
-												<img alt="John Doe" src="{% static 'maiuser/img/user.jpg' %}" class="img-fluid">
+												<img alt="John Doe" src="{% static 'mainuser/img/user.jpg' %}" class="img-fluid">
 											</span>
 											<div class="media-body">
 												<p class="noti-details"><span class="noti-title">John Doe</span> added new task <span class="noti-title">Patient appointment booking</span></p>
@@ -255,33 +257,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 col-sm-4  col-lg-3">
-                        <div class="profile-widget">
-                            <div class="doctor-img">
-                                <a class="avatar" href="{% url 'profile' %}"><img alt="" src="{% static 'mainuser/img/doctor-thumb-04.jpg' %}"></a>
-                            </div>
-                            <div class="dropdown profile-action">
-                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_doctor"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                                </div>
-                            </div>
-                            <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile' %}">Henry Daniels</a></h4>
-                            <div class="doc-prof">Cardiologist</div>
-                            <div class="user-country">
-                                <i class="fa fa-map-marker"></i> United States, San Francisco
-                            </div>
-                        </div>
-                    </div>
+                   
                 </div>
-				<div class="row">
-                    <div class="col-sm-12">
-                        <div class="see-all">
-                            <a class="see-all-btn" href="javascript:void(0);">Load More</a>
-                        </div>
-                    </div>
-                </div>
+				
             </div>
             
         </div>
