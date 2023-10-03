@@ -161,24 +161,49 @@ def registereddonortodonatenow(request):
     return render(request, 'registereddonortodonatenow.html')
 
 
-def register_donor(request):
-    
+# def register_donor(request):
+#     if request.method == 'POST':
+#         # Handle form submission and validation here
+#         form = DonorRegistrationForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             # Save the form data to create a new Donor record
+#             user = request.user
+#             user.email = form.cleaned_data['email']
+#             user.phone = form.cleaned_data['phone']
+#             user.save()
+#             donor = form.save(commit=False)
 
+#             donor.email = request.user.email 
+#             donor.user_id = request.user.id # Set the email based on the logged-in user
+#             donor.save()
+
+#             # Update the user's role to "Registered Donor"
+#             if request.user.role == CustomUser.DONOR:
+#                 request.user.role = CustomUser.REGISTEREDDONOR
+#                 request.user.save()
+
+#             # Redirect to a success page or perform other actions
+#             return redirect('registereddonortodonatenow')  # Change 'success_page' to the actual success page URL
+
+#     else:
+#         # form = DonorRegistrationForm()
+#         form = DonorRegistrationForm()
+
+#     return render(request, 'registerasdonor.html', {'form': form})
+
+def register_donor(request):
     if request.method == 'POST':
         # Handle form submission and validation here
-        form = DonorRegistrationForm(request.POST)
+        form = DonorRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
+            # Update the user fields
+            request.user.email = form.cleaned_data['email']
+            request.user.phone = form.cleaned_data['phone']
+            request.user.save(update_fields=['email', 'phone'])
+
             # Save the form data to create a new Donor record
-            user = request.user
-            user.email = form.cleaned_data['email']
-            user.phone = form.cleaned_data['phone']
-            user.save()
             donor = form.save(commit=False)
-
-
-            
-            donor.email = request.user.email 
-            donor.user_id = request.user.id # Set the email based on the logged-in user
+            donor.user = request.user  # Automatically associates with CustomUser
             donor.save()
 
             # Update the user's role to "Registered Donor"
@@ -187,10 +212,9 @@ def register_donor(request):
                 request.user.save()
 
             # Redirect to a success page or perform other actions
-            return redirect('registereddonortodonatenow')  # Change 'success_page' to the actual success page URL
+            return redirect('registereddonortodonatenow')  # Change to your actual success page URL
 
     else:
-        # form = DonorRegistrationForm()
         form = DonorRegistrationForm()
 
     return render(request, 'registerasdonor.html', {'form': form})
@@ -425,8 +449,11 @@ def grampanchayat_list(request):
 def employees(request):
     return render(request, 'mainuser/employees.html')
 
-def profile(request):
-    return render(request, 'mainuser/profile.html')
+def profile1(request):
+    donor = Donor.objects.get(user=request.user)  # Adjust this based on your logic
+
+    return render(request, 'mainuser/donorprofile.html', {'donor': donor})
+    # return render(request, 'mainuser/donorprofile.html')
 
 def editprofile(request):
     return render(request, 'mainuser/edit-profile.html')

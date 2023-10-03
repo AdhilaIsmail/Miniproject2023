@@ -113,18 +113,18 @@
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">Revolutionizing Healthcare</h5>
                             <!-- <h4 class="display-1 text-white mb-md-4 animated zoomIn">Unifying Blood Bank and Laboratory Services for Enhanced Patient Care</h4> -->
-                            <form  method="post"  action="{% url 'register_donor' %}"class="animated slideInUp" id="registrationForm">
+                            <form  method="post"  action="{% url 'register_donor' %}"class="animated slideInUp" id="registrationForm" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <input type="text" class="form-control" name="full_name" placeholder="Full Name" required>
                                     <div class="error" data-error-for="full_name"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="email" class="form-control" name="email" placeholder="Email Address" value="{{ user.email }}" required>
+                                    <input type="email" class="form-control" name="email" placeholder="Email Address" value="{{ user.email }}" required readonly>
                                     <div class="error" data-error-for="email"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="tel" class="form-control" name="phone" placeholder="Phone Number" value="{{ user.phone }}" required>
+                                    <input type="tel" class="form-control" name="phone" placeholder="Phone Number" value="{{ user.phone }}" required readonly>
                                     <div class="error" data-error-for="phone"></div>
                                 </div>
 
@@ -141,6 +141,13 @@
                                     </select>
                                 </div>
                                
+                               
+                                
+                                <div class="mb-3">
+                                    <label for="idProof" class="form-label">ID Proof (Image Only)</label>
+                                    <input type="file" class="form-control" name="id_proof" id="idProof" accept="image/*">
+                                    <div class="error" data-error-for="id_proof"></div>
+                                </div>
 
                                 <div class="error" data-error-for="place"></div>
                                     <input type="hidden" name="new_role" value="{{ user.REGISTERED_DONOR }}">
@@ -260,61 +267,6 @@
     </script>
 
 
-    {% comment %} <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const placeInput = document.getElementById('placeInput');
-            const placeSelect = document.getElementById('placeSelect');
-            const kottayamPlaces = ["Kottayam", "Ernakulam", "Thiruvananthapuram", "Kochi", "Alappuzha","Kanam (Kerala)","Kanamala","Kangazha","Kanjikkuzhi","Kanjirathanam","Kappumthala","Karimpany","Karukachal","Katappattor","Keezhoor","Kezhuvamkulam"]; // Sample place data
-    
-            // Function to populate the hidden select element with options
-            function populateDropdown(optionsArray) {
-                optionsArray.forEach(place => {
-                    const option = document.createElement('option');
-                    option.value = place;
-                    option.textContent = place;
-                    placeSelect.appendChild(option);
-                });
-            }
-    
-            // Call the function to populate the hidden select element with your place data
-            populateDropdown(kottayamPlaces);
-    
-            // Function to show suggestions based on user input
-            function showSuggestions(input) {
-                const inputValue = input.value.toLowerCase();
-                placeSelect.innerHTML = ''; // Clear previous suggestions
-    
-                if (inputValue.length > 0) {
-                    const suggestions = kottayamPlaces.filter(place => place.toLowerCase().startsWith(inputValue));
-                    suggestions.forEach(suggestion => {
-                        const option = document.createElement('option');
-                        option.value = suggestion;
-                        option.textContent = suggestion;
-                        placeSelect.appendChild(option);
-                    });
-    
-                    if (suggestions.length > 0) {
-                        placeSelect.style.display = 'block'; // Show the dropdown
-                    } else {
-                        placeSelect.style.display = 'none'; // Hide the dropdown if no suggestions
-                    }
-                } else {
-                    placeSelect.style.display = 'none'; // Hide the dropdown if input is empty
-                }
-            }
-    
-            placeInput.addEventListener('input', () => {
-                showSuggestions(placeInput);
-            });
-    
-            placeInput.addEventListener('blur', () => {
-                setTimeout(() => {
-                    placeSelect.style.display = 'none'; // Hide the dropdown when input field loses focus
-                }, 200);
-            });
-        });
-    </script> {% endcomment %}
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const placeInput = document.getElementById('placeInput');
@@ -378,125 +330,8 @@
             });
         });
     </script>
-        {% comment %} document.addEventListener('DOMContentLoaded', function () {
-            const placeSelect = document.getElementById('placeSelect');
-            const kottayamPlaces = ["Kottayam", "Ernakulam", "Thiruvananthapuram", "Kochi", "Alappuzha"]; // Sample place data
-            
-            // Function to populate the dropdown with options
-            function populateDropdown(optionsArray) {
-                optionsArray.forEach(place => {
-                    const option = document.createElement('option');
-                    option.value = place;
-                    option.textContent = place;
-                    placeSelect.appendChild(option);
-                });
-            }
     
-            // Call the function to populate the dropdown with your place data
-            populateDropdown(kottayamPlaces);
-        }); {% endcomment %}
-    
-        {% comment %} document.addEventListener('DOMContentLoaded', function () {
-            const placeInput = document.getElementById('placeInput');
-            const placeSuggestions = document.querySelector('.place-suggestions');
-            const kottayamPlaces = []; // Your place data
-            
-            // Load Kottayam district places from the JSON file
-            fetch("{% static 'json/kottayam_district_places.json' %}")
-                .then(response => response.json())
-                .then(data => {
-                    kottayamPlaces.push(...data);
-                });
         
-            function showSuggestions(input) {
-                const inputValue = input.value.toLowerCase();
-                placeSuggestions.innerHTML = ''; // Clear previous suggestions
-                
-                if (inputValue.length > 0) {
-                    const suggestions = kottayamPlaces.filter(place => place.toLowerCase().startsWith(inputValue));
-                    suggestions.slice(0, 5).forEach(suggestion => {
-                        const suggestionElement = document.createElement('li');
-                        suggestionElement.textContent = suggestion;
-                        suggestionElement.addEventListener('click', () => {
-                            placeInput.value = suggestion;
-                            placeSuggestions.innerHTML = '';
-                        });
-                        placeSuggestions.appendChild(suggestionElement);
-                    });
-        
-                    if (suggestions.length > 0) {
-                        placeSuggestions.style.display = 'block';
-                    } else {
-                        placeSuggestions.style.display = 'none';
-                    }
-                } else {
-                    placeSuggestions.style.display = 'none';
-                }
-            }
-        
-            placeInput.addEventListener('input', () => {
-                showSuggestions(placeInput);
-            });
-        
-            placeInput.addEventListener('blur', () => {
-                setTimeout(() => {
-                    placeSuggestions.innerHTML = '';
-                }, 200);
-            });
-        }); {% endcomment %}
-        
-   
-
-    {% comment %} <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const placeInput = document.getElementById('placeInput');
-            const placeSuggestions = document.querySelector('.place-suggestions');
-            const kottayamPlaces = []; // Your place data
-            
-            // Load Kottayam district places from the JSON file
-            fetch("{% static 'json/kottayam_district_places.json' %}")
-                .then(response => response.json())
-                .then(data => {
-                    kottayamPlaces.push(...data);
-                });
-    
-            function showSuggestions(input) {
-                const inputValue = input.value.toLowerCase();
-                placeSuggestions.innerHTML = ''; // Clear previous suggestions
-                
-                if (inputValue.length > 0) {
-                    const suggestions = kottayamPlaces.filter(place => place.toLowerCase().startsWith(inputValue));
-                    suggestions.slice(0, 5).forEach(suggestion => {
-                        const suggestionElement = document.createElement('li');
-                        suggestionElement.textContent = suggestion;
-                        suggestionElement.addEventListener('click', () => {
-                            placeInput.value = suggestion;
-                            placeSuggestions.innerHTML = '';
-                        });
-                        placeSuggestions.appendChild(suggestionElement);
-                    });
-    
-                    if (suggestions.length > 0) {
-                        placeSuggestions.style.display = 'block';
-                    } else {
-                        placeSuggestions.style.display = 'none';
-                    }
-                } else {
-                    placeSuggestions.style.display = 'none';
-                }
-            }
-    
-            placeInput.addEventListener('input', () => {
-                showSuggestions(placeInput);
-            });
-    
-            placeInput.addEventListener('blur', () => {
-                setTimeout(() => {
-                    placeSuggestions.innerHTML = '';
-                }, 200);
-            });
-        });
-    </script> {% endcomment %}
      <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -17,6 +17,7 @@
                 background-image: url("{% static 'img/9.jpg' %}"); /* Replace 'background.jpg' with your image file name */
                 background-repeat: no-repeat;
                 background-size: cover; /* You can adjust this property to control how the image is displayed */
+                
             }
             .sidebar {
                 box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
@@ -139,7 +140,7 @@
 						<span style="color:maroon;">Admin</span>
                     </a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="{% url 'profile' %}" style="color:maroon;">My Profile</a>
+						<a class="dropdown-item" href="{% url 'profile1' %}" style="color:maroon;">My Profile</a>
 						<a class="dropdown-item" href="{% url 'editprofile' %}" style="color:maroon;">Edit Profile</a>
 						
 						<a class="dropdown-item" href="{% url 'loggout' %}" style="color:maroon;">Logout</a>
@@ -150,7 +151,7 @@
             <div class="dropdown mobile-user-menu float-right">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'profile' %}" style="color:maroon;">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'profile1' %}" style="color:maroon;">My Profile</a>
                     <a class="dropdown-item" href="{% url 'editprofile' %}" style="color:maroon;">Edit Profile</a>
                   
                     <a class="dropdown-item" href="{% url 'loggout' %}" style="color:maroon;">Logout</a>
@@ -204,8 +205,8 @@
                 </div>
             </div>
         </div>
-        <div class="page-wrapper">
-            <h3 style="color:black;" > Registered Donor Profiles</h3>
+        <div class="page-wrapper" style="margin-top:30px;margin-left:270px;padding-right:20px">
+            <h3 style="color:#d69c98;" > Registered Donor Profiles</h3>
 
             <div class="row">
                 <div class="col-md-6 col-sm-6 col-lg-6 col-xl-5">
@@ -253,11 +254,8 @@
             {% for donor in donors %}
             <div class="col-md-4 col-sm-4 col-lg-3">
                 <div class="profile-widget">
-                    <div class="doctor-img">
-                        <!-- You can add a donor image if available -->
-                        <!-- <a class="avatar" href="{% url 'profile' %}"><img alt="" src="{{ donor.image.url }}"></a> -->
-                    </div>
-                    <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile' %} ">{{ donor.full_name }}</a></h4>
+                    
+                    <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile1' %} ">{{ donor.full_name }}</a></h4>
                     <div class="doc-prof">{{ donor.blood_group }}</div>
                     <div class="user-country">
                         <i class="fa fa-map-marker"></i> {{ donor.place }}

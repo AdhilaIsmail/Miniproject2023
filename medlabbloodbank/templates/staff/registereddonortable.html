@@ -135,7 +135,7 @@
 						<span>Admin</span>
                     </a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+						<a class="dropdown-item" href="{% url 'profile1' %}">My Profile</a>
 						<a class="dropdown-item" href="{% url 'editprofile' %}">Edit Profile</a>
 						
 						<a class="dropdown-item" href="{% url 'loggout' %}">Logout</a>
@@ -146,7 +146,7 @@
             <div class="dropdown mobile-user-menu float-right">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'profile1' %}">My Profile</a>
                     <a class="dropdown-item" href="{% url 'editprofile' %}">Edit Profile</a>
                   
                     <a class="dropdown-item" href="{% url 'loggout' %}">Logout</a>
@@ -246,9 +246,9 @@
                 <div class="profile-widget">
                     <div class="doctor-img">
                         <!-- You can add a donor image if available -->
-                        <!-- <a class="avatar" href="{% url 'profile' %}"><img alt="" src="{{ donor.image.url }}"></a> -->
+                        <!-- <a class="avatar" href="{% url 'profile1' %}"><img alt="" src="{{ donor.image.url }}"></a> -->
                     </div>
-                    <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile' %} ">{{ donor.full_name }}</a></h4>
+                    <h4 class="doctor-name text-ellipsis"><a href="{% url 'profile1' %} ">{{ donor.full_name }}</a></h4>
                     <div class="doc-prof">{{ donor.blood_group }}</div>
                     <div class="user-country">
                         <i class="fa fa-map-marker"></i> {{ donor.place }}

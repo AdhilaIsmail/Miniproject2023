@@ -22,7 +22,7 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult
 from website.views import homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
-from website.views import adminindex, activities, appointments, doctors, departments, employees, profile, editprofile
+from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
@@ -66,7 +66,7 @@ urlpatterns = [
     path('departments', departments, name='departments'),
     path('doctors', doctors, name='doctors'),
     path('employees', employees, name='employees'), 
-    path('profile', profile, name='profile'),
+    path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortable', registereddonortable, name='registereddonortable'),
     path('addhospitals', addhospitals, name='addhospitals'),
@@ -113,7 +113,7 @@ urlpatterns = [
     path('departmentsstaff', departmentsstaff, name='departmentsstaff'),
     path('doctors', doctors, name='doctors'),
     path('employees', employees, name='employees'),
-    path('profile', profile, name='profile'),
+    path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortablestaff', registereddonortablestaff, name='registereddonortablestaff'),
     path('addhospitals', addhospitals, name='addhospitals'),

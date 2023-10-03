@@ -75,16 +75,18 @@ class CustomUser(AbstractUser):
 
 #donor model
 class Donor(models.Model):
-    user=models.OneToOneField(CustomUser,on_delete=models.CASCADE,null=True)
+    
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     blood_group = models.CharField(max_length=5)
     place = models.CharField(max_length=100)
-    
-    
+    id_proof = models.FileField(upload_to='id_proofs/', null=True, blank=True)
+
     def __str__(self):
         return self.full_name
+
     
 #donor response model
 from django.db import models

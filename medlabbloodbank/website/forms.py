@@ -5,7 +5,7 @@ from .models import Donor
 class DonorRegistrationForm(forms.ModelForm):
     class Meta:
         model = Donor
-        fields = ['full_name', 'email', 'phone', 'blood_group', 'place']
+        fields = ['full_name', 'email', 'phone', 'blood_group', 'place', 'id_proof']
         
 
 from .models import DonorResponse
@@ -14,7 +14,7 @@ class DonorForm(forms.ModelForm):
     class Meta:
         model = DonorResponse
         fields = '__all__'
-    
+       
     def clean(self):
         cleaned_data = super().clean()
         age = cleaned_data.get('age')

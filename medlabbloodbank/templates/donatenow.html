@@ -117,13 +117,13 @@
                                                 <form action="{% url 'registereddonorresponse' %}" method="post" class="animated slideInUp" id="questionsForm">
                                                     {% csrf_token %}
                                                     <div class="mb-3">
-                                                        <input type="text" class="form-control"  name="name" placeholder="Full Name"  value={{ donor.full_name }} required>
-                                                        <div class="error" data-error-for="name"></div>
+                                                        <input type="text" class="form-control"  name="name" placeholder="Full Name"  value={{ donor.full_name }} required readonly>
+                                                        
                                                     </div>
 
                                                     <div class="mb-3"> 
                                                         <input type="text" id="age" name="age" class="form-control"  placeholder="Age" required>
-                                                        <div class="error" data-error-for="age"></div>
+                                                        <div class="error"  style="color:red;font-size:12px" data-error-for="age"></div>
                                                     </div>
 
 
@@ -144,17 +144,17 @@
                                                     
 
                                                     <div class="mb-3">
-                                                        <input type="number" id="weight" name="weight" class="form-control" placeholder="Weight(in kg)" required><br><br>
-                                                        <div class="error" data-error-for="weight"></div>
+                                                        <input type="number" id="weight" name="weight" class="form-control" placeholder="Weight(in kg)" required>
+                                                        <div class="error" style="color:red;font-size:12px" data-error-for="weight"></div>
                                                     </div>
-
+                                                
                                                     <div class="mb-3">
                                                         <label for="donorHistory">1. Have you donated blood before?</label><br>
                                                         <input type="radio" id="yesDonor" name="donorHistory" value="yes" required>
                                                         <label for="yesDonor">Yes</label>
                                                         <input type="radio" id="noDonor" name="donorHistory" value="no" required>
                                                         <label for="noDonor">No</label><br>
-                                                        <div class="error" data-error-for="notenetered"></div>
+                                                        <div class="error" data-error-for="donorHistory"></div>
                                                     </div>
                                             
                                                     <label for="difficulty">2. Did you experience any difficulty or discomfort during the previous donation?</label><br>
@@ -261,9 +261,45 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
     
-    
-    
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var ageInput = document.getElementById('age');
+            var weightInput = document.getElementById('weight');
+    
+            ageInput.addEventListener('keyup', function () {
+                validateAge();
+            });
+    
+            weightInput.addEventListener('keyup', function () {
+                validateWeight();
+            });
+    
+            function validateAge() {
+                var ageValue = ageInput.value.trim();
+                var ageError = document.querySelector('[data-error-for="age"]');
+                
+                if (!/^\d+$/.test(ageValue) || isNaN(parseInt(ageValue)) || parseInt(ageValue) < 18 || parseInt(ageValue) > 65) {
+                    ageError.textContent = 'Age must be a whole number between 18 and 65';
+                } else {
+                    ageError.textContent = '';
+                }
+            }
+    
+            function validateWeight() {
+                var weightValue = parseInt(weightInput.value);
+                var weightError = document.querySelector('[data-error-for="weight"]');
+                
+                if (isNaN(weightValue) || weightValue <= 45) {
+                    weightError.textContent = 'Weight must be greater than 45 kg';
+                } else {
+                    weightError.textContent = '';
+                }
+            }
+        });
+    </script>
+    
+    
+    {% comment %} <script>
         const registrationForm = document.getElementById('registrationForm');
     
         registrationForm.addEventListener('keyup', function (event) {
@@ -291,34 +327,18 @@
                         errorElement.textContent = 'Full Name must contain only letters and spaces.';
                     }
                     break;
-                case 'email':
-                    // Check if email format is valid
-                    if (!/\S+@\S+\.\S+/.test(inputValue)) {
-                        errorElement.textContent = 'Invalid Email Address.';
-                    }
-                    break;
-                case 'phone':
-                    // Check if phone number contains only digits
-                    if (!/^\d+$/.test(inputValue)) {
-                        errorElement.textContent = 'Phone Number must contain only digits.';
-                    }
-                    break;
+                
                 case 'blood_group':
                     // Check if blood group format is valid (e.g., A+, AB-, etc.)
                     if (!/^(A|B|AB|O)[+-]$/.test(inputValue)) {
                         errorElement.textContent = 'Invalid Blood Group format.';
                     }
                     break;
-                case 'Place':
-                    // Example: Check if place contains only letters and spaces
-                    if (!/^[A-Za-z\s]+$/.test(inputValue)) {
-                        errorElement.textContent = 'Place must contain only letters and spaces.';
-                    }
-                    break;
+                
                 // Add validation for other fields similarly
             }
         }
-    </script>
+    </script> {% endcomment %}
     
 
      <!-- JavaScript Libraries -->
