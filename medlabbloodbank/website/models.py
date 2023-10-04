@@ -74,6 +74,7 @@ class CustomUser(AbstractUser):
         self.save()
 
 #donor model
+from django.utils import timezone
 class Donor(models.Model):
     
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True)
@@ -83,6 +84,7 @@ class Donor(models.Model):
     blood_group = models.CharField(max_length=5)
     place = models.CharField(max_length=100)
     id_proof = models.FileField(upload_to='id_proofs/', null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.full_name
@@ -109,6 +111,7 @@ class DonorResponse(models.Model):
     pregnant = models.CharField(max_length=3, null=True, blank=True)
     child = models.CharField(max_length=3, null=True, blank=True)
     feelgood = models.CharField(max_length=3, null=True, blank=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
 #uploading result into database
 from django.db import models
@@ -168,14 +171,7 @@ class BloodRequest(models.Model):
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
-    # def accept_request(self):
-    #     self.status = 'Accepted'
-    #     self.save()
-
-    # def reject_request(self):
-    #     self.status = 'Rejected'
-    #     self.save()
-
+    
     def __str__(self):
         return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
 
