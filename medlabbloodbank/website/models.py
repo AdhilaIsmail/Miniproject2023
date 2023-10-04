@@ -161,11 +161,23 @@ class BloodRequest(models.Model):
     is_immediate = models.BooleanField(default=False)
     requested_date = models.DateField(default=datetime.now)
     requested_time = models.TimeField(default=datetime.now)
-    
-    
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected'),
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+
+    # def accept_request(self):
+    #     self.status = 'Accepted'
+    #     self.save()
+
+    # def reject_request(self):
+    #     self.status = 'Rejected'
+    #     self.save()
+
     def __str__(self):
         return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
-
 
 #staff registration model
 
@@ -247,3 +259,24 @@ class AssignGrampanchayat(models.Model):
 
 #     def __str__(self):
 #         return f"Assignments for {self.staff.name}"
+
+from django.db import models
+
+class Laboratory(models.Model):
+    laboratoryName = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.laboratoryName
+    
+from django.db import models
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+
+User = get_user_model()
+class LabSelection(models.Model):
+    donor = models.ForeignKey(User, on_delete=models.CASCADE)
+    selected_lab = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.donor.username} - {self.selected_lab.laboratoryName}"

@@ -22,11 +22,11 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult
 from website.views import homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
-from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile
+from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration
-from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration
-from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff, requestsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
-from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list
+from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email
+from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
+from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,6 +46,7 @@ urlpatterns = [
     path('registereddonortodonatenow', registereddonortodonatenow, name='registereddonortodonatenow'),
     path('registereddonorresponse/', registereddonorresponse, name='registereddonorresponse'),
     path('notificationfordonation', notificationfordonation, name='notificationfordonation'),
+    path('getlaboratories',getlaboratories,name='getlaboratories'),
     path('send_sms/', send_sms, name='send_sms'),
     path('uploadresult', uploadresult, name='uploadresult'),
     path('loggout', loggout, name='loggout'),
@@ -90,7 +91,12 @@ urlpatterns = [
     path('validate-assign-grampanchayat/', validate_assign_grampanchayat, name='validate_assign_grampanchayat'),
     path('api/grampanchayats/', grampanchayat_list, name='grampanchayat_list'),
     path('edit_grampanchayat/<int:pk>/', views.edit_grampanchayat, name='edit_grampanchayat'),
-    
+    path('addlab',addlab,name='addlab'),
+    # path('accept/<int:request_id>/', accept_blood_request, name='accept_blood_request'),
+    # path('reject/<int:request_id>/', reject_blood_request, name='reject_blood_request'),
+    path('update_status/', update_status, name='update_status'),
+    path('send_confirmation_email',send_confirmation_email,name='send_confirmation_email'),
+    # path('send_notification_email',send_notification_email,name='send_notification_email'),
  
 
    
@@ -102,6 +108,7 @@ urlpatterns = [
     path('hospitalabout', hospitalabout, name='hospitalabout'),
     path('bloodrequest/<str:is_immediate>/', bloodrequest, name='bloodrequest'),
     path('verify_hospital', verify_hospital, name='verify_hospital'),
+    path('requestsent',requestsent,name='requestsent'),
 
     
   
@@ -126,7 +133,7 @@ urlpatterns = [
     path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
-    path('requestsstaff', requestsstaff, name='requestsstaff'),
+   
     path('blood_request_list', blood_request_list, name='blood_request_list'),
  
 ]

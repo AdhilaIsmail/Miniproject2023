@@ -142,7 +142,7 @@
 						<span style="color:maroon;">Admin</span>
                     </a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="{% url 'profile' %}" style="color:maroon;">My Profile</a>
+						<a class="dropdown-item" href="{% url 'profile1' %}" style="color:maroon;">My Profile</a>
 						<a class="dropdown-item" href="{% url 'editprofile' %}" style="color:maroon;">Edit Profile</a>
 						
 						<a class="dropdown-item" href="{% url 'loggout' %}" style="color:maroon;">Logout</a>
@@ -153,7 +153,7 @@
             <div class="dropdown mobile-user-menu float-right">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'profile' %}" style="color:maroon;">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'profile1' %}" style="color:maroon;">My Profile</a>
                     <a class="dropdown-item" href="{% url 'editprofile' %}" style="color:maroon;">Edit Profile</a>
                   
                     <a class="dropdown-item" href="{% url 'loggout' %}" style="color:maroon;">Logout</a>
@@ -174,7 +174,7 @@
                         <li>
                             <a href="{% url 'registereddonortable' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        <li class="active">
+                        <li>
                             <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
                         </li>
                         <li>
@@ -185,6 +185,9 @@
                         </li> -->
                         <li>
                             <a href="{% url 'departments' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
+                        </li>
+                        <li class="active">
+                            <a href="{% url 'addlab' %}"><i class="fa fa-hospital-o"></i> <span>Add Lab</span></a>
                         </li>
                         <li>
                             <a href="{% url 'appointments' %}"><i class="fa fa-list-alt"></i> <span>View Appointements</span></a>
@@ -212,7 +215,7 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="page-title">Hospital Registration</h4>
+                            <h4 class="page-title">Add Laboratory</h4>
                             <!-- Add the button for viewing registered hospitals -->
                        
                         </div>
@@ -220,67 +223,15 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <form action="{% url 'hospital_registration' %}" method="POST">
+                        <form action="{% url 'addlab' %}" method="POST">
                             {% csrf_token %}
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Hospital Name <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="hospitalName" value="{{ hospital.hospitalName }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Contact Person <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="contactPerson" value="{{ hospital.contactPerson }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Email <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="email" name="email" value="{{ hospital.email }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Phone Number <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="tel" name="phone" value="{{ hospital.phone }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Location <span class="text-danger">*</span></label>
-                                        <textarea class="form-control" name="location" rows="2" required>{{ hospital.location }}</textarea>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>GPS Coordinates<span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="gpsCoordinates" value="{{ hospital.gpsCoordinates }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Ownership<span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="ownership" value="{{ hospital.ownership }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>URL of Hospital</label>
-                                        <input class="form-control" type="url" name="hospitalURL" value="{{ hospital.hospitalURL }}">
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Password <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="password" name="password" required>
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label>Laboratory Name <span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" name="laboratoryName"  required>
                             </div>
-                            
+                        
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Update Hospital</button>
+                                <button class="btn btn-primary submit-btn">Add Laboratory</button>
                             </div>
                         </form>
                     </div>
@@ -291,102 +242,6 @@
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
 
-    <script>
-        const hospitalNameInput = document.getElementById('hospitalName');
-        const contactPersonInput = document.getElementById('contactPerson');
-        const emailInput = document.getElementById('email');
-        const phoneInput = document.getElementById('phone');
-        const locationInput = document.getElementById('location');
-        const gpsCoordinatesInput = document.getElementById('gpsCoordinates');
-        const ownershipInput = document.getElementById('ownership');
-        const hospitalURLInput = document.getElementById('hospitalURL');
-        const passwordInput = document.getElementById('password');
-    
-        hospitalNameInput.addEventListener('keyup', validateHospitalName);
-        contactPersonInput.addEventListener('keyup', validateContactPerson);
-        emailInput.addEventListener('keyup', validateEmail);
-        phoneInput.addEventListener('keyup', validatePhone);
-        locationInput.addEventListener('keyup', validateLocation);
-        gpsCoordinatesInput.addEventListener('keyup', validateGpsCoordinates);
-        ownershipInput.addEventListener('keyup', validateOwnership);
-        hospitalURLInput.addEventListener('keyup', validateHospitalURL);
-        passwordInput.addEventListener('keyup', validatePassword);
-    
-        function validateHospitalName() {
-            if (hospitalNameInput.value.trim() === '') {
-                hospitalNameInput.classList.add('is-invalid');
-            } else {
-                hospitalNameInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validateContactPerson() {
-            if (contactPersonInput.value.trim() === '') {
-                contactPersonInput.classList.add('is-invalid');
-            } else {
-                contactPersonInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validateEmail() {
-            const emailValue = emailInput.value.trim();
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-            if (emailValue === '' || !emailRegex.test(emailValue)) {
-                emailInput.classList.add('is-invalid');
-            } else {
-                emailInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validatePhone() {
-            const phoneValue = phoneInput.value.trim();
-            const phoneRegex = /^\d{10}$/; // Assuming a 10-digit phone number
-    
-            if (phoneValue === '' || !phoneRegex.test(phoneValue)) {
-                phoneInput.classList.add('is-invalid');
-            } else {
-                phoneInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validateLocation() {
-            if (locationInput.value.trim() === '') {
-                locationInput.classList.add('is-invalid');
-            } else {
-                locationInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validateGpsCoordinates() {
-            // You can add specific validation for GPS coordinates here
-            // For example, check if they match a certain pattern
-            // If invalid, add 'is-invalid' class; otherwise, remove it
-        }
-    
-        function validateOwnership() {
-            // Add validation for ownership here if needed
-        }
-    
-        function validateHospitalURL() {
-            const urlValue = hospitalURLInput.value.trim();
-            const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-    
-            if (urlValue !== '' && !urlRegex.test(urlValue)) {
-                hospitalURLInput.classList.add('is-invalid');
-            } else {
-                hospitalURLInput.classList.remove('is-invalid');
-            }
-        }
-    
-        function validatePassword() {
-            if (passwordInput.value.trim() === '') {
-                passwordInput.classList.add('is-invalid');
-            } else {
-                passwordInput.classList.remove('is-invalid');
-            }
-        }
-    </script>
     
     <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
@@ -401,5 +256,5 @@
 </body>
 
 
-<!-- add-patient24:07-->
+
 </html>

@@ -1,3 +1,5 @@
+<!-- Add this at the top of your template -->
+
 {% load static %}
 <html lang="en">
 
@@ -10,7 +12,8 @@
 
     <!-- Favicon -->
     {% comment %} <link href="img/favicon.ico" rel="icon"> {% endcomment %}
-
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
@@ -94,56 +97,41 @@
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="phone" class="text-white">Phone Number:</label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="Enter your phone number" required>
+                                    <input type="tel" class="form-control" id="phone" name="phone" value={{ user.donor.phone }}  required readonly>
                                 </div>
+                            
                                 <label for="nearestLab">Select Nearest Lab:</label>
                                 <select id="nearestLab" name="nearestLab" class="form-control" required>
                                     <option value="">Select Lab</option>
-                                    <option value="Lab 1">DDRC SRL Kottayam,K K Road,opposite to GH</option>
-                                    <option value="Lab 2">DDRC SRL Diagnostic Services,C.S.I Complex,Baker Junction,Opposite Sakthi Bar,Central Rd</option>
-                                    <option value="Lab 3">DDRC SRL Diagnostic Services Regional Lab, near Kottayam Medical College</option>
-                                    <option value="Lab 4">DDRC SRL Diagnostic Services,Ammanchery Junction,ICH Rd,Opposite ICH</option>
-                                    <option value="Lab 5">DDRC SRL,Sankranthi, Gandhi Nagar, Kottayam, Perumbaikad</option>
-                                    <option value="Lab 6">DDRC SRL Diagnostic Services,DDRC SRL Building, Kottayam - Kumily Rd, opposite Government Hospital, Kottayam, Kerala 686001</option>
-                                    <option value="Lab 7">DDRC SRL Diagnostic Services, Near Govt Hospital Rd, opp. South Indian Bank, Mundakayam, Kerala 686513</option>
-                                    <option value="Lab 8">DDRC SRL,S.N.Trade Centre, opp. to main gate of General Hospital, Kottayam, Kerala 686502</option>
-                                    <option value="Lab 9">DDRC SRL,Government Hospital Junction, Thottakkadu, Kerala 686539</option>
-                                    <option value="Lab 10">DDRC SRL,Payyalani Puthuparambil,National Junction, Ponkunnam, Kerala 686506</option>
-                                    <option value="Lab 11">DDRC SRL,Othalathumoottil Building, Sankranthi, Kottayam, Kerala 686028</option>
-                                    <option value="Lab 12">DDRC SRL,Grace Hospital Rd, Aymanam, Kerala 686105</option>
-                                    <option value="Lab 13">DDRC SRL,Manjappallil Building, Changanassery - Vazhoor Rd, near Mercy Nursing Home, Karukachal, Kerala 686540</option>
-                                    <option value="Lab 14">DDRC SRL Diagnostics - Karukachal, Kottayam, Manjappallil Building, Changanassery - Vazhoor Rd, near Mercy Nursing Home, Karukachal, Kerala 686540</option>
-                                    <option value="Lab 15">DDRC SRL,Kanjirappally, Kerala 686506</option>
-                                    <option value="Lab 16">DDRC SRL Diagnosis,Ramavilasam Building, Kodungoor, Kerala 686504</option>
-                                    <option value="Lab 17">DDRC SRL,Kollam - Theni Hwy, South Pampady, Pampady, Kerala 686502</option>
-                                    <option value="Lab 18">DDRC SRL,Kidangoor - Manarcadu Rd, Kerala 686501</option>
-                                    <option value="Lab 19">DDRC SRL Diagnosis,st marys hospital, Manarcadu, Kerala</option>
-                                    <option value="Lab 20">DDRC SRL Diagnostics,C.C.M.Tourist Home, Ground Floor, Erattupetta, Kerala 686122</option>
-                                    <option value="Lab 21">DDRC SRL Diagnostics,Junction, opp. St Mary's GHS Church, Athirampuzha, Kerala 686562</option>
-                                    <option value="Lab 22">DDRC SRL Diagnostics,Paikattu Building, Central Junction, SH 1, Changanassery, Kerala 686105</option>
-                                    <option value="Lab 23">DDRC SRL,SH 1, Baker Hill, Kottayam, Kerala 686001</option>
-                                    <option value="Lab 24">DDRC SRL,Kuravilagadu Building No. 2/36 A B C, Kerala 686633</option>
-                                    <option value="Lab 25">DDRC SRL,Uzhavoor, Kerala 686634</option>
-                                    <option value="Lab 26">DDRC SRL,Ground floor, Ponmankal Arcade, Ettumanoor, Kerala 686631</option>
-                                    <option value="Lab 27">DDRC SRL,Illimoola jn, Ayarkunnam, Kerala 686564</option>
-                                    <option value="Lab 28">DDRC SRL Diagnostic Services,Vimala Hospital, Ettumanoor, Kerala 686631</option>
-                                    <option value="Lab 29">DDRC SRL,Ramapuram-Pizhaku Rd, Ramapuram, Kerala 686576</option>
-                                    <option value="Lab 30">DDRC SRL Building No. 1775 Mariyan Medical Mall, opp. Govt.Hospital, Kerala 686575</option>
-                                    <option value="Lab 31">DDRC SRL,Puthuppally Rd, Kanjikuzhi, Kottayam, Kerala 686002</option>
-                                    <option value="Lab 32">DDRC SRL,Malliyoor Bypass, Manjoor, Kerala 686603</option>
-                                    <option value="Lab 33">DDRC SRL,Taluk hospital junction, Kuravilangad, Kerala 686633</option>
-                                    <option value="Lab 34">DDRC SRL Diagnostic,Munthirikavala, Bus Stop, Vadakkekkara Rd, Changanassery, Kerala 686104</option>
-                                    <option value="Lab 35">DDRC SRL,Devamatha hospital Junction, SH 1, Koothattukulam, Kerala 686662</option>
-                                    <option value="Lab 36">DDRC SRL,Railway Station Rd, Thiruvalla, Kerala 689111</option>
-                                   
-
-                                 
-                                    <!-- Add more lab options as needed -->
                                 </select>
+                            
                                 <!-- Add a submit button -->
                                 <button type="submit" class="btn btn-primary">Submit</button>
+                                <script>
+                                    // Fetch laboratories using Ajax
+                                    var labSelect = document.getElementById('nearestLab');
+                            
+                                    // Make an Ajax request to retrieve the list of laboratories
+                                    var xhr = new XMLHttpRequest();
+                                    xhr.open('GET', '{% url "getlaboratories" %}', true);
+                            
+                                    xhr.onload = function () {
+                                        if (xhr.status === 200) {
+                                            var labs = JSON.parse(xhr.responseText);
+                            
+                                            // Populate the select element with laboratories
+                                            labs.forEach(function (lab) {
+                                                var option = document.createElement('option');
+                                                option.value = lab.id;
+                                                option.text = lab.laboratoryName;
+                                                labSelect.add(option);
+                                            });
+                                        }
+                                    };
+                            
+                                    xhr.send();
+                                </script>
                             </form>
-                          
                         </div>
                     </div>
                 </div>
@@ -291,20 +279,23 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="lib/twentytwenty/jquery.event.move.js"></script>
-    <script src="lib/twentytwenty/jquery.twentytwenty.js"></script>
+    <!-- Ensure jQuery is loaded before Bootstrap -->
+
+
+    
+
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/twentytwenty/jquery.event.move.js' %}"></script>
+    <script src="{% static 'lib/twentytwenty/jquery.twentytwenty.js' %}"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>

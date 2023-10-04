@@ -268,31 +268,58 @@ def registereddonorresponse(request):
     return render(request, 'donatenow.html', {'donor': donor})
 
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from twilio.rest import Client
-from django.conf import settings
 
-from twilio.rest import Client
-from django.conf import settings
+
+from django.shortcuts import render
 from django.http import HttpResponse
+from django.conf import settings
+from django.core.mail import send_mail
+from nexmo import Client as NexmoClient
+from .models import Laboratory
 
 def send_sms(request):
     if request.method == 'POST':
-        phone_number = request.POST['phone']
-        message = "Get your sample test done and upload your results on the website.HAPPY DONATION.."
+        phone_number = request.POST.get('phone')
+        nearest_lab_id = request.POST.get('nearestLab')
 
-        client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        lab = Laboratory.objects.get(id=nearest_lab_id)
+        message_body = f"Hello! You have selected {lab.laboratoryName} as the nearest lab."
+
+        # Send SMS using Nexmo
+        nexmo_client = NexmoClient(
+            key=settings.NEXMO_API_KEY,
+            secret=settings.NEXMO_API_SECRET
+        )
+
+        from_number = settings.NEXMO_PHONE_NUMBER
+        to_number = phone_number
+
         try:
-            message = client.messages.create(
-                body=message,
-                from_=settings.TWILIO_PHONE_NUMBER,
-                to=phone_number
-            )
-            return HttpResponse("SMS sent successfully!")
-        except Exception as e:
-            return HttpResponse(f"SMS failed to send: {str(e)}")
+            response = nexmo_client.send_message({
+                'from': from_number,
+                'to': to_number,
+                'text': message_body,
+            })
 
-    return HttpResponse("Invalid request method")
+            # Check if the message was sent successfully
+            if response['messages'][0]['status'] == '0':
+                return HttpResponse(f"SMS sent to {phone_number} successfully!")
+            else:
+                return HttpResponse(f"Failed to send SMS to {phone_number}. Error: {response['messages'][0]['error-text']}")
+        except Exception as e:
+            return HttpResponse(f"Failed to send SMS. Error: {str(e)}")
+    else:
+        return HttpResponse("Invalid request method.")
+
+    
+# views.py
+from django.http import JsonResponse
+from .models import Laboratory
+
+def getlaboratories(request):
+    laboratories = Laboratory.objects.values('id', 'laboratoryName')
+    return JsonResponse(list(laboratories), safe=False)
+
 
 def notificationfordonation(request):
     return render(request, 'notificationfordonation.html')
@@ -344,6 +371,16 @@ def addhospitals(request):
 
 def hospitalregistration(request):
     return render(request, 'mainuser/hospitalregistration.html')
+
+
+
+from django.shortcuts import render
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def addlab(request):
+    return render(request, 'mainuser/addlab.html')
 
 
 # def assign_staff(request):
@@ -743,7 +780,7 @@ def verify_hospital(request):
             del request.session['hospital_otp']
 
             # Redirect to the hospital home page
-            return redirect('hospitalhome')
+            return redirect('requestsent')
         else:
             # OTP is incorrect, display an error message
             messages.error(request, 'Invalid OTP. Please try again.')
@@ -752,9 +789,113 @@ def verify_hospital(request):
     return render(request, 'hospital/verify_otp.html')
 
 
+
+
+
+# from django.shortcuts import render, get_object_or_404
+# from django.http import HttpResponseRedirect
+# from .models import BloodRequest
+
+# def accept_blood_request(request, request_id):
+#     blood_request = get_object_or_404(BloodRequest, id=request_id)
+#     blood_request.status = 'Accepted'
+#     blood_request.save()
+#     return HttpResponseRedirect('requests')
+
+# def reject_blood_request(request, request_id):
+#     blood_request = get_object_or_404(BloodRequest, id=request_id)
+#     blood_request.status = 'Rejected'
+#     blood_request.save()
+#     return HttpResponseRedirect('blood_request_list')
+
+# views.py
+
+# from django.shortcuts import get_object_or_404
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from .models import BloodRequest
+
+# @csrf_exempt  # Use csrf_exempt for simplicity in this example; consider adding proper CSRF handling
+# def update_status(request):
+#     if request.method == 'POST':
+#         request_id = request.POST.get('request_id')
+#         new_status = request.POST.get('new_status')
+
+#         blood_request = get_object_or_404(BloodRequest, id=request_id)
+#         blood_request.status = new_status
+#         blood_request.save()
+
+#         return JsonResponse({'requests': True})
+
+#     return JsonResponse({'requests': False})
+
+
+# views.py
+#.............................................................................
+# from django.shortcuts import get_object_or_404
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# from .models import BloodRequest
+
+# @csrf_exempt  # Use csrf_exempt for simplicity in this example; consider adding proper CSRF handling
+# def update_status(request):
+#     if request.method == 'POST':
+#         request_id = request.POST.get('request_id')
+#         new_status = request.POST.get('new_status')
+
+#         blood_request = get_object_or_404(BloodRequest, id=request_id)
+#         blood_request.status = new_status
+#         blood_request.save()
+
+#         return JsonResponse({'requests': True})
+
+#     return JsonResponse({'requests': False})
+
+#.............................................................................
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags  # Import the strip_tags function
+from .models import BloodRequest
+
+@csrf_exempt
+def update_status(request):
+    if request.method == 'POST':
+        request_id = request.POST.get('request_id')
+        new_status = request.POST.get('new_status')
+
+        blood_request = get_object_or_404(BloodRequest, id=request_id)
+        blood_request.status = new_status
+        blood_request.save()
+
+        # Send email to the user
+        send_confirmation_email(blood_request.user.email, new_status)
+
+        return JsonResponse({'requests': True})
+
+    return JsonResponse({'requests': False})
+
+def send_confirmation_email(to_email, status):
+    subject = 'Blood Request Status Update'
+    html_message = render_to_string('mainuser/email_template.html', {'status': status})
+    plain_message = strip_tags(html_message)  # Create a plain text version of the email
+
+    from_email = 'adhilaismail2@gmail.com'
+    recipient_list = [to_email]
+
+    # Set the content_type parameter to 'html'
+    send_mail(subject, plain_message, from_email, recipient_list, fail_silently=False, html_message=html_message)
+
+
+
+
 def requests(request):
     return render(request, 'mainuser/viewrequests.html')
 
+def requestsent(request):
+    return render(request,'hospital/requestsent.html')
 
 
 from django.shortcuts import render
@@ -865,22 +1006,22 @@ from .models import HospitalRegister
 
 
 
-from django.shortcuts import render, redirect
-from .forms import BloodTypeForm
-from django.db import IntegrityError  # Import IntegrityError
+# from django.shortcuts import render, redirect
+# from .forms import BloodTypeForm
+# from django.db import IntegrityError  # Import IntegrityError
 
-def addblood(request):
-    if request.method == 'POST':
-        form = BloodTypeForm(request.POST)
-        if form.is_valid():
-            try:
-                form.save()
-                return redirect('bloodinventory')
-            except IntegrityError:
-                form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
-    else:
-        form = BloodTypeForm()
-    return render(request, 'staff/addnewgroup.html', {'form': form})
+# def addblood(request):
+#     if request.method == 'POST':
+#         form = BloodTypeForm(request.POST)
+#         if form.is_valid():
+#             try:
+#                 form.save()
+#                 return redirect('bloodinventory')
+#             except IntegrityError:
+#                 form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
+#     else:
+#         form = BloodTypeForm()
+#     return render(request, 'staff/addnewgroup.html', {'form': form})
 
 
 # views.py
@@ -893,14 +1034,14 @@ def bloodinventory(request):
     return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
 
 
-def requestsstaff(request):
-    return render(request, 'staff/viewrequests.html')
+# def requestsstaff(request):
+#     return render(request, 'staff/viewrequests.html')
 
 
 
-from django.shortcuts import render
-from .models import BloodRequest  # Import the BloodRequest model
+# from django.shortcuts import render
+# from .models import BloodRequest  # Import the BloodRequest model
 
-def blood_request_list(request):
-    blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
-    return render(request, 'staff/viewrequests.html', {'blood_requests': blood_requests})
+# def blood_request_list(request):
+#     blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
+#     return render(request, 'staff/viewrequests.html', {'blood_requests': blood_requests})
