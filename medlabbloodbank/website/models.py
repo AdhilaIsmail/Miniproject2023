@@ -273,6 +273,7 @@ class LabSelection(models.Model):
     donor = models.ForeignKey(User, on_delete=models.CASCADE)
     selected_lab = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now)
+    
 
     def __str__(self):
-        return f"{self.donor.username} - {self.selected_lab.laboratoryName}"
+        return f"{self.donor.username} - {self.selected_lab}"

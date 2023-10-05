@@ -93,24 +93,29 @@
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">"THANK YOU FOR RESPONDING QUESTIONNAIRE"</h5>
                             <h5 class="display-1 text-white mb-md-4 animated zoomIn">Seamless Connections, Lifesaving Contributions – Your Blood, Their Lifeline</h5>
                             <h6 class="display-4 text-white mb-md-4 animated zoomIn">Get a sample test done from your nearest laboratory for free and upload lab results too..</h6>
-                            <form action="{% url 'send_sms' %}" method="POST">
+                            <form action="{% url 'send_sms' %}" method="POST" id='bloodDonationForm'>
                                 {% csrf_token %}
                                 <div class="form-group">
                                     <label for="phone" class="text-white">Phone Number:</label>
                                     <input type="tel" class="form-control" id="phone" name="phone" value={{ user.donor.phone }}  required readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="email" class="text-white">Email:</label>
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ user.donor.email }}" required readonly>
                                 </div>
                             
                                 <label for="nearestLab">Select Nearest Lab:</label>
                                 <select id="nearestLab" name="nearestLab" class="form-control" required>
                                     <option value="">Select Lab</option>
                                 </select>
-                            
+                                <input type="hidden" id="nearestLabName" name="nearestLabName">
                                 <!-- Add a submit button -->
                                 <button type="submit" class="btn btn-primary">Submit</button>
                                 <script>
                                     // Fetch laboratories using Ajax
                                     var labSelect = document.getElementById('nearestLab');
-                            
+                                    var labNameInput = document.getElementById('nearestLabName');
                                     // Make an Ajax request to retrieve the list of laboratories
                                     var xhr = new XMLHttpRequest();
                                     xhr.open('GET', '{% url "getlaboratories" %}', true);
@@ -130,6 +135,14 @@
                                     };
                             
                                     xhr.send();
+                                    labSelect.addEventListener('change', function () {
+                                        labNameInput.value = labSelect.options[labSelect.selectedIndex].text;
+                                    });
+
+                                    function submitForm() {
+                                        // Now submit the form
+                                        document.getElementById('bloodDonationForm').submit();
+                                    }
                                 </script>
                             </form>
                         </div>

@@ -80,7 +80,8 @@ from django import forms
 class UploadFileForm(forms.Form):
     result_file = forms.FileField(
         label='Select a file',
-        help_text='Allowed file types: PDF, DOC, DOCX'
+        help_text='<small><br><br>Allowed file types: PDF, DOC, DOCX</small>',
+       
     )
 
 

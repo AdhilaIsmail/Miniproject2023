@@ -270,46 +270,113 @@ def registereddonorresponse(request):
 from django.shortcuts import render, redirect
 
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.conf import settings
+# from django.shortcuts import render
+# from django.core.mail import send_mail
+# from django.http import HttpResponse
+# from .models import LabSelection
+
+
+# def send_sms(request):
+#     if request.method == 'POST':
+#         # Handle the form submission and extract necessary data
+#         phone = request.POST.get('phone')
+#         email = request.POST.get('email')
+#         selected_lab = request.POST.get('nearestLab')
+#         nearest_lab_name = request.POST.get('nearestLabName')
+#         print(nearest_lab_name)
+#         # Your logic to process the form data...
+#         lab_selection = LabSelection.objects.create(
+#                 donor=request.user,
+#                 selected_lab=selected_lab,
+#             )
+#         # Compose the email content
+#         email_content = f"Greetings From Medlab Blood bank,\nFor proceeding with donation, get a sample blood test done and upload the result.\n\nSelected Lab: {nearest_lab_name}"
+
+#         # Send the email
+#         send_mail(
+#             'Blood Donation Instructions',
+#             email_content,
+#             'adhilaismail2@gmail.com',  # Sender's email address
+#             [email],  # Recipient's email address
+#             fail_silently=False,
+#         )
+
+#         # Your logic to handle the rest of the form submission...
+#         lab_selection.save()
+#         return redirect('uploadresult')
+#     else:
+#         # Handle GET requests or other cases...
+#         return render(request, 'notificationfordonation.html')
+from datetime import timedelta
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import send_mail
-from nexmo import Client as NexmoClient
-from .models import Laboratory
+from .models import LabSelection, Laboratory
+from django.utils import timezone
 
 def send_sms(request):
     if request.method == 'POST':
-        phone_number = request.POST.get('phone')
-        nearest_lab_id = request.POST.get('nearestLab')
+        # Handle the form submission and extract necessary data
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        lab_id = request.POST.get('nearestLab')  # Assuming this is the lab ID
+        nearest_lab_name = request.POST.get('nearestLabName')
 
-        lab = Laboratory.objects.get(id=nearest_lab_id)
-        message_body = f"Hello! You have selected {lab.laboratoryName} as the nearest lab."
+        # Retrieve the Laboratory instance based on the lab ID
+        selected_lab = get_object_or_404(Laboratory, id=lab_id)
 
-        # Send SMS using Nexmo
-        nexmo_client = NexmoClient(
-            key=settings.NEXMO_API_KEY,
-            secret=settings.NEXMO_API_SECRET
+        # Your logic to process the form data...
+        lab_selection = LabSelection.objects.create(
+            donor=request.user,
+            selected_lab=selected_lab,
+        )
+        
+        # Compose the email content
+        email_content = f"Greetings From Medlab Blood bank,\nFor proceeding with donation, get a sample blood test done and upload the result.\n\nSelected Lab: {nearest_lab_name}"
+
+        # Send the email
+        send_mail(
+            'Blood Donation Instructions',
+            email_content,
+            'adhilaismail2@gmail.com',  # Sender's email address
+            [email],  # Recipient's email address
+            fail_silently=False,
         )
 
-        from_number = settings.NEXMO_PHONE_NUMBER
-        to_number = phone_number
+        # Your logic to handle the rest of the form submission...
 
-        try:
-            response = nexmo_client.send_message({
-                'from': from_number,
-                'to': to_number,
-                'text': message_body,
-            })
+        # Redirect to uploadresult and pass the timestamp of the lab selection
+        return redirect('uploadresult2', lab_selection_timestamp=str(lab_selection.timestamp))
 
-            # Check if the message was sent successfully
-            if response['messages'][0]['status'] == '0':
-                return HttpResponse(f"SMS sent to {phone_number} successfully!")
-            else:
-                return HttpResponse(f"Failed to send SMS to {phone_number}. Error: {response['messages'][0]['error-text']}")
-        except Exception as e:
-            return HttpResponse(f"Failed to send SMS. Error: {str(e)}")
+        # return redirect('uploadresult2', lab_selection_timestamp=lab_selection.timestamp)
     else:
-        return HttpResponse("Invalid request method.")
+        # Handle GET requests or other cases...
+        return render(request, 'notificationfordonation.html')
+
+
+from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta, datetime
+
+def uploadresult2(request, lab_selection_timestamp):
+    # Convert the lab_selection_timestamp string to a datetime object
+    lab_selection_timestamp = datetime.strptime(lab_selection_timestamp, '%Y-%m-%d %H:%M:%S.%f%z')
+    
+    # Calculate the target date (3 days from the lab selection date)
+    target_date = lab_selection_timestamp + timedelta(days=3)
+    
+    # Calculate the remaining time
+    current_time = timezone.now()
+    remaining_time = target_date - current_time
+    
+    # Pass the timestamp, target date, and remaining time to the template
+    context = {
+        'lab_selection_timestamp': lab_selection_timestamp.strftime("%Y-%m-%dT%H:%M:%S"),
+        'target_date': target_date.strftime("%Y-%m-%dT%H:%M:%S"),
+        'remaining_time_seconds': remaining_time.total_seconds(),
+    }
+    
+    return render(request, 'uploadresult.html', context)
+
 
     
 # views.py
@@ -792,66 +859,7 @@ def verify_hospital(request):
 
 
 
-# from django.shortcuts import render, get_object_or_404
-# from django.http import HttpResponseRedirect
-# from .models import BloodRequest
 
-# def accept_blood_request(request, request_id):
-#     blood_request = get_object_or_404(BloodRequest, id=request_id)
-#     blood_request.status = 'Accepted'
-#     blood_request.save()
-#     return HttpResponseRedirect('requests')
-
-# def reject_blood_request(request, request_id):
-#     blood_request = get_object_or_404(BloodRequest, id=request_id)
-#     blood_request.status = 'Rejected'
-#     blood_request.save()
-#     return HttpResponseRedirect('blood_request_list')
-
-# views.py
-
-# from django.shortcuts import get_object_or_404
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from .models import BloodRequest
-
-# @csrf_exempt  # Use csrf_exempt for simplicity in this example; consider adding proper CSRF handling
-# def update_status(request):
-#     if request.method == 'POST':
-#         request_id = request.POST.get('request_id')
-#         new_status = request.POST.get('new_status')
-
-#         blood_request = get_object_or_404(BloodRequest, id=request_id)
-#         blood_request.status = new_status
-#         blood_request.save()
-
-#         return JsonResponse({'requests': True})
-
-#     return JsonResponse({'requests': False})
-
-
-# views.py
-#.............................................................................
-# from django.shortcuts import get_object_or_404
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# from .models import BloodRequest
-
-# @csrf_exempt  # Use csrf_exempt for simplicity in this example; consider adding proper CSRF handling
-# def update_status(request):
-#     if request.method == 'POST':
-#         request_id = request.POST.get('request_id')
-#         new_status = request.POST.get('new_status')
-
-#         blood_request = get_object_or_404(BloodRequest, id=request_id)
-#         blood_request.status = new_status
-#         blood_request.save()
-
-#         return JsonResponse({'requests': True})
-
-#     return JsonResponse({'requests': False})
-
-#.............................................................................
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -998,30 +1006,7 @@ def hospital_registration(request):
 from django.shortcuts import render
 from .models import HospitalRegister
 
-# def registeredhospitaltable(request):
-#     hospitals = HospitalRegister.objects.all()
-#     return render(request, 'staff/registeredhospitaltable.html', {'hospitals': hospitals})
 
-
-
-
-
-# from django.shortcuts import render, redirect
-# from .forms import BloodTypeForm
-# from django.db import IntegrityError  # Import IntegrityError
-
-# def addblood(request):
-#     if request.method == 'POST':
-#         form = BloodTypeForm(request.POST)
-#         if form.is_valid():
-#             try:
-#                 form.save()
-#                 return redirect('bloodinventory')
-#             except IntegrityError:
-#                 form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
-#     else:
-#         form = BloodTypeForm()
-#     return render(request, 'staff/addnewgroup.html', {'form': form})
 
 
 # views.py

@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path,include
 from website import views
 from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor
-from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult
+from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, uploadresult2
 from website.views import homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent
@@ -49,9 +49,10 @@ urlpatterns = [
     path('getlaboratories',getlaboratories,name='getlaboratories'),
     path('send_sms/', send_sms, name='send_sms'),
     path('uploadresult', uploadresult, name='uploadresult'),
+    
+    path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),
     path("",include("allauth.urls")),
-
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
@@ -92,12 +93,9 @@ urlpatterns = [
     path('api/grampanchayats/', grampanchayat_list, name='grampanchayat_list'),
     path('edit_grampanchayat/<int:pk>/', views.edit_grampanchayat, name='edit_grampanchayat'),
     path('addlab',addlab,name='addlab'),
-    # path('accept/<int:request_id>/', accept_blood_request, name='accept_blood_request'),
-    # path('reject/<int:request_id>/', reject_blood_request, name='reject_blood_request'),
     path('update_status/', update_status, name='update_status'),
     path('send_confirmation_email',send_confirmation_email,name='send_confirmation_email'),
-    # path('send_notification_email',send_notification_email,name='send_notification_email'),
- 
+   
 
    
     
