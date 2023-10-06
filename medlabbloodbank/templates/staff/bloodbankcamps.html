@@ -135,7 +135,7 @@
                         <span>Admin</span>
                     </a>
 					<div class="dropdown-menu">
-                        <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'profile1' %}">My Profile</a>
                         <a class="dropdown-item" href="{% url 'editprofile' %}">Edit Profile</a>
                       
                         <a class="dropdown-item" href="{% url 'loggout' %}">Logout</a>
@@ -145,7 +145,7 @@
             <div class="dropdown mobile-user-menu float-right">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
-                    <a class="dropdown-item" href="{% url 'profile' %}">My Profile</a>
+                    <a class="dropdown-item" href="{% url 'profile1' %}">My Profile</a>
                     <a class="dropdown-item" href="{% url 'editprofile' %}">Edit Profile</a>
                    
                     <a class="dropdown-item" href="{% url 'loggout' %}">Logout</a>
@@ -158,7 +158,7 @@
                     <ul>
                         <li class="menu-title">Main</li>
                         <li>
-                            <a href="{% url 'adminindex' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                            <a href="{% url 'staffindex' %}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
                         </li>
 						<li>
                             <a href="{% url 'doctors' %}"><i class="fa fa-users"></i> <span>Donors</span></a>
@@ -166,14 +166,9 @@
                         <li>
                             <a href="{% url 'registereddonortablestaff' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        {% comment %} <li>
-                            <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
-                        </li> {% endcomment %}
-                        <!-- <li>
-                            <a href="doctors.html"><i class="fa fa-calendar-check-o"></i> <span>Staffs</span></a>
-                        </li> -->
+                        
                         <li class="active">
-                            <a href="{% url 'departments' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
+                            <a href="{% url 'bloodbankcamps' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
                         </li>
                         <li>
                             <a href="{% url 'appointments' %}"><i class="fa fa-list-alt"></i> <span>View Appointements</span></a>
@@ -198,7 +193,7 @@
             <div class="content">
                 <div class="row">
                     <div class="col-sm-5 col-5">
-                        <h4 class="page-title">Departments</h4>
+                        <h4 class="page-title">Scheduled Blood Bank Camps</h4>
                     </div>
                    
                 </div>
@@ -211,7 +206,7 @@
                                         <th>#</th>
                                         <th>Department Name</th>
                                         <th>Status</th>
-                                        <th class="text-right">Action</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>

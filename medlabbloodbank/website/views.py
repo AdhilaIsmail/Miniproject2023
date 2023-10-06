@@ -69,13 +69,14 @@ def loginn(request):
             if user.role == CustomUser.REGISTEREDDONOR:
                 lab_selection = LabSelection.objects.filter(donor=user).order_by('-timestamp').first()
                 if lab_selection and lab_selection.timestamp + timedelta(days=3) > timezone.now():
-                    if lab_selection.uploadedfile_set.exists():
+                    return redirect('uploadresult2', lab_selection_timestamp=str(lab_selection.timestamp))
+                else:
+                    # Check if the user has already uploaded a file within the 3-day limit
+                    if UploadedFile.objects.filter(donor=user, timestamp__gte=timezone.now() - timedelta(days=3)).exists():
                         return redirect('waitforemail')
                     else:
-                        return redirect('uploadresult2', lab_selection_timestamp=str(lab_selection.timestamp))
-                else:
-                    messages.warning(request, 'The three-day window for uploading results has expired.')
-                    return redirect('donatenow')
+                        messages.warning(request, 'The three-day window for uploading results has expired.')
+                        return redirect('donatenow')
 
             if user.is_superadmin:  # Check if the user is a superuser (admin)
                 return redirect('adminindex')  # Redirect to the admin dashboard
@@ -913,8 +914,8 @@ def activities(request):
 def appointmentsstaff(request):
     return render(request, 'staff/appointments.html')
 
-def departmentsstaff(request):
-    return render(request, 'staff/departments.html')
+def bloodbankcamps(request):
+    return render(request, 'staff/bloodbankcamps.html')
 
 def doctors(request):
     return render(request, 'staff/doctors.html')
