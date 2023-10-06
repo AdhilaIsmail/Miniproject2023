@@ -282,4 +282,17 @@ class UploadedFile(models.Model):
     
     file = models.FileField(upload_to='media/uploads/')
 
-   
+
+class BloodCamp(models.Model):
+    camp_date = models.DateField()
+    camp_name = models.CharField(max_length=255)
+    camp_address = models.TextField()
+    camp_district = models.CharField(max_length=255)
+    camp_contact = models.CharField(max_length=20)
+    conducted_by = models.CharField(max_length=255)
+    organized_by = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
+    #register = models.CharField(max_length=255)
+    camp_time = models.TimeField()
+
+    def __str__(self):
+        return self.camp_name

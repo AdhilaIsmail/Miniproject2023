@@ -192,46 +192,85 @@
         <div class="page-wrapper">
             <div class="content">
                 <div class="row">
-                    <div class="col-sm-5 col-5">
-                        <h4 class="page-title">Scheduled Blood Bank Camps</h4>
-                    </div>
-                   
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="table-responsive">
-                            <table class="table table-striped custom-table mb-0 datatable">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Department Name</th>
-                                        <th>Status</th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Dentists</td>
-										<td><span class="custom-badge status-green">Active</span></td>
-                                        <td class="text-right">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                   
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="col-lg-8 offset-lg-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="page-title" id="bloodbankcamp">Blood Bank Camp Schedule</h4>
+                            <!-- Add the button for viewing registered hospitals -->
+                       
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-8 offset-lg-2">
+                        <form action="{% url 'schedule_blood_camp' %}" method="POST">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Date <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="date" name="campDate" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Camp Name <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="campName" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Address <span class="text-danger">*</span></label>
+                                        <textarea class="form-control" name="campAddress" rows="2" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>District <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="campDistrict" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Contact <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="tel" name="campContact" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Conducted By <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="conductedBy" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Organized by <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="organizedBy" required>
+                                    </div>
+                                </div>
+                                {% comment %} <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Register <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="text" name="register" required>
+                                    </div>
+                                </div> {% endcomment %}
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Time <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="time" name="campTime" required>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            
+                            <div class="m-t-20 text-center">
+                                <button class="btn btn-primary submit-btn" id="createhospital">Schedule</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            
         </div>
-		<div id="delete_department" class="modal fade delete-modal" role="dialog">
+		{% comment %} <div id="delete_department" class="modal fade delete-modal" role="dialog">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-body text-center">
@@ -243,7 +282,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div> {% endcomment %}
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>

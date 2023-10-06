@@ -57,6 +57,8 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from .models import CustomUser,LabSelection
 from datetime import timedelta
+from .models import CustomUser, LabSelection, UploadedFile
+from django.utils import timezone
 
 def loginn(request):
     if request.method == "POST":
@@ -242,15 +244,7 @@ def registereddonorresponse(request):
         donor_response.save()
 
         return redirect('notificationfordonation')
-    # else:
-    #     # Fetch the data from the database (assuming you want to prefill the last entry)
-    #     latest_entry = DonorResponse.objects.last()
-    #     initial_data = {
-    #         'name': latest_entry.name,
-    #         'bloodType': latest_entry.bloodType,
-    #         # Add other fields as needed
-    #     }
-    #     form = DonorForm(initial=initial_data)
+   
 
     return render(request, 'donatenow.html', {'donor': donor})
 
@@ -403,6 +397,42 @@ def uploadresult(request):
 
     return render(request, 'uploadresult.html', {'form': form})
 
+
+#bloodcampschedule
+from django.shortcuts import render, redirect
+from .models import BloodCamp
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def schedule_blood_camp(request):
+    if request.method == 'POST':
+        # Extract data from the request
+        camp_date = request.POST.get('camp_date')
+        camp_name = request.POST.get('camp_name')
+        camp_address = request.POST.get('camp_address')
+        camp_district = request.POST.get('camp_district')
+        camp_contact = request.POST.get('camp_contact')
+        conducted_by = request.POST.get('conducted_by')
+        organized_by = request.user.staff  # Get the logged-in staff
+        #register = request.POST.get('register')
+        camp_time = request.POST.get('camp_time')
+
+        # Create a BloodCamp instance and save it to the database
+        blood_camp = BloodCamp.objects.create(
+            camp_date=camp_date,
+            camp_name=camp_name,
+            camp_address=camp_address,
+            camp_district=camp_district,
+            camp_contact=camp_contact,
+            conducted_by=conducted_by,
+            organized_by=organized_by,
+            
+            camp_time=camp_time
+        )
+
+        return redirect('staffindex')  # Redirect to a success page or wherever you want
+
+    return render(request, 'bloodbankcamps.html')
 
 
 #admin dashboard
