@@ -212,7 +212,7 @@
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="page-title">Hospital Registration</h4>
+                            <h4 class="page-title" id="hospitallist">Hospital Registration</h4>
                             <!-- Add the button for viewing registered hospitals -->
                        
                         </div>
@@ -253,12 +253,12 @@
                                         <textarea class="form-control" name="location" rows="2" required>{{ hospital.location }}</textarea>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
+                                {% comment %} <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>GPS Coordinates<span class="text-danger">*</span></label>
                                         <input class="form-control" type="text" name="gpsCoordinates" value="{{ hospital.gpsCoordinates }}">
                                     </div>
-                                </div>
+                                </div> {% endcomment %}
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Ownership<span class="text-danger">*</span></label>
@@ -280,7 +280,7 @@
                             </div>
                             
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn">Update Hospital</button>
+                                <button class="btn btn-primary submit-btn" id="createhospital">Create Hospital</button>
                             </div>
                         </form>
                     </div>
@@ -297,7 +297,7 @@
         const emailInput = document.getElementById('email');
         const phoneInput = document.getElementById('phone');
         const locationInput = document.getElementById('location');
-        const gpsCoordinatesInput = document.getElementById('gpsCoordinates');
+        {% comment %} const gpsCoordinatesInput = document.getElementById('gpsCoordinates'); {% endcomment %}
         const ownershipInput = document.getElementById('ownership');
         const hospitalURLInput = document.getElementById('hospitalURL');
         const passwordInput = document.getElementById('password');
@@ -307,7 +307,7 @@
         emailInput.addEventListener('keyup', validateEmail);
         phoneInput.addEventListener('keyup', validatePhone);
         locationInput.addEventListener('keyup', validateLocation);
-        gpsCoordinatesInput.addEventListener('keyup', validateGpsCoordinates);
+        {% comment %} gpsCoordinatesInput.addEventListener('keyup', validateGpsCoordinates); {% endcomment %}
         ownershipInput.addEventListener('keyup', validateOwnership);
         hospitalURLInput.addEventListener('keyup', validateHospitalURL);
         passwordInput.addEventListener('keyup', validatePassword);
@@ -358,11 +358,7 @@
             }
         }
     
-        function validateGpsCoordinates() {
-            // You can add specific validation for GPS coordinates here
-            // For example, check if they match a certain pattern
-            // If invalid, add 'is-invalid' class; otherwise, remove it
-        }
+        
     
         function validateOwnership() {
             // Add validation for ownership here if needed

@@ -114,10 +114,7 @@ class DonorResponse(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
 
 #uploading result into database
-from django.db import models
 
-class UploadedFile(models.Model):
-    file = models.FileField(upload_to='media/uploads/')
 
 
 #hospital registration model
@@ -129,7 +126,7 @@ class HospitalRegister(models.Model):
     # email = models.EmailField(unique=True)
     # phone = models.CharField(max_length=20)
     location = models.TextField()
-    gpsCoordinates = models.CharField(max_length=50)
+    # gpsCoordinates = models.CharField(max_length=50)
     ownership = models.CharField(max_length=100)
     hospitalURL = models.URLField(blank=True)
     status = models.CharField(max_length=20, default='Active')
@@ -277,3 +274,10 @@ class LabSelection(models.Model):
 
     def __str__(self):
         return f"{self.donor.username} - {self.selected_lab}"
+
+from .models import LabSelection   
+from django.db import models
+
+class UploadedFile(models.Model):
+    lab_selection = models.ForeignKey(LabSelection, on_delete=models.CASCADE)
+    file = models.FileField(upload_to='media/uploads/')

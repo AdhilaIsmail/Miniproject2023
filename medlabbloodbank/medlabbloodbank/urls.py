@@ -23,7 +23,7 @@ from website.views import registereddonorresponse, registereddonortodonatenow, n
 from website.views import homebloodbank, appointmentschedule, register, loggout
 from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent
-from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration
+from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
 from website.views import registereddonortablestaff, departmentsstaff, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status
@@ -49,8 +49,10 @@ urlpatterns = [
     path('getlaboratories',getlaboratories,name='getlaboratories'),
     path('send_sms/', send_sms, name='send_sms'),
     path('uploadresult', uploadresult, name='uploadresult'),
-    
-    path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
+    path('uploadresult2/<str:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
+    path('waitforemail',waitforemail,name='waitforemail'),
+
+    # path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),
     path("",include("allauth.urls")),
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
@@ -122,8 +124,7 @@ urlpatterns = [
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortablestaff', registereddonortablestaff, name='registereddonortablestaff'),
     path('addhospitals', addhospitals, name='addhospitals'),
-    path('hospitalregistration', hospitalregistration, name='hospitalregistration'),
-    path('hospital-registration/', hospital_registration, name='hospital_registration'),
+   
     path('search-by-name/', search_by_name, name='search_by_name'),
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),

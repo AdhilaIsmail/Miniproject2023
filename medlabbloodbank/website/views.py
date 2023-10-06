@@ -54,7 +54,9 @@ def testimonial(request):
 
 ##checking
 from django.contrib.auth import authenticate, login
-from .models import CustomUser 
+from django.shortcuts import render, redirect
+from .models import CustomUser,LabSelection
+from datetime import timedelta
 
 def loginn(request):
     if request.method == "POST":
@@ -64,10 +66,23 @@ def loginn(request):
         
         if user is not None:
             login(request, user)
+            if user.role == CustomUser.REGISTEREDDONOR:
+                lab_selection = LabSelection.objects.filter(donor=user).order_by('-timestamp').first()
+                if lab_selection and lab_selection.timestamp + timedelta(days=3) > timezone.now():
+                    if lab_selection.uploadedfile_set.exists():
+                        return redirect('waitforemail')
+                    else:
+                        return redirect('uploadresult2', lab_selection_timestamp=str(lab_selection.timestamp))
+                else:
+                    messages.warning(request, 'The three-day window for uploading results has expired.')
+                    return redirect('donatenow')
+
             if user.is_superadmin:  # Check if the user is a superuser (admin)
                 return redirect('adminindex')  # Redirect to the admin dashboard
             elif user.role == CustomUser.HOSPITAL:
                 return redirect('hospitalhome')
+            elif user.role == CustomUser.STAFF:
+                return redirect('staffindex')
             else:
                 return redirect('index')  # Redirect to the custom dashboard for non-admin users
         else:
@@ -78,7 +93,6 @@ def loginn(request):
     
 
 
-  
 
 def register(request):
     if request.method == 'POST':
@@ -161,35 +175,7 @@ def registereddonortodonatenow(request):
     return render(request, 'registereddonortodonatenow.html')
 
 
-# def register_donor(request):
-#     if request.method == 'POST':
-#         # Handle form submission and validation here
-#         form = DonorRegistrationForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             # Save the form data to create a new Donor record
-#             user = request.user
-#             user.email = form.cleaned_data['email']
-#             user.phone = form.cleaned_data['phone']
-#             user.save()
-#             donor = form.save(commit=False)
 
-#             donor.email = request.user.email 
-#             donor.user_id = request.user.id # Set the email based on the logged-in user
-#             donor.save()
-
-#             # Update the user's role to "Registered Donor"
-#             if request.user.role == CustomUser.DONOR:
-#                 request.user.role = CustomUser.REGISTEREDDONOR
-#                 request.user.save()
-
-#             # Redirect to a success page or perform other actions
-#             return redirect('registereddonortodonatenow')  # Change 'success_page' to the actual success page URL
-
-#     else:
-#         # form = DonorRegistrationForm()
-#         form = DonorRegistrationForm()
-
-#     return render(request, 'registerasdonor.html', {'form': form})
 
 def register_donor(request):
     if request.method == 'POST':
@@ -268,50 +254,13 @@ def registereddonorresponse(request):
     return render(request, 'donatenow.html', {'donor': donor})
 
 from django.shortcuts import render, redirect
-
-
-# from django.shortcuts import render
-# from django.core.mail import send_mail
-# from django.http import HttpResponse
-# from .models import LabSelection
-
-
-# def send_sms(request):
-#     if request.method == 'POST':
-#         # Handle the form submission and extract necessary data
-#         phone = request.POST.get('phone')
-#         email = request.POST.get('email')
-#         selected_lab = request.POST.get('nearestLab')
-#         nearest_lab_name = request.POST.get('nearestLabName')
-#         print(nearest_lab_name)
-#         # Your logic to process the form data...
-#         lab_selection = LabSelection.objects.create(
-#                 donor=request.user,
-#                 selected_lab=selected_lab,
-#             )
-#         # Compose the email content
-#         email_content = f"Greetings From Medlab Blood bank,\nFor proceeding with donation, get a sample blood test done and upload the result.\n\nSelected Lab: {nearest_lab_name}"
-
-#         # Send the email
-#         send_mail(
-#             'Blood Donation Instructions',
-#             email_content,
-#             'adhilaismail2@gmail.com',  # Sender's email address
-#             [email],  # Recipient's email address
-#             fail_silently=False,
-#         )
-
-#         # Your logic to handle the rest of the form submission...
-#         lab_selection.save()
-#         return redirect('uploadresult')
-#     else:
-#         # Handle GET requests or other cases...
-#         return render(request, 'notificationfordonation.html')
 from datetime import timedelta
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import send_mail
 from .models import LabSelection, Laboratory
 from django.utils import timezone
+from datetime import datetime
+from django.contrib import messages
 
 def send_sms(request):
     if request.method == 'POST':
@@ -329,6 +278,9 @@ def send_sms(request):
             donor=request.user,
             selected_lab=selected_lab,
         )
+
+        # Set session variable for lab selection timestamp
+        request.session['lab_selection_timestamp'] = str(lab_selection.timestamp)
         
         # Compose the email content
         email_content = f"Greetings From Medlab Blood bank,\nFor proceeding with donation, get a sample blood test done and upload the result.\n\nSelected Lab: {nearest_lab_name}"
@@ -353,14 +305,22 @@ def send_sms(request):
         return render(request, 'notificationfordonation.html')
 
 
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.utils import timezone
 from datetime import timedelta, datetime
+from .forms import UploadFileForm
+from django.contrib import messages
+from .models import LabSelection
+from urllib.parse import unquote
+
 
 def uploadresult2(request, lab_selection_timestamp):
     # Convert the lab_selection_timestamp string to a datetime object
+    # lab_selection_timestamp = datetime.strptime(lab_selection_timestamp, '%Y-%m-%d %H:%M:%S.%f%z')
+    lab_selection_timestamp = unquote(lab_selection_timestamp)
+    print(lab_selection_timestamp)
+    # Convert the lab_selection_timestamp string to a datetime object
     lab_selection_timestamp = datetime.strptime(lab_selection_timestamp, '%Y-%m-%d %H:%M:%S.%f%z')
-    
     # Calculate the target date (3 days from the lab selection date)
     target_date = lab_selection_timestamp + timedelta(days=3)
     
@@ -368,17 +328,45 @@ def uploadresult2(request, lab_selection_timestamp):
     current_time = timezone.now()
     remaining_time = target_date - current_time
     
+    if remaining_time.total_seconds() <= 0:
+        messages.error(request, 'The three-day window for uploading results has expired.')
+        return redirect('donatenow')
+
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = form.cleaned_data['result_file']
+            
+            # Save the uploaded file to your database
+            new_upload = UploadedFile(file=uploaded_file)
+            new_upload.save()
+
+            # Provide feedback to the user
+            messages.success(request, 'File uploaded successfully.')
+
+            # Redirect to a success page or do something else
+            return redirect('waitforemail')
+
+        else:
+            # Provide feedback to the user about form validation errors
+            messages.error(request, 'Please correct the errors in the form.')
+
+    else:
+        form = UploadFileForm()
+
     # Pass the timestamp, target date, and remaining time to the template
     context = {
-        'lab_selection_timestamp': lab_selection_timestamp.strftime("%Y-%m-%dT%H:%M:%S"),
-        'target_date': target_date.strftime("%Y-%m-%dT%H:%M:%S"),
+        'lab_selection_timestamp': lab_selection_timestamp.strftime("%Y-%m-%d %H:%M:%S.%f%z"),
+        'target_date': target_date.strftime("%Y-%m-%d %H:%M:%S.%f%z"),
         'remaining_time_seconds': remaining_time.total_seconds(),
+        'form': form,
     }
     
     return render(request, 'uploadresult.html', context)
 
+def waitforemail(request):
+    return render(request,'waitforemail.html')
 
-    
 # views.py
 from django.http import JsonResponse
 from .models import Laboratory
@@ -660,7 +648,7 @@ def hospital_registration(request):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         location = request.POST.get('location')
-        gpsCoordinates = request.POST.get('gpsCoordinates')
+        # gpsCoordinates = request.POST.get('gpsCoordinates')
         ownership = request.POST.get('ownership')
         hospitalURL = request.POST.get('hospitalURL')
         password = request.POST.get('password')
@@ -673,7 +661,7 @@ def hospital_registration(request):
             user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
             user.role = CustomUser.HOSPITAL
             user.save()
-            hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
+            hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,ownership=ownership,hospitalURL=hospitalURL)
             hospitalRegister.save()
 
             return redirect('registeredhospitaltable')
@@ -934,8 +922,8 @@ def doctors(request):
 def addhospitals(request):
     return render(request, 'staff/add-hospitals.html')
 
-def hospitalregistration(request):
-    return render(request, 'staff/hospitalregistration.html')
+# def hospitalregistration(request):
+#     return render(request, 'staff/hospitalregistration.html')
 
 def employees(request):
     return render(request, 'staff/employees.html')
@@ -973,34 +961,34 @@ def bloodinventory(request):
 def addnewgroup(request):
     return render(request, 'staff/addnewgroup.html')
 
-def hospital_registration(request):
-    if request.method == 'POST':
-        hospitalName = request.POST.get('hospitalName')
-        contactPerson = request.POST.get('contactPerson')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        location = request.POST.get('location')
-        gpsCoordinates = request.POST.get('gpsCoordinates')
-        ownership = request.POST.get('ownership')
-        hospitalURL = request.POST.get('hospitalURL')
-        password = request.POST.get('password')
+# def hospital_registration(request):
+#     if request.method == 'POST':
+#         hospitalName = request.POST.get('hospitalName')
+#         contactPerson = request.POST.get('contactPerson')
+#         email = request.POST.get('email')
+#         phone = request.POST.get('phone')
+#         location = request.POST.get('location')
+#         gpsCoordinates = request.POST.get('gpsCoordinates')
+#         ownership = request.POST.get('ownership')
+#         hospitalURL = request.POST.get('hospitalURL')
+#         password = request.POST.get('password')
         
-        roles = CustomUser.HOSPITAL
-        print(roles)
-        if CustomUser.objects.filter(email=email,role=CustomUser.HOSPITAL).exists():
-            return render(request, 'staff/hospitalregistration.html')
-        else:
-            user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
-            user.role = CustomUser.HOSPITAL
-            user.save()
-            hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
-            hospitalRegister.save()
+#         roles = CustomUser.HOSPITAL
+#         print(roles)
+#         if CustomUser.objects.filter(email=email,role=CustomUser.HOSPITAL).exists():
+#             return render(request, 'staff/hospitalregistration.html')
+#         else:
+#             user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
+#             user.role = CustomUser.HOSPITAL
+#             user.save()
+#             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
+#             hospitalRegister.save()
 
-            return redirect('registeredhospitaltable')
+#             return redirect('registeredhospitaltable')
 
         
-    else:
-        return render(request, 'staff/hospitalregistration.html')
+#     else:
+#         return render(request, 'staff/hospitalregistration.html')
 
 
 from django.shortcuts import render

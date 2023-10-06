@@ -75,15 +75,35 @@ class DonorForm(forms.ModelForm):
         if feelgood != 'no':
             raise forms.ValidationError("Feelgood must be 'no'.")
         
+# from django import forms
+
+# class UploadFileForm(forms.Form):
+#     result_file = forms.FileField(
+#         label='Select a file',
+#         help_text='<small><br><br>Allowed file types: PDF, DOC, DOCX</small>',
+       
+#     )
+
 from django import forms
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 class UploadFileForm(forms.Form):
+    ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx']
+
     result_file = forms.FileField(
         label='Select a file',
         help_text='<small><br><br>Allowed file types: PDF, DOC, DOCX</small>',
-       
     )
 
+    def clean_result_file(self):
+        uploaded_file = self.cleaned_data['result_file']
+        extension = uploaded_file.name.split('.')[-1].lower()
+
+        if extension not in self.ALLOWED_EXTENSIONS:
+            raise ValidationError(_('Invalid file type. Please upload a PDF, DOC, or DOCX file.'))
+
+        return uploaded_file
 
 # from django import forms
 # from .models import HospitalRegister

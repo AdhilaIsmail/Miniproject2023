@@ -256,7 +256,7 @@
                         
                         <button id="toggle-active" class="btn btn-primary btn-rounded"><i class="fa fa-filter"></i> Show Active Hospitals</button>
                        
-                        <a href="{% url 'hospital_registration' %}" class="btn btn-success btn-rounded"><i class="fa fa-plus"></i> Add Hospital</a>
+                        <a href="{% url 'hospital_registration' %}" class="btn btn-success btn-rounded"><i class="fa fa-plus" id="hosadd"></i> Add Hospital</a>
                     </div>
                 </div>
                 
@@ -270,7 +270,7 @@
                                     <th>Email</th>
                                     <th>Phone</th>
                                     <th>Location</th>
-                                    <th>GPS Coordinates</th>
+                                    
                                     <th>Ownership</th>
                                     {% comment %} <th>Password</th> {% endcomment %}
                                     <th>Status</th>
@@ -286,7 +286,7 @@
                                     <td>{{ hospital.user.email }}</td>
                                     <td>{{ hospital.user.phone }}</td>
                                     <td>{{ hospital.location }}</td>
-                                    <td>{{ hospital.gpsCoordinates }}</td>
+                                   
                                     <td>{{ hospital.ownership }}</td>
                                     {% comment %} <td>{{ hospital.password }}</td> {% endcomment %}
                                     <td>

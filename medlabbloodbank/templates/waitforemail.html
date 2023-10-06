@@ -95,16 +95,12 @@
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
                             
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Empowering Lives Through Digital Blood Bank Management: Donate, Connect, Save"</h5>
-                            <h8  style="font-size:30px"class="display-1 text-white  animated zoomIn">Upload your results here!....</h8>
+                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Thank you for uploading your test results"</h5>
+                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Check your registered mail for confirmation."</h5>
                             
                             
-                            <form method="post" enctype="multipart/form-data" action="{% url 'uploadresult2' lab_selection_timestamp=lab_selection_timestamp|urlencode %}">
-                                {% csrf_token %}
-                                {{ form.as_p }}
-                                <button type="submit" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Upload Results</button><br>
-                            </form>
-                            <div id="countdown"></div>
+                            
+                            
 
                         </div>
                     </div>
@@ -195,31 +191,7 @@
         </div>
     </div>
     <!-- Footer End -->
-    <script>
-        var remainingTime = {{ remaining_time_seconds }};
-        var countdownElement = document.getElementById('countdown');
     
-        function updateCountdown() {
-            if (countdownElement) {
-                var remainingHours = Math.floor(remainingTime / 3600);
-                var remainingMinutes = Math.floor((remainingTime % 3600) / 60);
-                var remainingSeconds = Math.floor(remainingTime % 60);
-    
-                countdownElement.innerHTML = remainingHours + ' hrs ' + remainingMinutes + ' min ' + remainingSeconds + ' sec';
-    
-                remainingTime--;
-    
-                if (remainingTime < 0) {
-                    clearInterval(countdownInterval);
-                    countdownElement.innerHTML = 'Time expired';
-                }
-            }
-        }
-    
-        updateCountdown();
-    
-        var countdownInterval = setInterval(updateCountdown, 1000);
-    </script>
     
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
