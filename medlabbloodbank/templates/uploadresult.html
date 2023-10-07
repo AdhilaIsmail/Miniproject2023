@@ -96,15 +96,30 @@
                         <div class="p-3" style="max-width: 900px;">
                             
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">"Empowering Lives Through Digital Blood Bank Management: Donate, Connect, Save"</h5>
-                            <h8  style="font-size:30px"class="display-1 text-white  animated zoomIn">Upload your results here!....</h8>
+                            {% if user_has_submitted_results %}
+                                <p>You have already submitted your lab results. You cannot submit them again.</p>
+                            {% else %}
+                                <p>Upload your lab results here:</p>
+                                
+                                <form method="post" enctype="multipart/form-data" action="{% url 'uploadresult2' lab_selection_timestamp=lab_selection_timestamp|urlencode %}">
+                                    {% csrf_token %}
+                                    {{ form.as_p }}
+                                    <button type="submit">Upload Results</button>
+                                </form>
+                                
+                                <p>Remaining time: {{ remaining_time_seconds }} seconds</p>
+                            {% endif %}
+
+
+                            {% comment %} <h8  style="font-size:30px"class="display-1 text-white  animated zoomIn">Upload your results here!....</h8> {% endcomment %}
                             
                             
-                            <form method="post" enctype="multipart/form-data" action="{% url 'uploadresult2' lab_selection_timestamp=lab_selection_timestamp|urlencode %}">
+                            {% comment %} <form method="post" enctype="multipart/form-data" action="{% url 'uploadresult2' lab_selection_timestamp=lab_selection_timestamp|urlencode %}">
                                 {% csrf_token %}
                                 {{ form.as_p }}
                                 <button type="submit" class="btn btn-danger py-md-3 px-md-5 me-3 animated slideInLeft">Upload Results</button><br>
                             </form>
-                            <div id="countdown"></div>
+                            <div id="countdown"></div> {% endcomment %}
 
                         </div>
                     </div>

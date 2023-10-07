@@ -276,13 +276,19 @@ class LabSelection(models.Model):
         return f"{self.donor.username} - {self.selected_lab}"
 
   
+# from django.db import models
+
+# class UploadedFile(models.Model):
+    
+#     file = models.FileField(upload_to='media/uploads/')
+
 from django.db import models
+from django.contrib.auth import get_user_model
 
 class UploadedFile(models.Model):
-    
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
     file = models.FileField(upload_to='media/uploads/')
-
-
+    
 class BloodCamp(models.Model):
     camp_date = models.DateField()
     camp_name = models.CharField(max_length=255)
