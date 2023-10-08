@@ -11,7 +11,11 @@
     <link rel="stylesheet" type="text/css" href="{% static 'staff/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'staff/css/style.css' %}">
     <style>
-            
+		body {
+            background-image: url("{% static 'img/9.jpg' %}"); /* Replace 'background.jpg' with your image file name */
+            background-repeat: no-repeat;
+            background-size: cover; /* You can adjust this property to control how the image is displayed */
+        }  
 		.sidebar {
 			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 			top: 50px;
@@ -131,7 +135,7 @@
 							<img class="rounded-circle" src="{% static 'staff/img/user.jpg'  %}" width="24" alt="Staff">
 							<span class="status online"></span>
 						</span>
-						<span>Staff</span>
+						<span style="color:maroon;">Staff</span>
                     </a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="{% url 'profile1' %}">My Profile</a>
@@ -166,14 +170,8 @@
                         <li>
                             <a href="{% url 'registereddonortablestaff' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        {% comment %} <li>
-                            <a href="{% url 'registeredhospitaltable' %}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
-                        </li> {% endcomment %}
-                        <!-- <li>
-                            <a href="doctors.html"><i class="fa fa-calendar-check-o"></i> <span>Staffs</span></a>
-                        </li> -->
                         <li>
-                            <a href="{% url 'bloodbankcamps' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
+                            <a href="{% url 'bloodbankcamps' %}"><i class="fa fa-hospital-o"></i> <span>Schedule Camps</span></a>
                         </li>
                         <li>
                             <a href="{% url 'appointments' %}"><i class="fa fa-list-alt"></i> <span>View Appointements</span></a>

@@ -456,41 +456,8 @@ def uploadresult(request):
     return render(request, 'uploadresult.html', {'form': form})
 
 
-#bloodcampschedule
-from django.shortcuts import render, redirect
-from .models import BloodCamp
-from django.contrib.auth.decorators import login_required
 
-@login_required
-def schedule_blood_camp(request):
-    if request.method == 'POST':
-        # Extract data from the request
-        camp_date = request.POST.get('camp_date')
-        camp_name = request.POST.get('camp_name')
-        camp_address = request.POST.get('camp_address')
-        camp_district = request.POST.get('camp_district')
-        camp_contact = request.POST.get('camp_contact')
-        conducted_by = request.POST.get('conducted_by')
-        organized_by = request.user.staff  # Get the logged-in staff
-        #register = request.POST.get('register')
-        camp_time = request.POST.get('camp_time')
 
-        # Create a BloodCamp instance and save it to the database
-        blood_camp = BloodCamp.objects.create(
-            camp_date=camp_date,
-            camp_name=camp_name,
-            camp_address=camp_address,
-            camp_district=camp_district,
-            camp_contact=camp_contact,
-            conducted_by=conducted_by,
-            organized_by=organized_by,
-            
-            camp_time=camp_time
-        )
-
-        return redirect('staffindex')  # Redirect to a success page or wherever you want
-
-    return render(request, 'bloodbankcamps.html')
 
 
 #admin dashboard
@@ -1050,24 +1017,59 @@ from .models import HospitalRegister
 
 
 
-# views.py
-
-from django.shortcuts import render
-from .models import BloodType
-
-def bloodinventory(request):
-    blood_types = BloodType.objects.all()
-    return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
-
-
-# def requestsstaff(request):
-#     return render(request, 'staff/viewrequests.html')
-
 
 
 # from django.shortcuts import render
-# from .models import BloodRequest  # Import the BloodRequest model
+# from .models import BloodType
 
-# def blood_request_list(request):
-#     blood_requests = BloodRequest.objects.all()  # Retrieve all BloodRequest objects from the database
-#     return render(request, 'staff/viewrequests.html', {'blood_requests': blood_requests})
+# def bloodinventory(request):
+#     blood_types = BloodType.objects.all()
+#     return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
+
+
+#schedule camp view
+from django.shortcuts import render, redirect
+from .models import BloodCamp, Staff
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def create_blood_camp(request):
+    if request.method == 'POST':
+        camp_date = request.POST.get('campDate')
+        camp_name = request.POST.get('campName')
+        camp_address = request.POST.get('campAddress')
+        conducted_by = request.POST.get('conductedBy')
+        gram_panchayat = request.POST.get('gramPanchayat')
+        start_time = request.POST.get('startTime')
+        end_time = request.POST.get('endTime')
+
+        # Get the logged-in user
+        user = request.user
+
+        # Get the Staff object based on the logged-in user
+        staff_member = Staff.objects.get(user=user)
+
+        # Create a new BloodCamp object
+        blood_camp = BloodCamp.objects.create(
+            campDate=camp_date,
+            campName=camp_name,
+            campAddress=camp_address,
+            user=user,
+            conductedBy=conducted_by,
+            organizedBy=staff_member,  # Set the organizedBy field here
+            gramPanchayat=gram_panchayat,
+            startTime=start_time,
+            endTime=end_time,
+        )
+
+        # Redirect to a success page or another view
+        return redirect('staffindex')
+
+    # Render the template if it's a GET request
+    return render(request, 'staff/bloodbankcamps.html')
+
+from django.shortcuts import render
+from .models import BloodCamp
+def view_camp_schedules(request):
+    camps = BloodCamp.objects.all()
+    return render(request, 'viewcampschedules.html', {'camps': camps})

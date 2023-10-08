@@ -92,7 +92,6 @@ class Donor(models.Model):
     
 #donor response model
 from django.db import models
-
 class DonorResponse(models.Model):
     name = models.CharField(max_length=255)
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
@@ -113,12 +112,9 @@ class DonorResponse(models.Model):
     feelgood = models.CharField(max_length=3, null=True, blank=True)
     timestamp = models.DateTimeField(default=timezone.now)
 
-#uploading result into database
-
 
 
 #hospital registration model
-
 class HospitalRegister(models.Model):
     hospitalName = models.CharField(max_length=100,unique=True)
     contactPerson = models.CharField(max_length=100)
@@ -132,15 +128,12 @@ class HospitalRegister(models.Model):
     status = models.CharField(max_length=20, default='Active')
     # password = models.CharField(max_length=128)
 
-    
     def __str__(self):
         return self.hospitalName
 
 
 #blood type model
-
 from django.db import models
-
 class BloodType(models.Model):
     blood_type = models.CharField(max_length=10, unique=True)
 
@@ -149,9 +142,7 @@ class BloodType(models.Model):
     
 
 #blood request model
-
 from datetime import datetime 
-
 class BloodRequest(models.Model):
 
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
@@ -173,7 +164,6 @@ class BloodRequest(models.Model):
         return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
 
 #staff registration model
-
 class Staff(models.Model):
     name = models.CharField(max_length=255)
     age = models.IntegerField()
@@ -195,11 +185,10 @@ class Grampanchayat(models.Model):
     name_of_grampanchayat = models.CharField(max_length=255, unique=True)
     grampanchayat_id = models.CharField(max_length=10, unique=True)
    
-   
     def __str__(self):
         return self.name
 
-
+#assign grampanchayat
 from django.db import models
 from django.db.models import UniqueConstraint
 from .models import Staff, Grampanchayat
@@ -253,14 +242,16 @@ class AssignGrampanchayat(models.Model):
 #     def __str__(self):
 #         return f"Assignments for {self.staff.name}"
 
-from django.db import models
 
+#laboratory
+from django.db import models
 class Laboratory(models.Model):
     laboratoryName = models.CharField(max_length=255)
 
     def __str__(self):
         return self.laboratoryName
-    
+
+#labselection  
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -271,16 +262,10 @@ class LabSelection(models.Model):
     selected_lab = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now)
     
-
     def __str__(self):
         return f"{self.donor.username} - {self.selected_lab}"
 
   
-# from django.db import models
-
-# class UploadedFile(models.Model):
-    
-#     file = models.FileField(upload_to='media/uploads/')
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -289,16 +274,21 @@ class UploadedFile(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
     file = models.FileField(upload_to='media/uploads/')
     
+
+from django.db import models
+User = get_user_model()
 class BloodCamp(models.Model):
-    camp_date = models.DateField()
-    camp_name = models.CharField(max_length=255)
-    camp_address = models.TextField()
-    camp_district = models.CharField(max_length=255)
-    camp_contact = models.CharField(max_length=20)
-    conducted_by = models.CharField(max_length=255)
-    organized_by = models.ForeignKey(Staff, on_delete=models.CASCADE, null=True, blank=True)
-    #register = models.CharField(max_length=255)
-    camp_time = models.TimeField()
+    campDate = models.DateField()
+    campName = models.CharField(max_length=255)
+    campAddress = models.TextField()
+    campDistrict = models.CharField(max_length=100, default='Kottayam')
+    # campContact = models.CharField(max_length=15)  # Assuming a phone number can be up to 15 characters
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
+    conductedBy = models.CharField(max_length=255)
+    organizedBy = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    gramPanchayat = models.CharField(max_length=100, default='DefaultPanchayat')
+    startTime = models.TimeField()
+    endTime = models.TimeField()
 
     def __str__(self):
-        return self.camp_name
+        return self.campName

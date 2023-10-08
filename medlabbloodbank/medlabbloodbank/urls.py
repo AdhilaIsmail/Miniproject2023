@@ -26,7 +26,7 @@ from website.views import adminindex, activities, appointments, doctors, departm
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
-from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,schedule_blood_camp
+from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -131,6 +131,7 @@ urlpatterns = [
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
     path('blood_request_list', blood_request_list, name='blood_request_list'),
-    path('schedule_blood_camp',schedule_blood_camp,name='schedule_blood_camp'),
+    path('create_blood_camp',create_blood_camp,name='create_blood_camp'),
+    path('view_camp_schedules', view_camp_schedules, name='view_camp_schedules'),
  
 ]
