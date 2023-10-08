@@ -1005,8 +1005,7 @@ def appointmentsstaff(request):
 def bloodbankcamps(request):
     return render(request, 'staff/bloodbankcamps.html')
 
-def doctors(request):
-    return render(request, 'staff/doctors.html')
+
 
 def addhospitals(request):
     return render(request, 'staff/add-hospitals.html')
@@ -1043,41 +1042,6 @@ def search_by_blood_group(request):
     donors = Donor.objects.filter(blood_group__iexact=blood_group)
     return render(request, 'staff/registereddonortable.html', {'donors': donors})
 
-
-def bloodinventory(request):
-    return render(request, 'staff/bloodinventory.html')
-
-def addnewgroup(request):
-    return render(request, 'staff/addnewgroup.html')
-
-# def hospital_registration(request):
-#     if request.method == 'POST':
-#         hospitalName = request.POST.get('hospitalName')
-#         contactPerson = request.POST.get('contactPerson')
-#         email = request.POST.get('email')
-#         phone = request.POST.get('phone')
-#         location = request.POST.get('location')
-#         gpsCoordinates = request.POST.get('gpsCoordinates')
-#         ownership = request.POST.get('ownership')
-#         hospitalURL = request.POST.get('hospitalURL')
-#         password = request.POST.get('password')
-        
-#         roles = CustomUser.HOSPITAL
-#         print(roles)
-#         if CustomUser.objects.filter(email=email,role=CustomUser.HOSPITAL).exists():
-#             return render(request, 'staff/hospitalregistration.html')
-#         else:
-#             user=CustomUser.objects.create_user(email=email,phone=phone,password=password)
-#             user.role = CustomUser.HOSPITAL
-#             user.save()
-#             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,gpsCoordinates=gpsCoordinates,ownership=ownership,hospitalURL=hospitalURL)
-#             hospitalRegister.save()
-
-#             return redirect('registeredhospitaltable')
-
-        
-#     else:
-#         return render(request, 'staff/hospitalregistration.html')
 
 
 from django.shortcuts import render

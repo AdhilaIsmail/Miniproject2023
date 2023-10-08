@@ -30,6 +30,7 @@ from website.views import registereddonortablestaff, bloodbankcamps, assign_staf
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('',index, name='index'),
     path('about',about, name='about'),
     path('service',service, name='service'),
@@ -55,10 +56,10 @@ urlpatterns = [
     # path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),
     path("",include("allauth.urls")),
-    path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
+    # path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    # path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
 
 
 
@@ -118,21 +119,17 @@ urlpatterns = [
     path('activities', activities, name='activities'),
     path('appointmentsstaff', appointmentsstaff, name='appointmentsstaff'),
     path('bloodbankcamps', bloodbankcamps, name='bloodbankcamps'),
-    path('doctors', doctors, name='doctors'),
     path('employees', employees, name='employees'),
     path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortablestaff', registereddonortablestaff, name='registereddonortablestaff'),
     path('addhospitals', addhospitals, name='addhospitals'),
-   
     path('search-by-name/', search_by_name, name='search_by_name'),
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
     path('registeredstafftable/', registeredstafftable, name='registeredstafftable'),
-    path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
-   
     path('blood_request_list', blood_request_list, name='blood_request_list'),
     path('schedule_blood_camp',schedule_blood_camp,name='schedule_blood_camp'),
  
