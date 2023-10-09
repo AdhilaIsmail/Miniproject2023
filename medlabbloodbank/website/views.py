@@ -1061,15 +1061,53 @@ def create_blood_camp(request):
             startTime=start_time,
             endTime=end_time,
         )
-
+        blood_camp.save()
         # Redirect to a success page or another view
         return redirect('staffindex')
 
     # Render the template if it's a GET request
     return render(request, 'staff/bloodbankcamps.html')
 
+
+
+
 from django.shortcuts import render
 from .models import BloodCamp
 def view_camp_schedules(request):
     camps = BloodCamp.objects.all()
-    return render(request, 'viewcampschedules.html', {'camps': camps})
+    BloodCamp.objects.all().count()
+    return render(request, 'staff/viewcampschedules.html', {'schedules': camps})
+
+
+
+def viewlabresults(request):
+    return render(request, 'mainuser/viewlabresults.html')
+
+# views.py
+# from django.shortcuts import render
+# from .models import UploadedFile
+
+# def view_uploaded_files(request):
+#     uploaded_files = UploadedFile.objects.filter(user=request.user)
+#     context = {'uploaded_files': uploaded_files}
+#     return render(request, 'mainuser/viewlabresults.html', context)
+
+
+from django.shortcuts import render
+from .models import UploadedFile
+
+def view_uploaded_files(request):
+    uploaded_files = UploadedFile.objects.all()
+    context = {'uploaded_files': uploaded_files}
+    return render(request, 'mainuser/viewlabresults.html', context)
+
+
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from .models import UploadedFile
+
+def download_file(request, file_id):
+    uploaded_file = get_object_or_404(UploadedFile, pk=file_id)
+    file_path = uploaded_file.file.path
+    response = FileResponse(open(file_path, 'rb'))
+    return response
