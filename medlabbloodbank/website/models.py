@@ -273,6 +273,7 @@ from django.contrib.auth import get_user_model
 class UploadedFile(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
     file = models.FileField(upload_to='media/uploads/')
+    approval_status = models.CharField(max_length=50, default='Pending')
     
 
 from django.db import models

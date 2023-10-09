@@ -1111,3 +1111,46 @@ def download_file(request, file_id):
     file_path = uploaded_file.file.path
     response = FileResponse(open(file_path, 'rb'))
     return response
+
+# views.py
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import UploadedFile
+
+@csrf_exempt  # Use csrf_exempt for simplicity in this example; in a real project, use a proper csrf protection method
+def update_approval_status(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        file_id = data.get('fileId')
+        new_status = data.get('newStatus')
+
+        try:
+            uploaded_file = UploadedFile.objects.get(pk=file_id)
+            uploaded_file.approval_status = new_status
+            uploaded_file.save()
+
+            # Send email notification
+            user_email = uploaded_file.user.email
+            subject = 'Medlab Blood Bank : Lab Results Update'
+            if new_status == 'Approved':
+                # Include a link for booking a camp
+                booking_link = 'https://example.com/book-camp'
+                message = (
+                    f'Congratulations! Your lab results have been {new_status.lower()}. '
+                    f'We invite you to book a camp using the following link: {booking_link}'
+                )
+            elif new_status == 'Rejected':
+                message = f'We regret to inform you that your lab results have been {new_status.lower()}.'
+            else:
+                message = f'Your lab results have been updated to {new_status.lower()}.'
+
+           
+
+            send_mail(subject, message, 'your_email@example.com', [user_email])
+
+            return JsonResponse({'message': 'Approval status updated successfully.'})
+        except UploadedFile.DoesNotExist:
+            return JsonResponse({'message': 'File not found.'}, status=404)
+
+    return JsonResponse({'message': 'Invalid request.'}, status=400)
