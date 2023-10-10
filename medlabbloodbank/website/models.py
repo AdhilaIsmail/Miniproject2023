@@ -267,14 +267,25 @@ class LabSelection(models.Model):
 
   
 
+# from django.db import models
+# from django.contrib.auth import get_user_model
+
+# class UploadedFile(models.Model):
+#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
+#     file = models.FileField(upload_to='media/uploads/')
+#     approval_status = models.CharField(max_length=50, default='Pending')
+#     timestamp = models.DateTimeField(auto_now_add=True)
+
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 class UploadedFile(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, default=None)
     file = models.FileField(upload_to='media/uploads/')
     approval_status = models.CharField(max_length=50, default='Pending')
-    
+    timestamp = models.DateTimeField(null=True)
+
 
 from django.db import models
 User = get_user_model()

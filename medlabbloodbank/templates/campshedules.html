@@ -52,7 +52,7 @@
                 <a href="{% url 'homebloodbank' %}" class="nav-item nav-link ">Home</a>
                 {% if user.is_authenticated %}
                 <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a>
-                <a href="{% url 'appointmentschedule' %}" class="nav-item nav-link">Appointment</a>
+                <a href="{% url 'campshedules' %}" class="nav-item nav-link active">Appointment</a>
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
                 <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
@@ -92,8 +92,38 @@
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">Revolutionizing Healthcare</h5>
-                            <!-- <h4 class="display-1 text-white mb-md-4 animated zoomIn">Unifying Blood Bank and Laboratory Services for Enhanced Patient Care</h4> -->
+                            <h4 class="display-1 text-white mb-md-4 animated zoomIn">Available Blood Bank Camps</h4>
                             
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Camp Date</th>
+                                        <th>Camp Name</th>
+                                        <th>Camp Address</th>
+                                        <th>Camp District</th>
+                                        <th>Conducted By</th>
+                                        <th>Organized By</th>
+                                        <th>Gram Panchayat</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for camp in schedules %}
+                                        <tr>
+                                            <td>{{ camp.campDate }}</td>
+                                            <td>{{ camp.campName }}</td>
+                                            <td>{{ camp.campAddress }}</td>
+                                            <td>{{ camp.campDistrict }}</td>
+                                            <td>{{ camp.conductedBy }}</td>
+                                            <td>{{ camp.organizedBy }}</td> <!-- Assuming organizedBy has a readable __str__ method -->
+                                            <td>{{ camp.gramPanchayat }}</td>
+                                            <td>{{ camp.startTime }}</td>
+                                            <td>{{ camp.endTime }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>  

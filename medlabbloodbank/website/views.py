@@ -74,7 +74,7 @@ def loginn(request):
                     return redirect('uploadresult2', lab_selection_timestamp=str(lab_selection.timestamp))
                 else:
                     # Check if the user has already uploaded a file within the 3-day limit
-                    if UploadedFile.objects.filter(donor=user, timestamp__gte=timezone.now() - timedelta(days=3)).exists():
+                    if UploadedFile.objects.filter(user=user, timestamp__gte=timezone.now() - timedelta(days=3)).exists():
                         return redirect('waitforemail')
                     else:
                         messages.warning(request, 'The three-day window for uploading results has expired.')
@@ -1014,19 +1014,6 @@ def search_by_blood_group(request):
 from django.shortcuts import render
 from .models import HospitalRegister
 
-
-
-
-
-
-# from django.shortcuts import render
-# from .models import BloodType
-
-# def bloodinventory(request):
-#     blood_types = BloodType.objects.all()
-#     return render(request, 'staff/bloodinventory.html', {'blood_types': blood_types})
-
-
 #schedule camp view
 from django.shortcuts import render, redirect
 from .models import BloodCamp, Staff
@@ -1154,3 +1141,7 @@ def update_approval_status(request):
             return JsonResponse({'message': 'File not found.'}, status=404)
 
     return JsonResponse({'message': 'Invalid request.'}, status=400)
+
+
+def campshedules(request):
+    return render(request, 'campschedules.html')
