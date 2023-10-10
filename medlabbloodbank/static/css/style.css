@@ -26,9 +26,12 @@ h4,
 h5,
 h6,
 .font-weight-medium {
-    font-weight: 500 !important;
+    font-weight: 400 !important;
 }
-
+#h6head
+{
+    font-size:20px;
+}
 
 .btn {
     font-family: 'Jost', sans-serif;

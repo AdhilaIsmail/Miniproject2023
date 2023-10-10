@@ -20,9 +20,9 @@ from django.urls import path,include
 from website import views
 from website.views import index, about,  service, testimonial, contact, loginn, register_donor, donatenow, registerasdonor
 from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, uploadresult2
-from website.views import homebloodbank, appointmentschedule, register, loggout
+from website.views import homebloodbank, register, loggout
 from django.contrib.auth import views as auth_views
-from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent,campshedules
+from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent,campschedulesfordonor
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail,view_uploaded_files,viewlabresults
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
@@ -40,7 +40,7 @@ urlpatterns = [
     path('registerasdonor',registerasdonor, name='registerasdonor'),
     path('register_donor/', register_donor, name='register_donor'),
     path('donatenow',donatenow, name='donatenow'),
-    path('appointmentschedule',appointmentschedule, name='appointmentschedule'),
+    
     path('homebloodbank',homebloodbank, name='homebloodbank'),
     path('registration',register, name='registration'),
     path('register/', register_donor, name='register_donor'),
@@ -135,6 +135,6 @@ urlpatterns = [
     path('blood_request_list', blood_request_list, name='blood_request_list'),
     path('create_blood_camp',create_blood_camp,name='create_blood_camp'),
     path('view_camp_schedules', view_camp_schedules, name='view_camp_schedules'),
-    path('campshedules/', campshedules, name='campshedules'),
+    path('campschedulesfordonor', campschedulesfordonor, name='campschedulesfordonor'),
  
 ]

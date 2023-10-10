@@ -186,7 +186,7 @@ class Grampanchayat(models.Model):
     grampanchayat_id = models.CharField(max_length=10, unique=True)
    
     def __str__(self):
-        return self.name
+        return self.name_of_grampanchayat
 
 #assign grampanchayat
 from django.db import models
@@ -298,7 +298,7 @@ class BloodCamp(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
     conductedBy = models.CharField(max_length=255)
     organizedBy = models.ForeignKey(Staff, on_delete=models.CASCADE)
-    gramPanchayat = models.CharField(max_length=100, default='DefaultPanchayat')
+    gramPanchayat = models.CharField(max_length=100, default='DefaultPanchayat',null=True, blank=True)
     startTime = models.TimeField()
     endTime = models.TimeField()
 

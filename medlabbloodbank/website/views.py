@@ -31,8 +31,7 @@ def registerasdonor(request):
     return render(request, 'registerasdonor.html')
 # def donatenow(request):
 #     return render(request, 'donatenow.html')
-def appointmentschedule(request):
-    return render(request, 'appointmentschedule.html')
+
 def homebloodbank(request):
     
     return render(request, 'homebloodbank.html')
@@ -1015,13 +1014,72 @@ from django.shortcuts import render
 from .models import HospitalRegister
 
 #schedule camp view
+# from django.shortcuts import render, redirect
+# from .models import BloodCamp, Staff
+# from django.contrib.auth.decorators import login_required
+# from .models import AssignGrampanchayat
+
+# @login_required
+# def create_blood_camp(request):
+#     if request.method == 'POST':
+#         camp_date = request.POST.get('campDate')
+#         camp_name = request.POST.get('campName')
+#         camp_address = request.POST.get('campAddress')
+#         conducted_by = request.POST.get('conductedBy')
+#         gram_panchayat = request.POST.get('gramPanchayat')
+#         start_time = request.POST.get('startTime')
+#         end_time = request.POST.get('endTime')
+
+#         # Get the logged-in user
+#         # user = request.user
+#         user = request.user
+#         staff_assignments = AssignGrampanchayat.objects.filter(staff=user)
+#         print(staff_assignments)
+#         staff_member = Staff.objects.get(user=user)
+
+#         # Create a new BloodCamp object
+#         blood_camp = BloodCamp.objects.create(
+#             campDate=camp_date,
+#             campName=camp_name,
+#             campAddress=camp_address,
+#             user=user,
+#             conductedBy=conducted_by,
+#             organizedBy=staff_member,  # Set the organizedBy field here
+#             gramPanchayat=gram_panchayat,
+#             startTime=start_time,
+#             endTime=end_time,
+#         )
+#         blood_camp.save()
+#         # Redirect to a success page or another view
+#         return redirect('staffindex')
+        
+#     # Render the template if it's a GET request
+#     context = {'staff_assignments': staff_assignments}
+#     return render(request, 'staff/bloodbankcamps.html', context)
+
+
+
 from django.shortcuts import render, redirect
 from .models import BloodCamp, Staff
 from django.contrib.auth.decorators import login_required
+from .models import AssignGrampanchayat, Grampanchayat
 
 @login_required
 def create_blood_camp(request):
+    # Get the logged-in user
+    user = request.user
+
+    # Get the staff member and their assignments
+    staff_member = Staff.objects.get(user=user)
+    staff_assignments = AssignGrampanchayat.objects.filter(staff=staff_member)
+
+    # Get the Gram Panchayats for the dropdown in the template
+    gram_panchayats = Grampanchayat.objects.all()
+
+    print(gram_panchayats)
+
     if request.method == 'POST':
+        # Process the form data
         camp_date = request.POST.get('campDate')
         camp_name = request.POST.get('campName')
         camp_address = request.POST.get('campAddress')
@@ -1030,12 +1088,6 @@ def create_blood_camp(request):
         start_time = request.POST.get('startTime')
         end_time = request.POST.get('endTime')
 
-        # Get the logged-in user
-        user = request.user
-
-        # Get the Staff object based on the logged-in user
-        staff_member = Staff.objects.get(user=user)
-
         # Create a new BloodCamp object
         blood_camp = BloodCamp.objects.create(
             campDate=camp_date,
@@ -1043,17 +1095,24 @@ def create_blood_camp(request):
             campAddress=camp_address,
             user=user,
             conductedBy=conducted_by,
-            organizedBy=staff_member,  # Set the organizedBy field here
+            organizedBy=staff_member,
             gramPanchayat=gram_panchayat,
             startTime=start_time,
             endTime=end_time,
         )
         blood_camp.save()
+
         # Redirect to a success page or another view
         return redirect('staffindex')
 
     # Render the template if it's a GET request
-    return render(request, 'staff/bloodbankcamps.html')
+    context = {
+        'staff_assignments': staff_assignments,
+        'gramPanchayats': gram_panchayats,
+    }
+    return render(request, 'staff/bloodbankcamps.html', context)
+
+
 
 
 
@@ -1142,6 +1201,10 @@ def update_approval_status(request):
 
     return JsonResponse({'message': 'Invalid request.'}, status=400)
 
-
-def campshedules(request):
-    return render(request, 'campschedules.html')
+from django.shortcuts import render
+from .models import BloodCamp
+def campschedulesfordonor(request):
+    camps = BloodCamp.objects.all()
+    BloodCamp.objects.all().count()
+    return render(request, 'campschedulesfordonor.html', {'schedules': camps})
+   

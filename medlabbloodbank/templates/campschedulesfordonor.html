@@ -31,10 +31,56 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     
 <style>
-   
-      
-     
-      
+    .table-container {
+        width: 1200px; /* Set the desired width for the container */
+        margin: 0 auto; /* Center the container */
+    }
+    .table {
+        color: #000;
+        border: 1px solid #f0f0f0;
+        width: 100%; /* Set the desired width, you can also use pixels (e.g., width: 800px;) */
+        /* Add other styles as needed */
+    }
+    .table.table-white {
+        background-color: #fff;
+    }
+    .table > tbody > tr > td {
+        font-weight: 300;
+    }
+    .table-striped > tbody > tr:nth-of-type(2n + 1) {
+        background-color: #f6f6f6;
+    }
+    table.table td .avatar {
+        margin: 0 5px 0 0;
+    }
+    table.table td h2 {
+        display: inline-block;
+        font-size: inherit;
+        font-weight: 400;
+        margin: 0;
+        padding: 0;
+        vertical-align: middle;
+    }
+    table.table td h2 a {
+        color: #757575;
+    }
+    table.table td h2 a:hover {
+        color: #009efb;
+    }
+    table.table td h2 span {
+        color: #9e9e9e;
+        display: block;
+        font-size: 12px;
+        margin-top: 3px;
+    }
+    #h6head
+    {
+        font-size:30px;
+        
+    }
+    .carousel-item .table-responsive {
+        margin-top: -400px; /* Adjust the value according to your needs */
+    }
 </style>
 </head>
 
@@ -52,7 +98,7 @@
                 <a href="{% url 'homebloodbank' %}" class="nav-item nav-link ">Home</a>
                 {% if user.is_authenticated %}
                 <a href="{% url 'registerasdonor' %}" class="nav-item nav-link">Donate Blood</a>
-                <a href="{% url 'campshedules' %}" class="nav-item nav-link active">Appointment</a>
+                <a href="{% url 'campschedulesfordonor' %}" class="nav-item nav-link active">Appointment</a>
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
                 <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>
@@ -88,42 +134,48 @@
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="{% static 'img/bg22.jpg' %}" alt="Image">
+                    <img class="w-100" src="{% static 'img/hsptlbg.jpg' %}" alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">Revolutionizing Healthcare</h5>
-                            <h4 class="display-1 text-white mb-md-4 animated zoomIn">Available Blood Bank Camps</h4>
+                        <div class="p-3" style="max-width: 1200px;">
                             
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Camp Date</th>
-                                        <th>Camp Name</th>
-                                        <th>Camp Address</th>
-                                        <th>Camp District</th>
-                                        <th>Conducted By</th>
-                                        <th>Organized By</th>
-                                        <th>Gram Panchayat</th>
-                                        <th>Start Time</th>
-                                        <th>End Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for camp in schedules %}
+                            <h6 id="h6head" style="margin-top:-30px" class="display-1 text-white mb-md-4 animated zoomIn">Available Blood Bank Camps</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped custom-table datatable mb-0">
+                            
+                                    <thead>
                                         <tr>
-                                            <td>{{ camp.campDate }}</td>
-                                            <td>{{ camp.campName }}</td>
-                                            <td>{{ camp.campAddress }}</td>
-                                            <td>{{ camp.campDistrict }}</td>
-                                            <td>{{ camp.conductedBy }}</td>
-                                            <td>{{ camp.organizedBy }}</td> <!-- Assuming organizedBy has a readable __str__ method -->
-                                            <td>{{ camp.gramPanchayat }}</td>
-                                            <td>{{ camp.startTime }}</td>
-                                            <td>{{ camp.endTime }}</td>
+                                            <th>Camp Date</th>
+                                            <th>Camp Name</th>
+                                            <th>Camp Address</th>
+                                            <th>Camp District</th>
+                                            <th>Conducted By</th>
+                                            <th>Organized By</th>
+                                            <th>Gram Panchayat</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Register</th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {% for camp in schedules %}
+                                            <tr>
+                                                <td>{{ camp.campDate }}</td>
+                                                <td>{{ camp.campName }}</td>
+                                                <td>{{ camp.campAddress }}</td>
+                                                <td>{{ camp.campDistrict }}</td>
+                                                <td>{{ camp.conductedBy }}</td>
+                                                <td>{{ camp.organizedBy }}</td> <!-- Assuming organizedBy has a readable __str__ method -->
+                                                <td>{{ camp.gramPanchayat }}</td>
+                                                <td>{{ camp.startTime }}</td>
+                                                <td>{{ camp.endTime }}</td>
+                                                <td>
+                                                    <button style="color: white; background-color: red;border-radius:5px; border: none;" onclick="registerFunction('{{ camp.id }}')">Register</button>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>  
@@ -180,7 +232,7 @@
     <!-- Back to Top -->
     <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded back-to-top"><i class="bi bi-arrow-up"></i></a>
 
-   
+    
      <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
