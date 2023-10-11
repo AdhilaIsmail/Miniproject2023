@@ -371,7 +371,7 @@
                                     // Check if the start time is greater than 9 AM
                                     if (startTime.getHours() < 9) {
                                         errorContainerstart.textContent = 'Start Time should be greater than 9 AM.';
-                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                        //this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
                                     } else {
                                         // Calculate end time as start time + 2 hours
                                         const endTime = new Date(startTime.getTime() + (2 * 60 * 60 * 1000)); // 2 hours in milliseconds
@@ -401,18 +401,7 @@
                                     if (endTime < startTime) {
                                         errorContainer.textContent = 'End Time should not be less than Start Time.';
                                         this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
-                                    } else {
-                                        // Clear the error message
-                                        errorContainer.textContent = '';
-                            
-                                        // Check if the start time is greater than 9 AM
-                                        if (startTime.getHours() < 9) {
-                                            errorContainerstart.textContent = 'Start Time should be greater than 9 AM.';
-                                            this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
-                                        } else {
-                                            this.setCustomValidity(''); // Reset the custom validity
-                                        }
-                                    }
+                                    } 
                                 });
                             </script>
                             

@@ -180,6 +180,7 @@ class Staff(models.Model):
 
 
 #add gramapanchayats
+#..................................
 class Grampanchayat(models.Model):
     
     name_of_grampanchayat = models.CharField(max_length=255, unique=True)
@@ -187,6 +188,8 @@ class Grampanchayat(models.Model):
    
     def __str__(self):
         return self.name_of_grampanchayat
+    
+#.................................
 
 #assign grampanchayat
 from django.db import models
