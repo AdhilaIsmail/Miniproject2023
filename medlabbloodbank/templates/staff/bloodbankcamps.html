@@ -299,24 +299,7 @@
                                         <input class="form-control" type="text" name="organizedBy" value="{{ request.user.staff.name }}" required>
                                     </div>
                                 </div>
-                               {% comment %} <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Gram Panchayat <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="gramPanchayat" value="DefaultPanchayat" required>
-                                    </div>
-                                </div>  {% endcomment %}
-                                {% comment %} <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="gramPanchayat">Gram Panchayat <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramPanchayat" id="gramPanchayat" required>
-                                            <option value="" selected disabled>Select a Gram Panchayat</option>
-                                            {% for panchayat in gramPanchayat %}
-                                                <option value="{{ panchayat.name_of_grampanchayat }}">{{ panchayat.name_of_grampanchayat }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                 {% endcomment %}
+                               
                                  <div class="col-sm-6">
                                     <div class="form-group">
                                       <label for="gramPanchayat">Gram Panchayat <span class="text-danger">*</span></label>
@@ -330,6 +313,7 @@
                                     <div class="form-group">
                                         <label>Start Time <span class="text-danger">*</span></label>
                                         <input class="form-control" type="time" name="startTime" id="startTime"required>
+                                        <p id="startTimeError" style="color: red;"></p>
                                     </div>
                                 </div>
                                 
@@ -377,41 +361,94 @@
                             <script>
                                 document.getElementById('startTime').addEventListener('input', function () {
                                     const startTimeValue = this.value;
-                                    const errorContainer = document.getElementById('timeError');
-                        
-                                    // Calculate end time as start time + 2 hours
-                                    const startTime = new Date(`2000-01-01T${startTimeValue}`);
-                                    const endTime = new Date(startTime.getTime() + (2 * 60 * 60 * 1000));  // 2 hours in milliseconds
-                        
-                                    // Format the calculated end time as HH:mm
-                                    const formattedEndTime = endTime.toISOString().substr(11, 5);
-                        
-                                    // Set the calculated end time in the End Time field
-                                    document.getElementById('endTime').value = formattedEndTime;
-                        
-                                    // Clear the error message and reset the custom validity
-                                    errorContainer.textContent = '';
-                                    document.getElementById('endTime').setCustomValidity('');
+                                    const errorContainerend = document.getElementById('timeError');
+                                    const errorContainerstart = document.getElementById('startTimeError');
+                            
+                                    // Construct Date object using the current date and selected start time
+                                    const currentDate = new Date();
+                                    const startTime = new Date(`${currentDate.toISOString().split('T')[0]}T${startTimeValue}Z`);
+                            
+                                    // Check if the start time is greater than 9 AM
+                                    if (startTime.getHours() < 9) {
+                                        errorContainerstart.textContent = 'Start Time should be greater than 9 AM.';
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                    } else {
+                                        // Calculate end time as start time + 2 hours
+                                        const endTime = new Date(startTime.getTime() + (2 * 60 * 60 * 1000)); // 2 hours in milliseconds
+                            
+                                        // Format the calculated end time as HH:mm
+                                        const formattedEndTime = endTime.toISOString().substr(11, 5);
+                            
+                                        // Set the calculated end time in the End Time field
+                                        document.getElementById('endTime').value = formattedEndTime;
+                            
+                                        // Clear the error message and reset the custom validity
+                                        errorContainer.textContent = '';
+                                        document.getElementById('endTime').setCustomValidity('');
+                                    }
                                 });
-                        
+                            
                                 document.getElementById('endTime').addEventListener('input', function () {
                                     const startTimeValue = document.getElementById('startTime').value;
                                     const endTimeValue = this.value;
                                     const errorContainer = document.getElementById('timeError');
-                        
-                                    // Convert time strings to Date objects for comparison
-                                    const startTime = new Date(`2000-01-01T${startTimeValue}`);
-                                    const endTime = new Date(`2000-01-01T${endTimeValue}`);
-                        
+                            
+                                    // Construct Date objects using the current date and selected start/end times
+                                    const currentDate = new Date();
+                                    const startTime = new Date(`${currentDate.toISOString().split('T')[0]}T${startTimeValue}Z`);
+                                    const endTime = new Date(`${currentDate.toISOString().split('T')[0]}T${endTimeValue}Z`);
+                            
                                     if (endTime < startTime) {
                                         errorContainer.textContent = 'End Time should not be less than Start Time.';
-                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
                                     } else {
-                                        errorContainer.textContent = '';  // Clear the error message
-                                        this.setCustomValidity('');  // Reset the custom validity
+                                        // Clear the error message
+                                        errorContainer.textContent = '';
+                            
+                                        // Check if the start time is greater than 9 AM
+                                        if (startTime.getHours() < 9) {
+                                            errorContainerstart.textContent = 'Start Time should be greater than 9 AM.';
+                                            this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                        } else {
+                                            this.setCustomValidity(''); // Reset the custom validity
+                                        }
                                     }
                                 });
                             </script>
+                            
+                            <script>
+                                document.getElementById('startTime').addEventListener('input', function () {
+                                    const startTimeValue = this.value;
+                                    const errorContainer = document.getElementById('startTimeError');
+                            
+                                    // Construct Date object using the current date and selected start time
+                                    const currentDate = new Date();
+                                    const startTime = new Date(`${currentDate.toISOString().split('T')[0]}T${startTimeValue}Z`);
+                            
+                                    // Check if start time is before 9 am
+                                    const nineAm = new Date(`${currentDate.toISOString().split('T')[0]}T09:00:00Z`);
+                                    if (startTime < nineAm) {
+                                        errorContainer.textContent = 'Start Time should not be earlier than 9:00 AM.';
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                    } else {
+                                        // Calculate end time as start time + 2 hours
+                                        const endTime = new Date(startTime.getTime() + (2 * 60 * 60 * 1000)); // 2 hours in milliseconds
+                            
+                                        // Format the calculated end time as HH:mm
+                                        const formattedEndTime = endTime.toISOString().substr(11, 5);
+                            
+                                        // Set the calculated end time in the End Time field
+                                        document.getElementById('endTime').value = formattedEndTime;
+                            
+                                        // Clear the error message and reset the custom validity
+                                        errorContainer.textContent = '';
+                                        document.getElementById('endTime').setCustomValidity('');
+                                    }
+                                });
+                            </script>
+                            
+                            
+                            
                         </form>
                     </div>
                 </div>
