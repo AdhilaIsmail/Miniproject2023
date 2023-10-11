@@ -88,7 +88,51 @@
             text-decoration: underline;
         }
     </style>   
-
+    {% comment %} <script>
+        function populateGramPanchayats() {
+          var gramPanchayatSelect = document.getElementById('gramPanchayat');
+          gramPanchayatSelect.innerHTML = '<option value="" selected disabled>Select a Gram Panchayat</option>';
+      
+          fetch('{% url "get_gram_panchayats" %}')
+            .then(response => response.json())
+            .then(data => {
+              data.forEach(panchayat => {
+                var option = document.createElement('option');
+                option.value = panchayat.name_of_grampanchayat;
+                option.text = panchayat.name_of_grampanchayat;
+                gramPanchayatSelect.add(option);
+              });
+            });
+        }
+      
+        // Call the function when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+          populateGramPanchayats();
+        });
+      </script> {% endcomment %}
+      <script>
+        function populateGramPanchayats(assignedPanchayats) {
+            var gramPanchayatSelect = document.getElementById('gramPanchayat');
+            gramPanchayatSelect.innerHTML = '<option value="" selected disabled>Select a Gram Panchayat</option>';
+    
+            assignedPanchayats.forEach(panchayat => {
+                var option = document.createElement('option');
+                option.value = panchayat.name_of_grampanchayat;  // Use the correct variable name 'panchayat'
+                option.text = panchayat.name_of_grampanchayat;
+                gramPanchayatSelect.add(option);
+            });
+        }
+    
+        // Fetch the assigned Gram Panchayats
+        fetch('{% url "get_assigned_gram_panchayats" %}')
+            .then(response => response.json())
+            .then(data => {
+                // Call the function with the assigned Gram Panchayats
+                populateGramPanchayats(data);
+            });
+    </script>
+    
+    
 </head>
 
 <body>
@@ -261,16 +305,25 @@
                                         <input class="form-control" type="text" name="gramPanchayat" value="DefaultPanchayat" required>
                                     </div>
                                 </div>  {% endcomment %}
-                                <div class="col-sm-6">
+                                {% comment %} <div class="col-sm-6">
                                     <div class="form-group">
                                         <label for="gramPanchayat">Gram Panchayat <span class="text-danger">*</span></label>
-                                        <select class="form-control" name="gramPanchayat" id="gramPanchayat" >
-                                            {% for panchayat in gramPanchayats %}
+                                        <select class="form-control" name="gramPanchayat" id="gramPanchayat" required>
+                                            <option value="" selected disabled>Select a Gram Panchayat</option>
+                                            {% for panchayat in gramPanchayat %}
                                                 <option value="{{ panchayat.name_of_grampanchayat }}">{{ panchayat.name_of_grampanchayat }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
+                                 {% endcomment %}
+                                 <div class="col-sm-6">
+                                    <div class="form-group">
+                                      <label for="gramPanchayat">Gram Panchayat <span class="text-danger">*</span></label>
+                                      <select class="form-control" name="gramPanchayat" id="gramPanchayat" required>
+                                      </select>
+                                    </div>
+                                  </div>
                                 
                                 
                                 <div class="col-sm-6">

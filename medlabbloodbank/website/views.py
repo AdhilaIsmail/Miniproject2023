@@ -1058,28 +1058,153 @@ from .models import HospitalRegister
 #     return render(request, 'staff/bloodbankcamps.html', context)
 
 
+# from django.shortcuts import render, redirect
+# from .models import BloodCamp, Staff
+# from django.contrib.auth.decorators import login_required
+# from .models import AssignGrampanchayat, Grampanchayat
+
+# @login_required
+# def create_blood_camp(request):
+#     user = request.user
+#     staff_member = Staff.objects.get(user=user)
+#     staff_assignments = AssignGrampanchayat.objects.filter(staff=staff_member)
+#     gram_panchayats = Grampanchayat.objects.all()
+
+#     if request.method == 'POST':
+#         camp_date = request.POST.get('campDate')
+#         camp_name = request.POST.get('campName')
+#         camp_address = request.POST.get('campAddress')
+#         conducted_by = request.POST.get('conductedBy')
+#         gram_panchayat = request.POST.get('gramPanchayat')
+#         start_time = request.POST.get('startTime')
+#         end_time = request.POST.get('endTime')
+
+#         blood_camp = BloodCamp.objects.create(
+#             campDate=camp_date,
+#             campName=camp_name,
+#             campAddress=camp_address,
+#             user=user,
+#             conductedBy=conducted_by,
+#             organizedBy=staff_member,
+#             gramPanchayat=gram_panchayat,
+#             startTime=start_time,
+#             endTime=end_time,
+#         )
+#         blood_camp.save()
+
+#         return redirect('staffindex')
+#     print("Gram Panchayats:", gram_panchayats)
+#     context = {
+#         'staff_assignments': staff_assignments,
+#         'gramPanchayats': gram_panchayats,
+#     }
+#     return render(request, 'staff/bloodbankcamps.html', context)
+
+# Import necessary modules and classes
+
+
+#.......................................
+# from django.shortcuts import render, redirect
+# from django.http import JsonResponse
+# from .models import BloodCamp, Staff, AssignGrampanchayat, Grampanchayat
+# from django.contrib.auth.decorators import login_required
+
+# # Decorate the view to require login
+# @login_required
+# def create_blood_camp(request):
+#     # Get the logged-in user and their staff information
+#     user = request.user
+#     staff_member = Staff.objects.get(user=user)
+    
+#     # Query staff assignments
+#     staff_assignments = AssignGrampanchayat.objects.filter(staff=staff_member)
+    
+#     # Query all Gram Panchayats
+#     gram_panchayats = Grampanchayat.objects.all()
+
+#     # Check if the form is submitted (POST request)
+#     if request.method == 'POST':
+#         # Extract form data
+#         camp_date = request.POST.get('campDate')
+#         camp_name = request.POST.get('campName')
+#         camp_address = request.POST.get('campAddress')
+#         conducted_by = request.POST.get('conductedBy')
+#         gram_panchayat = request.POST.get('gramPanchayat')
+#         start_time = request.POST.get('startTime')
+#         end_time = request.POST.get('endTime')
+
+#         # Create a new BloodCamp object
+#         blood_camp = BloodCamp.objects.create(
+#             campDate=camp_date,
+#             campName=camp_name,
+#             campAddress=camp_address,
+#             user=user,
+#             conductedBy=conducted_by,
+#             organizedBy=staff_member,
+#             gramPanchayat=gram_panchayat,
+#             startTime=start_time,
+#             endTime=end_time,
+#         )
+#         blood_camp.save()
+
+#         # Redirect to the staffindex page
+#         return redirect('staffindex')
+
+#     # Convert Gram Panchayats to a list of dictionaries for JSON serialization
+#     gram_panchayats_list = [{'name_of_grampanchayat': p.name_of_grampanchayat} for p in gram_panchayats]
+
+#     # Prepare the context for rendering the template
+#     context = {
+#         'staff_assignments': staff_assignments,
+#         'gramPanchayats': gram_panchayats,
+#         'gramPanchayatsJson': gram_panchayats_list,
+#     }
+
+#     # Render the bloodbankcamps.html template with the provided context
+#     return render(request, 'staff/bloodbankcamps.html', context)
+
+# def get_gram_panchayats(request):
+#     gram_panchayats = Grampanchayat.objects.all()
+#     data = [{'name_of_grampanchayat': p.name_of_grampanchayat} for p in gram_panchayats]
+#     return JsonResponse(data, safe=False)
+
+
+#...........................
 
 from django.shortcuts import render, redirect
-from .models import BloodCamp, Staff
+from django.http import JsonResponse
+from .models import BloodCamp, Staff, AssignGrampanchayat, Grampanchayat
 from django.contrib.auth.decorators import login_required
-from .models import AssignGrampanchayat, Grampanchayat
 
 @login_required
 def create_blood_camp(request):
-    # Get the logged-in user
     user = request.user
-
-    # Get the staff member and their assignments
     staff_member = Staff.objects.get(user=user)
+    
+    # Query staff assignments for the logged-in staff member
     staff_assignments = AssignGrampanchayat.objects.filter(staff=staff_member)
+    
+    # Extract Gram Panchayats from staff assignments
+    assigned_gram_panchayats = [
+        assignment.grampanchayat1,
+        assignment.grampanchayat2,
+        assignment.grampanchayat3,
+        assignment.grampanchayat4,
+        assignment.grampanchayat5,
+    ]
+    assigned_gram_panchayat = [
+        getattr(staff_assignments, f'grampanchayat{i}', None)
+        for i in range(1, 6)
+    ]
 
-    # Get the Gram Panchayats for the dropdown in the template
-    gram_panchayats = Grampanchayat.objects.all()
+    # Remove None values from the list
+    assigned_gram_panchayat = [panchayat for panchayat in assigned_gram_panchayat if panchayat]
 
-    print(gram_panchayats)
+
+    # Query Gram Panchayats based on the assignments
+    gram_panchayats = Grampanchayat.objects.filter(pk__in=assigned_gram_panchayats)
 
     if request.method == 'POST':
-        # Process the form data
         camp_date = request.POST.get('campDate')
         camp_name = request.POST.get('campName')
         camp_address = request.POST.get('campAddress')
@@ -1102,15 +1227,45 @@ def create_blood_camp(request):
         )
         blood_camp.save()
 
-        # Redirect to a success page or another view
+        # Redirect to the staffindex page
         return redirect('staffindex')
 
-    # Render the template if it's a GET request
+    gram_panchayats_list = [{'name_of_grampanchayat': p.name_of_grampanchayat} for p in gram_panchayats]
+
     context = {
         'staff_assignments': staff_assignments,
         'gramPanchayats': gram_panchayats,
+        'gramPanchayatsJson': gram_panchayats_list,
     }
+
     return render(request, 'staff/bloodbankcamps.html', context)
+
+
+
+from django.http import JsonResponse
+
+@login_required
+def get_assigned_gram_panchayats(request):
+    user = request.user
+    staff_member = Staff.objects.get(user=user)
+
+    # Query staff assignments for the logged-in staff member
+    staff_assignment = AssignGrampanchayat.objects.filter(staff=staff_member).first()
+
+    # Extract Gram Panchayats from the staff assignment
+    assigned_gram_panchayats = [
+        getattr(staff_assignment, f'grampanchayat{i}_id')
+        for i in range(1, 6)
+        if getattr(staff_assignment, f'grampanchayat{i}', None) is not None
+    ]
+
+    # Query Gram Panchayats based on the assignments
+    gram_panchayats = Grampanchayat.objects.filter(pk__in=assigned_gram_panchayats)
+
+    # Convert Gram Panchayats to JSON format
+    assigned_panchayats_json = [{'name_of_grampanchayat': p.name_of_grampanchayat} for p in gram_panchayats]
+
+    return JsonResponse(assigned_panchayats_json, safe=False)
 
 
 
