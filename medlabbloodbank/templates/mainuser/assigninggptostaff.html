@@ -281,10 +281,19 @@
     <div class="sidebar-overlay" data-reff=""></div>
    
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+    <script src="{% static 'mainuser/js/popper.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'mainuser/js/select2.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/moment.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'mainuser/js/app.js' %}"></script>
     <!-- ... Your existing HTML ... -->
     <script>
         $(document).ready(function () {
+            console.log('Document ready!');
             
             var grampanchayat1 = $('#grampanchayat1');
             var grampanchayat2 = $('#grampanchayat2');
@@ -315,6 +324,7 @@
         
                         // Call the validation function
                         checkIfOptionExists(selectedOption, grampanchayat1);
+                        checkIfDuplicateSelected(selectedOption, grampanchayat1);
         
                         // Filter data for other dropdowns based on the selected district
                         var selectedDistrict = selectedOption.data('district');
@@ -332,6 +342,7 @@
                     grampanchayat2.on('change', function () {
                         var selectedOption = $('option:selected', this);
                         checkIfOptionExists(selectedOption, grampanchayat2);
+                        checkIfDuplicateSelected(selectedOption, grampanchayat2); // Add this line
                         // Additional logic if needed
                     });
     
@@ -339,18 +350,21 @@
                     grampanchayat3.on('change', function () {
                         var selectedOption = $('option:selected', this);
                         checkIfOptionExists(selectedOption, grampanchayat3);
+                        checkIfDuplicateSelected(selectedOption, grampanchayat3); // Add this line
                         // Additional logic if needed
                     });
         
                     grampanchayat4.on('change', function () {
                         var selectedOption = $('option:selected', this);
                         checkIfOptionExists(selectedOption, grampanchayat4);
+                        checkIfDuplicateSelected(selectedOption, grampanchayat4); // Add this line
                         // Additional logic if needed
                     });
         
                     grampanchayat5.on('change', function () {
                         var selectedOption = $('option:selected', this);
                         checkIfOptionExists(selectedOption, grampanchayat5);
+                        checkIfDuplicateSelected(selectedOption, grampanchayat5); // Add this line
                         // Additional logic if needed
                     });
                 },
@@ -376,17 +390,16 @@
                 $.ajax({
                     url: '{% url "validate_assign_grampanchayat" %}',
                     type: 'POST',
-                    data: { grampanchayatName: selectedOption.text() },
+                    data: {
+                        grampanchayatName: selectedOption.text(),
+                        additionalField: $('#additionalField').val() // Update with the actual ID or selector of your additional field
+                    },
                     dataType: 'json',
                     success: function (response) {
                         if (response.exists) {
-                            // Option already exists, show an error message
-                            showErrorMessage(dropdown, 'Error: This Grampanchayat is already assigned.');
-                            //alert('Error: This Grampanchayat is already assigned.');
-                            // Optionally, you can disable the submit button or take other actions
-                        }
-                        else
-                        {
+                            // Option or associated data already exists, show an error message
+                            showErrorMessage(dropdown, 'Error: This Grampanchayat or associated data already assigned.');
+                        } else {
                             hideErrorMessage(dropdown);
                         }
                     },
@@ -395,6 +408,31 @@
                     }
                 });
             }
+            
+            function checkIfDuplicateSelected(selectedOption, dropdown) {
+                console.log('Checking for duplicates:', selectedOption.val(), dropdown.attr('id'));
+
+                // Get the index (1-5) from the dropdown's ID
+                var index = dropdown.attr('id').replace('grampanchayat', '');
+            
+                // Collect selected options from all dropdowns
+                var selectedOptions = [];
+                for (var i = 1; i <= 5; i++) {
+                    if (i != index) {
+                        selectedOptions.push($('#grampanchayat' + i).val());
+                    }
+                }
+            
+                // Check if the selected option exists in other dropdowns
+                if (selectedOptions.includes(selectedOption.val())) {
+                    // Option already exists in another field, show an error message
+                    showErrorMessage(dropdown, 'Error: This Grampanchayat is already selected in another field.');
+                } else {
+                    hideErrorMessage(dropdown);
+                }
+            }
+            
+            
             // Function to show an error message next to the dropdown
             function showErrorMessage(dropdown, message) {
                 var errorMessageSpan = dropdown.next('.error-message');
@@ -424,15 +462,7 @@
    
 
     {% comment %} <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script> {% endcomment %}
-	<script src="{% static 'mainuser/js/popper.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/jquery.slimscroll.js' %}"></script>
-    <script src="{% static 'mainuser/js/select2.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/moment.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/bootstrap-datetimepicker.min.js' %}"></script>
-    <script src="{% static 'mainuser/js/app.js' %}"></script>
+	
 </body>
 
 

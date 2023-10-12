@@ -33,7 +33,9 @@ def registerasdonor(request):
 #     return render(request, 'donatenow.html')
 
 def homebloodbank(request):
-    
+    Donor.objects.filter(user=request.user).exists()
+        # User is already registered as a donor, you can redirect or render a different page
+
     return render(request, 'homebloodbank.html')
 def testimonial(request):
     return render(request, 'testimonial.html')
@@ -167,12 +169,15 @@ def donatenow(request):
     if request.user.is_authenticated and request.user.role == CustomUser.REGISTEREDDONOR:
         donor = Donor.objects.get(user=request.user)
         print(donor)
-        return render(request, 'donatenow.html', {'donor':donor})
+        last_submission = DonorResponse.objects.filter(user=request.user).order_by('-timestamp').first()
+        if last_submission and (timezone.now() - last_submission.timestamp) < timedelta(days=3):
+            # User has already submitted the form in the last 3 days
+            return render(request, 'waitforemail.html')  # Replace with your template or redirect
+        return render(request, 'donatenow.html', {'donor': donor})
     else:
         # Redirect or render the "Register as Donor" page for others
-        return redirect('registerasdonor') 
+        return redirect('registerasdonor')
     
-
 def registereddonortodonatenow(request):
     return render(request, 'registereddonortodonatenow.html')
 
@@ -565,6 +570,7 @@ def validate_assign_grampanchayat(request):
             Q(grampanchayat4__name_of_grampanchayat=grampanchayat_name) |
             Q(grampanchayat5__name_of_grampanchayat=grampanchayat_name)
         )
+        
         exists = True
     except AssignGrampanchayat.DoesNotExist:
         exists = False
