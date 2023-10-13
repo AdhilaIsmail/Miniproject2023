@@ -22,7 +22,7 @@ from website.views import index, about,  service, testimonial, contact, loginn, 
 from website.views import registereddonorresponse, registereddonortodonatenow, notificationfordonation, send_sms, uploadresult, uploadresult2
 from website.views import homebloodbank, register, loggout
 from django.contrib.auth import views as auth_views
-from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent,campschedulesfordonor
+from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent,campschedulesfordonor,confirmpage
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail,view_uploaded_files,viewlabresults
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
@@ -40,7 +40,6 @@ urlpatterns = [
     path('registerasdonor',registerasdonor, name='registerasdonor'),
     path('register_donor/', register_donor, name='register_donor'),
     path('donatenow',donatenow, name='donatenow'),
-    
     path('homebloodbank',homebloodbank, name='homebloodbank'),
     path('registration',register, name='registration'),
     path('register/', register_donor, name='register_donor'),
@@ -52,6 +51,8 @@ urlpatterns = [
     path('uploadresult', uploadresult, name='uploadresult'),
     path('uploadresult2/<str:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('waitforemail',waitforemail,name='waitforemail'),
+    path('confirmpage', confirmpage, name='confirmpage'),
+   
 
     # path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),

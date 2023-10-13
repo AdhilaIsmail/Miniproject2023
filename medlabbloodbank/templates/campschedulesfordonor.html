@@ -1,6 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+<!-- Add this modal HTML code within the <body> tag -->
+<!-- Add this to the head of your HTML file to include Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<style>
+    /* Custom styles for table */
+    .custom-table {
+        font-size: 13px; /* Adjust the font size as needed */
+    }
+
+    /* Adjust the width of the table */
+    {% comment %} .table-responsive {
+        max-width: 100%; /* You can adjust this value based on your preference */
+    } {% endcomment %}
+    .table-responsive {
+        overflow-x: auto;
+    }
+</style>
 
     <!-- Full Screen Search Start -->
     <div class="modal fade" id="searchModal" tabindex="-1">
@@ -24,15 +42,14 @@
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="{% static 'img/hsptlbg.jpg' %}" alt="Image">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                    <img class="w-100" src="{% static 'img/9.jpg' %}" alt="Image">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center" style="margin-top: -400px;background-color:white">
                         <div class="p-3" style="max-width: 1200px;">
+                            <h6 id="h6head" class="display-1  mb-md-4 animated zoomIn" style="color:#a65656">Available Blood Bank Camps</h6>
+                            <div class="table-responsive" style="width: 100%;">
+                                <table class="table table-bordered  custom-table datatable mb-0">
                             
-                            <h6 id="h6head" style="margin-top:-30px" class="display-1 text-white mb-md-4 animated zoomIn">Available Blood Bank Camps</h6>
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped custom-table datatable mb-0">
-                            
-                                    <thead>
+                                    <thead style="background-color:#a65656;color:white">
                                         <tr>
                                             <th>Camp Date</th>
                                             <th>Camp Name</th>
@@ -41,12 +58,11 @@
                                             <th>Conducted By</th>
                                             <th>Organized By</th>
                                             <th>Gram Panchayat</th>
-                                            <th>Start Time</th>
-                                            <th>End Time</th>
+                                            <th>Time Slots</th>
                                             <th>Register</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody style="background-color:white;color:black" >
                                         {% for camp in schedules %}
                                             <tr>
                                                 <td>{{ camp.campDate }}</td>
@@ -56,8 +72,20 @@
                                                 <td>{{ camp.conductedBy }}</td>
                                                 <td>{{ camp.organizedBy }}</td> <!-- Assuming organizedBy has a readable __str__ method -->
                                                 <td>{{ camp.gramPanchayat }}</td>
-                                                <td>{{ camp.startTime }}</td>
-                                                <td>{{ camp.endTime }}</td>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="timeSlot{{ camp.id }}" id="slot1{{ camp.id }}" value="slot1" checked>
+                                                        <label class="form-check-label" for="slot1{{ camp.id }}">
+                                                            {{ camp.startTime }} - {{ camp.endTime }}
+                                                        </label>
+                                                    </div>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" name="timeSlot{{ camp.id }}" id="slot2{{ camp.id }}" value="slot2">
+                                                        <label class="form-check-label" for="slot2{{ camp.id }}">
+                                                            {{ camp.startTime2 }} - {{ camp.endTime2 }}
+                                                        </label>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     <button style="color: white; background-color: red;border-radius:5px; border: none;" onclick="registerFunction('{{ camp.id }}')">Register</button>
                                                 </td>
@@ -72,5 +100,65 @@
             </div>
         </div>
     </div>
-    
-    {% endblock %}
+    <!-- Add this script at the end of your HTML file, just before the </body> tag -->
+<!-- Add this script at the end of your HTML file, just before the </body> tag -->
+<script>
+    function registerFunction(campId) {
+        // Get the modal element
+        var modal = document.getElementById("confirmationModal");
+
+        // Display the modal
+        modal.style.display = "block";
+
+        // When the user clicks the "Cancel" button
+        document.getElementById("cancelButton").onclick = function() {
+            // Close the modal
+            modal.style.display = "none";
+
+            // Reload the current page
+            window.location.reload();
+        };
+
+        // When the user clicks the "OK" button
+        document.getElementById("okButton").onclick = function() {
+            // Close the modal
+            modal.style.display = "none";
+
+            // Perform the registration logic here (replace this with your actual registration logic)
+            //alert("Registration logic goes here for camp with ID: " + campId);
+
+            // Redirect to the new page
+            window.location.replace("confirmpage");  // Change "/scheduled-camp" to the actual URL of your new page
+        };
+    }
+</script>
+
+
+
+
+
+
+
+<!-- Bootstrap Modal HTML -->
+<div id="confirmationModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p>Are you sure you want to register?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" id="cancelButton" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="okButton">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add this to the end of your HTML file to include Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js" integrity="sha384-MCw98/SFnGE8fJT3U2ZRn5aaep5L6tMd6FUUQxAgbM5SNID2KVOEByhHMIbejFj" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+{% endblock %}

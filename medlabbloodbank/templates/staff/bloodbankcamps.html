@@ -310,6 +310,7 @@
                                 
                                 
                                 <div class="col-sm-6">
+                               
                                     <div class="form-group">
                                         <label>Start Time <span class="text-danger">*</span></label>
                                         <input class="form-control" type="time" name="startTime" id="startTime"required>
@@ -324,6 +325,23 @@
                                         <p id="timeError" style="color: red;"></p>
                                     </div>
                                 </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Start Time 2 <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="time" name="startTime2" id="startTime2" required>
+                                        <p id="startTimeError2" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>End Time 2 <span class="text-danger">*</span></label>
+                                        <input class="form-control" type="time" name="endTime2" id="endTime2" required>
+                                        <p id="timeError2" style="color: red;"></p>
+                                    </div>
+                                </div>
+                                
                             </div>
                             
                             
@@ -432,6 +450,56 @@
                                         // Clear the error message and reset the custom validity
                                         errorContainer.textContent = '';
                                         document.getElementById('endTime').setCustomValidity('');
+                                    }
+                                });
+                            </script>
+                            <script>
+                                document.getElementById('startTime2').addEventListener('input', function () {
+                                    const startTimeValue = this.value;
+                                    const errorContainer = document.getElementById('startTimeError2');
+                            
+                                    // Construct Date object using the current date and selected start time
+                                    const currentDate = new Date();
+                                    const startTime = new Date(`${currentDate.toISOString().split('T')[0]}T${startTimeValue}Z`);
+                            
+                                    // Check if start time is before 9 am
+                                    const nineAm = new Date(`${currentDate.toISOString().split('T')[0]}T09:00:00Z`);
+                                    if (startTime < nineAm) {
+                                        errorContainer.textContent = 'Start Time should not be earlier than 9:00 AM.';
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                    } else {
+                                        // Calculate end time as start time + 2 hours
+                                        const endTime = new Date(startTime.getTime() + (2 * 60 * 60 * 1000)); // 2 hours in milliseconds
+                            
+                                        // Format the calculated end time as HH:mm
+                                        const formattedEndTime = endTime.toISOString().substr(11, 5);
+                            
+                                        // Set the calculated end time in the End Time field
+                                        document.getElementById('endTime2').value = formattedEndTime;
+                            
+                                        // Clear the error message and reset the custom validity
+                                        errorContainer.textContent = '';
+                                        document.getElementById('endTime2').setCustomValidity('');
+                                    }
+                                });
+                            
+                                document.getElementById('endTime2').addEventListener('input', function () {
+                                    const startTimeValue = document.getElementById('startTime2').value;
+                                    const endTimeValue = this.value;
+                                    const errorContainer = document.getElementById('timeError2');
+                            
+                                    // Construct Date objects using the current date and selected start/end times
+                                    const currentDate = new Date();
+                                    const startTime = new Date(`${currentDate.toISOString().split('T')[0]}T${startTimeValue}Z`);
+                                    const endTime = new Date(`${currentDate.toISOString().split('T')[0]}T${endTimeValue}Z`);
+                            
+                                    if (endTime < startTime) {
+                                        errorContainer.textContent = 'End Time should not be less than Start Time.';
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                    } else {
+                                        // Clear the error message and reset the custom validity
+                                        errorContainer.textContent = '';
+                                        this.setCustomValidity('');
                                     }
                                 });
                             </script>

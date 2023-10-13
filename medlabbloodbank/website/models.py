@@ -304,6 +304,10 @@ class BloodCamp(models.Model):
     gramPanchayat = models.CharField(max_length=100, default='DefaultPanchayat',null=True, blank=True)
     startTime = models.TimeField()
     endTime = models.TimeField()
+    startTime2 = models.TimeField(null=True)
+    endTime2 = models.TimeField(null=True)
 
     def __str__(self):
         return self.campName
+
+
