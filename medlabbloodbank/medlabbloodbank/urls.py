@@ -25,7 +25,7 @@ from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, doctors, departments, employees, profile1, editprofile,requestsent,campschedulesfordonor,confirmpage
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail,view_uploaded_files,viewlabresults
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
-from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,appointmentsstaff,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
+from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
 from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules,update_approval_status
 
 urlpatterns = [
@@ -120,7 +120,7 @@ urlpatterns = [
 
     path('staffindex', staffindex, name='staffindex'),
     path('activities', activities, name='activities'),
-    path('appointmentsstaff', appointmentsstaff, name='appointmentsstaff'),
+    path('donorappointments', donorappointments, name='donorappointments'),
     path('bloodbankcamps', bloodbankcamps, name='bloodbankcamps'),
     path('employees', employees, name='employees'),
     path('profile1', profile1, name='profile1'),

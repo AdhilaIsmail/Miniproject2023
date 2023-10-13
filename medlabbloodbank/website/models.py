@@ -311,3 +311,13 @@ class BloodCamp(models.Model):
         return self.campName
 
 
+class Appointment(models.Model):
+    camp = models.ForeignKey(BloodCamp, on_delete=models.CASCADE)
+    time_slot = models.CharField(max_length=50)  # You may want to choose a more appropriate data type
+    booked_by_donor = models.ForeignKey(Donor, on_delete=models.SET_NULL, null=True, blank=True)
+
+    # Add other fields for the Appointment model as needed
+
+    def __str__(self):
+        donor_name = self.booked_by_donor.full_name if self.booked_by_donor else 'Anonymous'
+        return f"{self.camp.campName} - {self.time_slot} - Booked by: {donor_name}"

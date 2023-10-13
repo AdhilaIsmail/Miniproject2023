@@ -971,8 +971,8 @@ def staffindex(request):
 def activities(request):
     return render(request, 'staff/activities.html')
 
-def appointmentsstaff(request):
-    return render(request, 'staff/appointments.html')
+def donorappointments(request):
+    return render(request, 'staff/donorappointments.html')
 
 def bloodbankcamps(request):
     return render(request, 'staff/bloodbankcamps.html')
@@ -1311,6 +1311,34 @@ def campschedulesfordonor(request):
     BloodCamp.objects.all().count()
     return render(request, 'campschedulesfordonor.html', {'schedules': camps})
 
-def confirmpage(request):
-    return render(request,'confirmpage.html')
+# def confirmpage(request):
+#     return render(request,'confirmpage.html')
    
+from django.shortcuts import render, redirect
+from .models import BloodCamp, Appointment
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from .models import BloodCamp, Appointment
+
+@login_required
+def confirmpage(request):
+    if request.method == 'POST':
+        camp_id = request.POST.get('camp_id')
+        time_slot = request.POST.get('time_slot')
+        print(time_slot)
+        # Get the donor who is logged in
+        donor = request.user.donor
+
+        # Retrieve the BloodCamp instance
+        blood_camp = BloodCamp.objects.get(id=camp_id)
+
+        # Create an Appointment instance
+        appointment = Appointment(camp=blood_camp, time_slot=time_slot, booked_by_donor=donor)
+        appointment.save()
+
+        return render(request, 'confirmpage.html',{'appointment':appointment})
+
+    # Handle other cases or methods if needed
+    return redirect('homebloodbank')  # Redirect to the appropriate URL
