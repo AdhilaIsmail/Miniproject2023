@@ -314,3 +314,18 @@ class DonatedDonor(models.Model):
     expiry_date = models.DateField()
     def __str__(self):
         return self.expiry_date
+
+class Payment(models.Model):
+    PAYMENT_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Success', 'Success'),
+    ]
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2, default=1)
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    payment_date = models.DateTimeField(auto_now_add=True, null=True)  # Use auto_now_add=True for initial creation
+
+
+    def _str_(self):
+        return f"Payment ID: {self.id}, Status: {self.payment_status}"

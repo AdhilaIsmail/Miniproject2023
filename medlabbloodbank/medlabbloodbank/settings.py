@@ -207,3 +207,5 @@ SOCIALACCOUNT_PROVIDERS={
 }
 
   # Replace with your desired URL
+RAZOR_KEY_ID = 'rzp_test_ASnixUyDOPtSYJ'
+RAZOR_KEY_SECRET = '3D9SWjrdYGdLgKkxDBtC70KA'

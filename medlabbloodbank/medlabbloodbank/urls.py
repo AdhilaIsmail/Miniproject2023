@@ -141,5 +141,5 @@ urlpatterns = [
     path('get_assigned_gram_panchayats', get_assigned_gram_panchayats, name='get_assigned_gram_panchayats'),
     path('donorappointments',donorappointments, name='donorappointments'),
     path('donateddetails/<int:appointment_id>/',donateddetails,name='donateddetails'),
- 
+    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
 ]
