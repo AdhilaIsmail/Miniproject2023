@@ -97,6 +97,20 @@
 		.table-responsive td {
 			padding: 8px; /* Adjust the padding as needed */
 		}
+		.donated-btn {
+			background-color: green;
+			color: white;
+			border-radius:5px;
+			border:none;
+		}
+		
+		/* Not Donated button style (red) */
+		.not-donated-btn {
+			background-color: red;
+			color: white;
+			border-radius:5px;
+			border:none;
+		}
 	</style>   
 
 </head>
@@ -247,7 +261,7 @@
 											<td>{{ appointment.time_slot }}</td>
 											<td>
 												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
-													<button class="status-btn donated-btn">Donated</button>
+													<button class="status-btn donated-btn" data-redirect-url="{% url 'donateddetails' appointment.id %}">Donated</button>
 													<button class="status-btn not-donated-btn">Not Donated</button>
 												</div>
 											</td>
@@ -270,28 +284,25 @@
 			statusButtons.forEach(function (buttonsContainer) {
 				var donatedBtn = buttonsContainer.querySelector('.donated-btn');
 				var notDonatedBtn = buttonsContainer.querySelector('.not-donated-btn');
-				var statusTexts = buttonsContainer.querySelectorAll('.status-text');
 	
 				donatedBtn.addEventListener('click', function () {
-					// Toggle visibility of status text and buttons
-					statusTexts.forEach(function (statusText) {
-						statusText.style.display = 'block';
-					});
-					donatedBtn.style.display = 'none';
-					notDonatedBtn.style.display = 'none';
-	
-					// Optionally, redirect to another page for filling details
-					var appointmentId = buttonsContainer.getAttribute('data-appointment-id');
-					window.location.href = '/fill-details/' + appointmentId;
+					// Get the redirect URL from the button's data attribute
+					var redirectUrl = donatedBtn.getAttribute('data-redirect-url');
+					
+					// Check if a valid URL is specified
+					if (redirectUrl) {
+						window.location.href = redirectUrl;
+					}
 				});
 	
 				notDonatedBtn.addEventListener('click', function () {
 					// Toggle visibility of status text and buttons
+					var statusTexts = buttonsContainer.querySelectorAll('.status-text');
 					statusTexts.forEach(function (statusText) {
 						statusText.style.display = 'block';
 					});
 					donatedBtn.style.display = 'none';
-					notDonatedBtn.style.display = 'none';
+					notDonatedBtn.style display = 'none';
 				});
 			});
 		});

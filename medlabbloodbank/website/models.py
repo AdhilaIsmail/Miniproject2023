@@ -303,3 +303,14 @@ class Appointment(models.Model):
     def __str__(self):
         donor_name = self.booked_by_donor.full_name if self.booked_by_donor else 'Anonymous'
         return f"{self.camp.campName} - {self.time_slot} - Booked by: {donor_name}"
+    
+
+    from django.db import models
+
+class DonatedDonor(models.Model):
+    user = models.OneToOneField(Donor, on_delete=models.CASCADE, null=True)
+    quantity = models.PositiveIntegerField()
+    donation_date = models.DateField()
+    expiry_date = models.DateField()
+    def __str__(self):
+        return self.expiry_date
