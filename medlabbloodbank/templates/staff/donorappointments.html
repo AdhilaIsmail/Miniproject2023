@@ -15,6 +15,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'staff/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'staff/css/select2.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'staff/css/style.css' %}">
+	
+
     <style>
             
 		.sidebar {
@@ -22,6 +24,7 @@
 			top: 50px;
 			width: 230px;
 			z-index: 1039;
+			
 			background-color: #d4a5a5;
 			bottom: 0;
 			margin-top: 0px;
@@ -47,7 +50,7 @@
 		.sidebar-menu li a {
 			color: white;
 			display: block;
-			font-size: 15px;
+			font-size: 13px;
 			height: auto;
 			padding: 0 20px;
 		}
@@ -85,6 +88,14 @@
 		.sidebar-menu ul ul a.active {
 			color: #009efb;
 			text-decoration: underline;
+		}
+		.table-responsive table {
+			font-size: 11px; /* Adjust the font size as needed */
+		}
+	
+		.table-responsive th,
+		.table-responsive td {
+			padding: 8px; /* Adjust the padding as needed */
 		}
 	</style>   
 
@@ -169,9 +180,7 @@
                         <li>
                             <a href="{% url 'registereddonortablestaff' %}"><i class="fa fa-registered"></i> <span>Registered Donors</span></a>
                         </li>
-                        {% comment %} <li>
-                            <a href="{% url 'registeredhospitaltable'%}"><i class="fa fa-hospital-o"></i> <span>Add Hospitals</span></a>
-                        </li> {% endcomment %}
+                        
                         
                         <li>
                             <a href="{% url 'departments' %}"><i class="fa fa-hospital-o"></i> <span>Blood Bank Camps</span></a>
@@ -209,103 +218,93 @@
 							<table class="table table-striped custom-table">
 								<thead>
 									<tr>
-										<th>Appointment ID</th>
-										<th>Patient Name</th>
-										<th>Age</th>
-										<th>Doctor Name</th>
-										<th>Department</th>
-										<th>Appointment Date</th>
-										<th>Appointment Time</th>
+										<th>Name</th>
+										<th>Camp</th>
+										<th>Camp Address</th>
+										<th>District</th>
+										<th>Organized By</th>
+										<th>Date</th>
+										<th>Time </th>
 										<th>Status</th>
-										<th class="text-right">Action</th>
+										
 									</tr>
 								</thead>
 								<tbody>
-									<tr>
-										<td>APT0001</td>
-										<td><img width="28" height="28" src="{% static 'staff/img/user.jpg' %}" class="rounded-circle m-r-5" alt=""> Denise Stevens</td>
-										<td>35</td>
-										<td>Henry Daniels</td>
-										<td>Cardiology</td>
-										<td>30 Dec 2018</td>
-										<td>10:00am - 11:00am</td>
-										<td><span class="custom-badge status-red">Inactive</span></td>
-										<td class="text-right">
-											<div class="dropdown dropdown-action">
-												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-												<div class="dropdown-menu dropdown-menu-right">
-													{% comment %} <a class="dropdown-item" href="edit-appointment.html"><i class="fa fa-pencil m-r-5"></i> Edit</a> {% endcomment %}
-													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_appointment"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+									{% for appointment in appointments %}
+										<tr>
+											<td>
+												{% if appointment.booked_by_donor %}
+													{{ appointment.booked_by_donor.full_name }}
+												{% else %}
+													Not booked by any donor
+												{% endif %}
+											</td>
+											<td>{{ appointment.camp.campName }}</td>
+											<td>{{ appointment.camp.campAddress }}</td>
+											<td>{{ appointment.camp.campDistrict }}</td>
+											<td>{{ appointment.camp.organizedBy.full_name }}</td>
+											<td>{{ appointment.camp.campDate }}</td>
+											<td>{{ appointment.time_slot }}</td>
+											<td>
+												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
+													<button class="status-btn donated-btn">Donated</button>
+													<button class="status-btn not-donated-btn">Not Donated</button>
 												</div>
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td>APT0002</td>
-										<td><img width="28" height="28" src="{% static 'staff/img/user.jpg' %}" class="rounded-circle m-r-5" alt=""> Denise Stevens</td>
-										<td>35</td>
-										<td>Henry Daniels</td>
-										<td>Cardiology</td>
-										<td>30 Dec 2018</td>
-										<td>10:00am - 11:00am</td>
-										<td><span class="custom-badge status-green">Active</span></td>
-										<td class="text-right">
-											<div class="dropdown dropdown-action">
-												<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
-												<div class="dropdown-menu dropdown-menu-right">
-													{% comment %} <a class="dropdown-item" href="edit-appointment.html"><i class="fa fa-pencil m-r-5"></i> Edit</a> {% endcomment %}
-													<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_appointment"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-												</div>
-											</div>
-										</td>
-									</tr>
+											</td>
+										</tr>
+									{% endfor %}
 								</tbody>
 							</table>
+							
 						</div>
 					</div>
                 </div>
-            </div>
-            
-			<div id="delete_appointment" class="modal fade delete-modal" role="dialog">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-body text-center">
-							<img src="{% static 'staff/img/user.jpg' %}" alt="" width="50" height="46">
-							<h3>Are you sure want to delete this Appointment?</h3>
-							<div class="m-t-20"> <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
-								<button type="submit" class="btn btn-danger">Delete</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+            </div>   
+			
 		</div>
     </div>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			var statusButtons = document.querySelectorAll('.status-buttons');
+	
+			statusButtons.forEach(function (buttonsContainer) {
+				var donatedBtn = buttonsContainer.querySelector('.donated-btn');
+				var notDonatedBtn = buttonsContainer.querySelector('.not-donated-btn');
+				var statusTexts = buttonsContainer.querySelectorAll('.status-text');
+	
+				donatedBtn.addEventListener('click', function () {
+					// Toggle visibility of status text and buttons
+					statusTexts.forEach(function (statusText) {
+						statusText.style.display = 'block';
+					});
+					donatedBtn.style.display = 'none';
+					notDonatedBtn.style.display = 'none';
+	
+					// Optionally, redirect to another page for filling details
+					var appointmentId = buttonsContainer.getAttribute('data-appointment-id');
+					window.location.href = '/fill-details/' + appointmentId;
+				});
+	
+				notDonatedBtn.addEventListener('click', function () {
+					// Toggle visibility of status text and buttons
+					statusTexts.forEach(function (statusText) {
+						statusText.style.display = 'block';
+					});
+					donatedBtn.style.display = 'none';
+					notDonatedBtn.style.display = 'none';
+				});
+			});
+		});
+	</script>
     <div class="sidebar-overlay" data-reff=""></div>
-    
-    
-    
-    
-
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'staff/js/popper.min.js' %}"></script>
     <script src="{% static 'staff/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'staff/js/jquery.slimscroll.js' %}"></script>
     <script src="{% static 'staff/js/select2.min.js' %}"></script>
     <script src="{% static 'staff/js/app.js' %}"></script>
-
-	<script>
-            $(function () {
-                $('#datetimepicker3').datetimepicker({
-                    format: 'LT'
-                });
-				$('#datetimepicker4').datetimepicker({
-                    format: 'LT'
-                });
-            });
-     </script>
 </body>
-
-
-<!-- appointments23:20-->
 </html>
+
+
+

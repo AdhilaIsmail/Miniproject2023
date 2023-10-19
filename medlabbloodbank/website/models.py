@@ -232,18 +232,7 @@ class AssignGrampanchayat(models.Model):
         return f"Assignments for {self.staff.name}"
 
 
-#assign gp to staffs
-# class AssignGramapanchayath(models.Model):
-#     staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
-#     gramapanchayat1 = models.CharField(max_length=255)
-#     gramapanchayat2 = models.CharField(max_length=255)
-#     gramapanchayat3 = models.CharField(max_length=255)
-#     gramapanchayat4 = models.CharField(max_length=255)
-#     gramapanchayat5 = models.CharField(max_length=255)
-    
 
-#     def __str__(self):
-#         return f"Assignments for {self.staff.name}"
 
 
 #laboratory
@@ -270,14 +259,7 @@ class LabSelection(models.Model):
 
   
 
-# from django.db import models
-# from django.contrib.auth import get_user_model
 
-# class UploadedFile(models.Model):
-#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE,default=None)
-#     file = models.FileField(upload_to='media/uploads/')
-#     approval_status = models.CharField(max_length=50, default='Pending')
-#     timestamp = models.DateTimeField(auto_now_add=True)
 
 from django.db import models
 from django.contrib.auth import get_user_model
@@ -315,7 +297,7 @@ class Appointment(models.Model):
     camp = models.ForeignKey(BloodCamp, on_delete=models.CASCADE)
     time_slot = models.CharField(max_length=50)  # You may want to choose a more appropriate data type
     booked_by_donor = models.ForeignKey(Donor, on_delete=models.SET_NULL, null=True, blank=True)
-
+    status = models.CharField(max_length=20, choices=[('donated', 'Donated'), ('not_donated', 'Not Donated')],  null=True, blank=True)
     # Add other fields for the Appointment model as needed
 
     def __str__(self):

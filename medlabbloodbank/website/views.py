@@ -977,13 +977,8 @@ def donorappointments(request):
 def bloodbankcamps(request):
     return render(request, 'staff/bloodbankcamps.html')
 
-
-
 def addhospitals(request):
     return render(request, 'staff/add-hospitals.html')
-
-# def hospitalregistration(request):
-#     return render(request, 'staff/hospitalregistration.html')
 
 def employees(request):
     return render(request, 'staff/employees.html')
@@ -1342,3 +1337,20 @@ def confirmpage(request):
 
     # Handle other cases or methods if needed
     return redirect('homebloodbank')  # Redirect to the appropriate URL
+
+
+
+
+from django.shortcuts import render
+from .models import Appointment
+
+def donorappointments(request):
+    appointments = Appointment.objects.all()
+    return render(request, 'staff/donorappointments.html', {'appointments': appointments})
+
+
+
+
+
+
+
