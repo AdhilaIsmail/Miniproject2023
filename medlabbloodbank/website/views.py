@@ -986,6 +986,9 @@ def employees(request):
 def profile(request):
     return render(request, 'staff/profile.html')
 
+def bloodinventorystaff(request):
+    return render(request, 'mainuser/bloodinventorystaff.html')
+
 def editprofile(request):
     return render(request, 'staff/edit-profile.html')
 
