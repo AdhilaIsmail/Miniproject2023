@@ -1,8 +1,10 @@
+
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages,auth
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from .models import Donor
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
@@ -836,46 +838,22 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 
-@csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from .models import CustomUser, Donor
 
-def bloodrequest(request, is_immediate):
-    print(f"is_immediate: {is_immediate}")  # Debug statement
+@login_required
+def view_profile(request):
+    user_profile = request.user
+    donor_profile = Donor.objects.get(user=user_profile)
+    context = {
+        'user_profile':user_profile,
+        'donor_profile':donor_profile
+    }
 
-    if request.method == 'POST':
-        user = request.user
-        blood_group = request.POST.get('blood_group')
-        quantity = request.POST.get('quantity')
-        purpose = request.POST.get('purpose')
+    return render(request, 'user_profile.html', context)
 
-
-        otp = get_random_string(length=6, allowed_chars='1234567890')
-        
-        print(f"OTP: {otp}")
-
-        request.session['hospital_otp'] = otp
-        
-        subject = 'Your OTP for Blood Request: Medlab Blood Bank'
-        message = f'Your OTP is: {otp}'
-        from_email = 'adhilaismail2@gmail.com'  # Replace with your email
-        recipient_list = [user.email]  # Assuming you want to send the OTP to the user's email address
-
-        # Use send_mail to send the OTP email
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
-
-        requested_date = datetime.now().date()
-        requested_time = datetime.now().time()
-
-        is_immediate = is_immediate.lower() == 'true'
-        # Create and save a new BloodRequest instance
-        blood_request = BloodRequest(user=user, blood_group=blood_group,quantity=quantity, purpose=purpose,  requested_date=requested_date, requested_time=requested_time, is_immediate=is_immediate)
-        blood_request.save()
-
-        return redirect('verify_hospital')
-
-
-    return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
-
-
+    
 from django.shortcuts import render, redirect
 from django.contrib import messages
 # Assuming you have stored the OTP in the session as 'hospital_otp'
@@ -883,7 +861,8 @@ from django.shortcuts import render, redirect
 from django.core.mail import send_mail  # Import send_mail
 from django.utils.crypto import get_random_string
 
-def verify_hospital(request):
+def verify_hospital(request,blood_request_id):
+    blood_request = BloodRequest.objects.get(id=blood_request_id)
     if request.method == 'POST':
         # Get the entered OTP from the form
         entered_otp = request.POST.get('otp')
@@ -896,7 +875,8 @@ def verify_hospital(request):
             del request.session['hospital_otp']
 
             # Redirect to the hospital home page
-            return redirect('requestsent')
+            url = reverse('requestsent', args=[blood_request_id])
+            return redirect(url)
         else:
             # OTP is incorrect, display an error message
             messages.error(request, 'Invalid OTP. Please try again.')
@@ -1304,30 +1284,33 @@ razorpay_client = razorpay.Client(
 	auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 
-def requestsent(request):
+def requestsent(request,blood_request_id):
      # Retrieve the appointment instance
-
+    blood_request = BloodRequest.objects.get(id=blood_request_id)
+    user=request.user
     currency = 'INR'
-    amount = int(200*100)  # Rs. 200
+    amount = blood_request.amount  # Get the subscription price
+    amount_in_paise = int(amount * 100)
 
     # Create a Razorpay Order
     razorpay_order = razorpay_client.order.create(dict(
-        amount=amount,
+        amount=amount_in_paise,
         currency=currency,
         payment_capture='0'
     ))
 
     # order id of the newly created order
     razorpay_order_id = razorpay_order['id']
-    callback_url = '/paymenthandler/'
+    callback_url = reverse('paymenthandler', args = [blood_request_id])
 
     # Create a Payment for the appointment
     payment = Payment.objects.create(
         user=request.user,
         payment_amount=amount,  # Specify the payment amount
-        payment_status='Pending',  # Set payment status to "Pending"
+        payment_status='Pending',
+        razorpay_order_id=razorpay_order_id,
     )
-
+    
     # Render the success template with the necessary context
     context = {
         'razorpay_order_id': razorpay_order_id,
@@ -1340,7 +1323,12 @@ def requestsent(request):
 
 
 @csrf_exempt
-def paymenthandler(request):
+def paymenthandler(request, blood_request_id):
+    user=request.user
+    # print(blood_request_id)
+    # unit=BloodRequest.objects.filter(user=user.id)
+    # quantity=unit.quantity
+    
     if request.method == "POST":
         try:
             # Get the payment details from the POST request
@@ -1357,21 +1345,24 @@ def paymenthandler(request):
 
             }
             result = razorpay_client.utility.verify_payment_signature(params_dict)
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
 
             if result is not None:
-                amount = int(200*100)  # Rs. 200
+                amount = int(payment.payment_amount*100)  # Rs. 200
 
                 # Capture the payment
                 razorpay_client.payment.capture(payment_id, amount)
+                payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+                payment.payment_status='Success'
+                payment.save()
+                blood_request=BloodRequest.objects.get(id=blood_request_id)
+                
+                blood_request.status='Accepted'
+                blood_request.save()
 
                 # Save payment details to the Payment model
                 # Assuming you have a Payment model defined
-                payment = Payment.objects.create(
-                    user=request.user,  # Assuming you have a logged-in user
-                    payment_amount=amount/100,
-                    payment_status='Success',  # Assuming payment is successful
-                )
-
+               
                 # Redirect to a success page with payment details
                 return redirect('hospitalhome')  # Replace 'orders' with your actual success page name or URL
             else:
@@ -1386,5 +1377,56 @@ def paymenthandler(request):
 
 
 
+@csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
+
+def bloodrequest(request, is_immediate):
+    print(f"is_immediate: {is_immediate}")  # Debug statement
+
+    if request.method == 'POST':
+        user = request.user
+        blood_group = request.POST.get('blood_group')
+        quantity = request.POST.get('quantity')
+        purpose = request.POST.get('purpose')
+
+
+        otp = get_random_string(length=6, allowed_chars='1234567890')
+        
+        print(f"OTP: {otp}")
+
+        request.session['hospital_otp'] = otp
+        request.session['quantity'] = quantity  # Store the 'quantity' in the session
+
+        subject = 'Your OTP for Blood Request: Medlab Blood Bank'
+        message = f'Your OTP is: {otp}'
+        from_email = 'adhilaismail2@gmail.com'  # Replace with your email
+        recipient_list = [user.email]  # Assuming you want to send the OTP to the user's email address
+
+        # Use send_mail to send the OTP email
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+        requested_date = datetime.now().date()
+        requested_time = datetime.now().time()
+
+        is_immediate = is_immediate.lower() == 'true'
+        calculated_amount = 850 * int(quantity)
+        # Create and save a new BloodRequest instance
+        blood_request = BloodRequest(
+            user=user,
+            blood_group=blood_group,
+            quantity=quantity,
+            purpose=purpose,
+            requested_date=requested_date,
+            requested_time=requested_time,
+            is_immediate=is_immediate,
+            amount=calculated_amount  # Set the 'amount' field
+        )
+        blood_request.save()
+
+        blood_request_id = blood_request.id
+
+        # Redirect to the 'verify_hospital' view with the 'blood_request_id' as a URL parameter
+        url = reverse('verify_hospital', args=[blood_request_id])
+        return redirect(url)
+    return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
 
 

@@ -158,7 +158,7 @@ class BloodRequest(models.Model):
         ('Rejected', 'Rejected'),
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-
+    amount = models.IntegerField(default=0)
     
     def __str__(self):
         return f"{self.user} - Requested on {self.requested_date} at {self.requested_time}"
@@ -322,6 +322,7 @@ class Payment(models.Model):
     ]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+    razorpay_order_id = models.CharField(max_length=255,default='')  # Razorpay order ID
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2, default=1)
     payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='Pending')
     payment_date = models.DateTimeField(auto_now_add=True, null=True)  # Use auto_now_add=True for initial creation

@@ -111,9 +111,9 @@ urlpatterns = [
     path('bloodavailability', bloodavailability, name='bloodavailability'),
     path('hospitalabout', hospitalabout, name='hospitalabout'),
     path('bloodrequest/<str:is_immediate>/', bloodrequest, name='bloodrequest'),
-    path('verify_hospital', verify_hospital, name='verify_hospital'),
-    path('requestsent',requestsent,name='requestsent'),
+    path('verify_hospital/<int:blood_request_id>/', verify_hospital, name='verify_hospital'),
 
+    path('requestsent/<int:blood_request_id>/', requestsent, name='requestsent'),
     
   
     #staff
@@ -141,5 +141,7 @@ urlpatterns = [
     path('get_assigned_gram_panchayats', get_assigned_gram_panchayats, name='get_assigned_gram_panchayats'),
     path('donorappointments',donorappointments, name='donorappointments'),
     path('donateddetails/<int:appointment_id>/',donateddetails,name='donateddetails'),
-    path('paymenthandler/', views.paymenthandler, name='paymenthandler'),
+    path('paymenthandler/<int:blood_request_id>/', views.paymenthandler, name='paymenthandler'),
+
+    path('view_profile/', views.view_profile, name='view_profile'),
 ]

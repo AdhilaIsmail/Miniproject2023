@@ -85,7 +85,7 @@
         <h2>OTP Verification</h2>
         
       
-        <form method="post" action="{% url 'verify_hospital' %}">
+        <form method="post" >
             {% csrf_token %}
             <div class="form-group">
                 <label for="otp">Enter OTP:</label>
