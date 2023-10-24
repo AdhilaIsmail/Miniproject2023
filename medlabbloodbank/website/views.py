@@ -480,8 +480,8 @@ def appointments(request):
 def departments(request):
     return render(request, 'mainuser/departments.html')
 
-def doctors(request):
-    return render(request, 'mainuser/doctors.html')
+def donors(request):
+    return render(request, 'mainuser/donors.html')
 
 def addhospitals(request):
     return render(request, 'mainuser/add-hospitals.html')
