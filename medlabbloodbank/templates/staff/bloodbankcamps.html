@@ -88,6 +88,11 @@
 			color: #009efb;
 			text-decoration: underline;
 		}
+        .top-right-button {
+            position: absolute;
+            top: -50px;
+            right: -170px;
+        }
     </style>   
     {% comment %} <script>
         function populateGramPanchayats() {
@@ -218,7 +223,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <a href="{% url 'view_camp_schedules' %}" class="btn btn-info">View Camp Schedules</a>
+                        <a href="{% url 'view_camp_schedules' %}" class="btn btn-info top-right-button">View Camp Schedules</a>
 
                         <form action="{% url 'create_blood_camp' %}" method="POST">
                             {% csrf_token %}
@@ -264,7 +269,7 @@
                                 <div class="col-sm-6">
                                     <div class="form-group">
                                         <label>Organized by <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="organizedBy" value="{{ request.user.staff.name }}" required>
+                                        <input class="form-control" type="text" name="organizedBy" value="{{ request.user.staff.name }}" readonly required>
                                     </div>
                                 </div>
                                
@@ -319,10 +324,14 @@
                             <script>
                                 document.getElementById('campDate').addEventListener('input', function () {
                                     const selectedDate = new Date(this.value);
+                                    const currentDate = new Date(); // Get the current date
                                     const errorContainer = document.getElementById('dateError');
-                        
+                            
                                     if (selectedDate.getDay() !== 0) {
                                         errorContainer.textContent = 'Please select a Sunday.';
+                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
+                                    } else if (selectedDate < currentDate) {
+                                        errorContainer.textContent = 'Please select a future date.';
                                         this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
                                     } else {
                                         errorContainer.textContent = '';  // Clear the error message
@@ -330,13 +339,33 @@
                                     }
                                 });
                             </script>
+                            
+                            
                             <script>
                                 document.getElementById('campName').addEventListener('input', function () {
                                     const nameValue = this.value;
                                     const errorContainer = document.getElementById('nameError');
-                        
-                                    if (!/^[a-zA-Z]+$/.test(nameValue)) {
-                                        errorContainer.textContent = 'Camp Name should only contain alphabets.';
+                            
+                                    if (!/^[a-zA-Z\s]+$/.test(nameValue)) {
+                                        errorContainer.textContent = 'Camp Name should only contain alphabets and white spaces.';
+                                        this.setCustomValidity('Invalid'); // Set a custom validity to trigger the browser's validation
+                                    } else {
+                                        errorContainer.textContent = ''; // Clear the error message
+                                        this.setCustomValidity(''); // Reset the custom validity
+                                    }
+                                });
+                            </script>
+                            <script>
+                                document.getElementById('campDate').addEventListener('input', function () {
+                                    const selectedDate = new Date(this.value);
+                                    const currentDate = new Date(); // Get the current date
+                                    const errorContainer = document.getElementById('dateError');
+                            
+                                    if (selectedDate.getDay() !== 0) {
+                                        errorContainer.textContent = 'Please select a Sunday.';
+                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
+                                    } else if (selectedDate < currentDate) {
+                                        errorContainer.textContent = 'Please select a future date.';
                                         this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
                                     } else {
                                         errorContainer.textContent = '';  // Clear the error message
@@ -470,10 +499,7 @@
                                         this.setCustomValidity('');
                                     }
                                 });
-                            </script>
-                            
-                            
-                            
+                            </script>            
                         </form>
                     </div>
                 </div>

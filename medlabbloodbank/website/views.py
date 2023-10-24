@@ -648,7 +648,7 @@ def grampanchayat_registration(request):
                 name_of_grampanchayat=name_of_grampanchayat
             )
             grampanchayat.save()
-            return redirect('adminindex')  # Redirect to a success page or list view
+            return redirect('listgps')  # Redirect to a success page or list view
 
     return render(request, 'mainuser/add-grampanchayat.html', {'error_message_id': error_message_id, 'error_message_name': error_message_name})
 
