@@ -120,11 +120,12 @@ urlpatterns = [
     #staff
 
     path('staffindex', staffindex, name='staffindex'),
+    path('donorsstaff',views.donorsstaff,name='donorsstaff'),
     path('activities', activities, name='activities'),
     path('donorappointments', donorappointments, name='donorappointments'),
     path('bloodbankcamps', bloodbankcamps, name='bloodbankcamps'),
     path('bloodinventorystaff',bloodinventorystaff,name="bloodinventorystaff"),
-    path('employees', employees, name='employees'),
+    path('staffliat', views.stafflist, name='stafflist'),
     path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),
     path('registereddonortablestaff', registereddonortablestaff, name='registereddonortablestaff'),

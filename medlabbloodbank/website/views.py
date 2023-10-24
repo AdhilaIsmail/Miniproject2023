@@ -315,55 +315,7 @@ from .models import LabSelection
 from urllib.parse import unquote
 
 
-# def uploadresult2(request, lab_selection_timestamp):
-#     # Convert the lab_selection_timestamp string to a datetime object
-#     # lab_selection_timestamp = datetime.strptime(lab_selection_timestamp, '%Y-%m-%d %H:%M:%S.%f%z')
-#     lab_selection_timestamp = unquote(lab_selection_timestamp)
-#     print(lab_selection_timestamp)
-#     # Convert the lab_selection_timestamp string to a datetime object
-#     lab_selection_timestamp = datetime.strptime(lab_selection_timestamp, '%Y-%m-%d %H:%M:%S.%f%z')
-#     # Calculate the target date (3 days from the lab selection date)
-#     target_date = lab_selection_timestamp + timedelta(days=3)
-    
-#     # Calculate the remaining time
-#     current_time = timezone.now()
-#     remaining_time = target_date - current_time
-    
-#     if remaining_time.total_seconds() <= 0:
-#         messages.error(request, 'The three-day window for uploading results has expired.')
-#         return redirect('donatenow')
 
-#     if request.method == 'POST':
-#         form = UploadFileForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             uploaded_file = form.cleaned_data['result_file']
-            
-#             # Save the uploaded file to your database
-#             new_upload = UploadedFile(file=uploaded_file)
-#             new_upload.save()
-
-#             # Provide feedback to the user
-#             messages.success(request, 'File uploaded successfully.')
-
-#             # Redirect to a success page or do something else
-#             return redirect('waitforemail')
-
-#         else:
-#             # Provide feedback to the user about form validation errors
-#             messages.error(request, 'Please correct the errors in the form.')
-
-#     else:
-#         form = UploadFileForm()
-
-#     # Pass the timestamp, target date, and remaining time to the template
-#     context = {
-#         'lab_selection_timestamp': lab_selection_timestamp.strftime("%Y-%m-%d %H:%M:%S.%f%z"),
-#         'target_date': target_date.strftime("%Y-%m-%d %H:%M:%S.%f%z"),
-#         'remaining_time_seconds': remaining_time.total_seconds(),
-#         'form': form,
-#     }
-    
-#     return render(request, 'uploadresult.html', context)
 
 def uploadresult2(request, lab_selection_timestamp):
     # Convert the lab_selection_timestamp string to a datetime object
@@ -759,6 +711,14 @@ def registeredstafftable(request):
     return render(request, 'mainuser/registeredstafftable.html', context)
 
 
+from .models import Staff  # Import the Staff model
+def stafflist(request):
+    # Retrieve the staff data from the database
+    staff_list = Staff.objects.all()
+    # Pass the staff data to the template
+    context = {'staff_list': staff_list}
+    return render(request, 'staff/stafflist.html', context)
+
 #hospital
 def hospitalhome(request):
     return render(request, 'hospital/hospitalhome.html')
@@ -1006,8 +966,12 @@ def employees(request):
 def profile(request):
     return render(request, 'staff/profile.html')
 
+from django.shortcuts import render
+from .models import BloodType
+
 def bloodinventorystaff(request):
-    return render(request, 'mainuser/bloodinventorystaff.html')
+    blood_types = BloodType.objects.all()
+    return render(request, 'staff/bloodinventorystaff.html', {'blood_types': blood_types})
 
 def editprofile(request):
     return render(request, 'staff/edit-profile.html')
@@ -1385,7 +1349,8 @@ def donorappointments(request):
     return render(request, 'staff/donorappointments.html', {'appointments': appointments})
 
 
-
+def donorsstaff(request):
+    return render(request, 'staff/donorsstaff.html')
 
 
 from django.shortcuts import render
