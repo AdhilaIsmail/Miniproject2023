@@ -704,6 +704,9 @@ def grampanchayat_registration(request):
 def addnewgroup(request):
     return render(request, 'mainuser/addnewgroup.html')
 
+
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
 def hospital_registration(request):
     if request.method == 'POST':
         hospitalName = request.POST.get('hospitalName')
@@ -727,6 +730,13 @@ def hospital_registration(request):
             hospitalRegister = HospitalRegister(user=user,hospitalName=hospitalName, contactPerson=contactPerson, location=location,ownership=ownership,hospitalURL=hospitalURL)
             hospitalRegister.save()
 
+
+            subject = 'Medlab Blood Bank: Your Login Credentials'
+            message = f'Hello,\n\nGreetings from Medlab Blood Bank. Below are your hospital login credentials:\n\nUsername: {email}\nPassword: {password}\n\nYou can use these credentials to log in to your hospital\'s account at Medlab Blood Bank.\n\nBest regards,\nThe Medlab Blood Bank Team'
+            from_email = 'your_email@example.com'  # Change to your email address
+            recipient_list = [email]
+
+            send_mail(subject, message, from_email, recipient_list)
             return redirect('registeredhospitaltable')
 
         
@@ -749,7 +759,6 @@ def registeredstafftable(request):
     return render(request, 'mainuser/registeredstafftable.html', context)
 
 
-
 #hospital
 def hospitalhome(request):
     return render(request, 'hospital/hospitalhome.html')
@@ -765,6 +774,10 @@ def bloodavailability(request):
 def hospitalabout(request):
     return render(request, 'hospital/hospitalabout.html')
 
+
+from django.core.mail import send_mail
+from django.contrib.auth import get_user_model
+
 def staff_registration(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -776,10 +789,10 @@ def staff_registration(request):
         password = request.POST.get('password')
         
         if CustomUser.objects.filter(email=email).exists():
-            return render(request, 'staff_registration.html', {'error_message': 'Email address already exists.'})
+            return render(request, 'mainuser/staffregistration.html', {'error_message': 'Email address already exists.'})
         
         if not name or not age or not gender or not dob or not email or not phone or not password:
-            return render(request, 'staff_registration.html', {'error_message': 'Please fill in all required fields.'})
+            return render(request, 'mainuser/staffregistration.html', {'error_message': 'Please fill in all required fields.'})
         
         try:
             # Create a CustomUser instance
@@ -790,6 +803,13 @@ def staff_registration(request):
             # Create a Staff instance and associate it with the user
             staff = Staff(name=name, age=age, user=user, gender=gender, dob=dob)
             staff.save()
+
+            subject = 'Medlab Blood Bank : Your Login Credentials'
+            message = f'Hello,\n\nGreetings from Medlab Blood Bank. Below are your login credentials:\n\nUsername: {email}\nPassword: {password}\n\nYou can use these credentials to log in to your account at Medlab Blood Bank.\n\nBest regards,\nThe Medlab Blood Bank Team'
+            from_email = 'adhilaismail2@gmail.com'  # Change to your email address
+            recipient_list = [email]
+
+            send_mail(subject, message, from_email, recipient_list)
 
             return redirect('registeredstafftable')
         
@@ -949,8 +969,30 @@ def staffindex(request):
 def activities(request):
     return render(request, 'staff/activities.html')
 
+# def donorappointments(request):
+#     return render(request, 'staff/donorappointments.html')
+
+
+from django.shortcuts import render, redirect
+from .models import Appointment, DonorDetails
+from django.http import JsonResponse
+from django.utils import timezone
+
 def donorappointments(request):
-    return render(request, 'staff/donorappointments.html')
+    # Retrieve the list of appointments
+    appointments = Appointment.objects.all()
+
+    # Update the status for each appointment
+    for appointment in appointments:
+        # Check if there is a DonorDetails entry for this appointment
+        donor_details = DonorDetails.objects.filter(appointment=appointment).first()
+        if donor_details:
+            appointment.status = 'donated'
+        else:
+            appointment.status = 'not_donated'
+
+    return render(request, 'staff/donorappointments.html', {'appointments': appointments})
+
 
 def bloodbankcamps(request):
     return render(request, 'staff/bloodbankcamps.html')
@@ -1103,41 +1145,125 @@ def view_camp_schedules(request):
     BloodCamp.objects.all().count()
     return render(request, 'staff/viewcampschedules.html', {'schedules': camps})
 
+
+
+
+
+
+from django.utils import timezone
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Donor
-from .models import DonatedDonor
+from .models import Appointment, DonorDetails
+from django.contrib import messages
 
-def donateddetails(request, donor_id):
+# def donateddetails(request, appointment_id):
+#     appointment = Appointment.objects.get(pk=appointment_id)
+
+#     if request.method == 'POST':
+#         # Retrieve donor details
+#         donor = appointment.booked_by_donor
+#         donor_name = donor.full_name if donor else "Unknown Donor"
+
+#         # Retrieve other form fields
+#         date_of_donation = request.POST.get('date_of_donation')
+#         expiry_date = request.POST.get('expiry_date')
+#         sample_name = request.POST.get('sample_name')
+#         quantity = request.POST.get('quantity')
+
+#         # Create a DonorDetails instance and save it to the database
+#         donor_details = DonorDetails(
+#             appointment=appointment,
+#             donor=donor,
+#             date_of_donation=date_of_donation,
+#             expiry_date=expiry_date,
+#             sample_name=sample_name,
+#             quantity=quantity,
+#             # Add other fields as needed
+#         )
+#         donor_details.save()
+#         appointment.status = 'donated'
+#         appointment.save()
+#         # Optionally, you can add a success message
+#         messages.success(request, 'Donor details saved successfully.')
+
+#         # Redirect to a success page or another appropriate URL
+#         return redirect('staffindex')  # Change 'staffindex' to your desired URL name
+
+#     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
+
+
+def donateddetails(request, appointment_id):
+    appointment = Appointment.objects.get(pk=appointment_id)
+
     if request.method == 'POST':
-        # Get form data
-        quantity = request.POST.get('quantity')
-        donation_date = request.POST.get('donation_date')
+        # Retrieve donor details
+        donor = appointment.booked_by_donor
+        donor_name = donor.full_name if donor else "Unknown Donor"
+
+        # Retrieve other form fields
+        date_of_donation = request.POST.get('date_of_donation')
         expiry_date = request.POST.get('expiry_date')
+        sample_name = request.POST.get('sample_name')
+        quantity = request.POST.get('quantity')
 
-        # Retrieve the Donor object using donor_id
-        donor = Donor.objects.get(id=donor_id)
-
-        # Get additional information from the Donor object
-        donor_name = donor.full_name
-        phone_number = donor.phone
-        blood_type = donor.blood_group
-
-        # Create a DonatedDonor object and associate it with the Donor, including additional information
-        donateddonor = DonatedDonor(
-            user=donor,
-            quantity=quantity,
-            donation_date=donation_date,
+        # Create a DonorDetails instance and save it to the database
+        donor_details = DonorDetails(
+            appointment=appointment,
+            donor=donor,
+            date_of_donation=date_of_donation,
             expiry_date=expiry_date,
-            donor_name=donor_name,
-            phone_number=phone_number,
-            blood_type=blood_type
+            sample_name=sample_name,
+            quantity=quantity,
+            # Add other fields as needed
         )
-        donateddonor.save()
+        donor_details.save()
+        appointment.status = 'donated'
+        appointment.save()
+        # Optionally, you can add a success message
+        messages.success(request, 'Donor details saved successfully.')
 
-        return redirect('staffindex')  # Redirect to a success page
+        # Redirect to the "Donor Appointments" page to update the status
+        return redirect('donorappointments')
 
-    return render(request, 'staff/filldonordetails.html')
+    return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
+
+
+
+
+def check_appointment_status(request, appointment_id):
+    try:
+        appointment = Appointment.objects.get(pk=appointment_id)
+        status = appointment.status if appointment.status else "Not Donated"
+        return JsonResponse({"status": status})
+    except Appointment.DoesNotExist:
+        return JsonResponse({"error": "Appointment not found"}, status=404)
+
+
+
+
+
+
+from django.shortcuts import render, redirect
+from .models import Appointment, NotDonatedReason, Donor
+
+def notdonateddetails(request, appointment_id):
+    appointment = Appointment.objects.get(pk=appointment_id)
+
+    if request.method == 'POST':
+        
+        donor_name = appointment.booked_by_donor.full_name if appointment.booked_by_donor else "Unknown Donor"
+        reason = request.POST.get('not_donated_reason')
+        notdonatedreason = NotDonatedReason(
+            appointment=appointment,
+            donor=Donor.objects.get(pk=appointment.booked_by_donor.id) if appointment.booked_by_donor else None,
+            reason=reason,
+        )
+        notdonatedreason.save()
+
+        # Redirect to a success page or another appropriate URL
+        return redirect('success_page')  # Change 'success_page' to your desired URL name
+
+    return render(request, 'notdonateddetails.html', {'appointment': appointment, 'donor_name': donor_name})
+
 
 
 
@@ -1145,15 +1271,6 @@ def donateddetails(request, donor_id):
 
 def viewlabresults(request):
     return render(request, 'mainuser/viewlabresults.html')
-
-# views.py
-# from django.shortcuts import render
-# from .models import UploadedFile
-
-# def view_uploaded_files(request):
-#     uploaded_files = UploadedFile.objects.filter(user=request.user)
-#     context = {'uploaded_files': uploaded_files}
-#     return render(request, 'mainuser/viewlabresults.html', context)
 
 
 from django.shortcuts import render

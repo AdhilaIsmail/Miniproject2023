@@ -250,76 +250,71 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <form action="{% url 'donateddetails' donor_id = appointment.id %}" method="POST">
+                        <form method="post" action="{% url 'donateddetails' appointment.id  %}">
                             {% csrf_token %}
-                            <input type="hidden" name="donor_id" value="{{ appointment.donor.id }}">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Full Name: <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="name" id="name" required>
-                                        <p id="nameError" style="color: red;"></p>
-                                    </div>
+                            
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Donor Name: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="donor_name" id="donor_name" value= {% if appointment.booked_by_donor %}{{ appointment.booked_by_donor.full_name }}{% else %}Unknown Donor{% endif %} required>
+                                    <p id="donorNameError" style="color: red;"></p>
                                 </div>
-                                
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Quantity: <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="number" name="quantity" id="quantity" required>
-                                        <p id="quantityError" style="color: red;"></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Blood Type: <span class="text-danger">*</span></label>
-                                        {% comment %} <select class="form-control" name="blood_type" id="blood-type" required>
-                                            <option value="A+">A+</option>
-                                            <option value="A-">A-</option>
-                                            <!-- Add more blood types as needed -->
-                                        </select> {% endcomment %}
-                                        <input class="form-control" type="text" name="blood_type" id="blood_type" value={{sad}} required>
-                                        <p id="bloodTypeError" style="color: red;"></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Donation Date: <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="date" name="donation_date" id="donation-date" required>
-                                        <p id="donationDateError" style="color: red;"></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Expiry Date: <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="date" name="expiry_date" id="expiry-date" required>
-                                        <p id="expiryDateError" style="color: red;"></p>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label>Phone Number: <span class="text-danger">*</span></label>
-                                        <input class="form-control" type="text" name="phone_number" id="phone-number" required>
-                                        <p id="phoneNumberError" style="color: red;"></p>
-                                    </div>
-                                </div>
-                                
-                                
                             </div>
+                    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Date of Donation: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="date" name="date_of_donation" id="date_of_donation" required>
+                                    <p id="dateOfDonationError" style="color: red;"></p>
+                                </div>
+                            </div>
+                    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Expiry Date: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="date" name="expiry_date" id="expiry_date" required>
+                                    <p id="expiryDateError" style="color: red;"></p>
+                                </div>
+                            </div>
+                    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Sample Name: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="sample_name" id="sample_name" required>
+                                    <p id="sampleNameError" style="color: red;"></p>
+                                </div>
+                            </div>
+                    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Blood Type: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="text" name="blood_type" id="blood_type" required>
+                                    <p id="bloodTypeError" style="color: red;"></p>
+                                </div>
+                            </div>
+                    
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>Quantity: <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="number" name="quantity" id="quantity" required>
+                                    <p id="quantityError" style="color: red;"></p>
+                                </div>
+                            </div>
+                    
+                            
                             <div class="m-t-20 text-center">
-                                <button class="btn btn-primary submit-btn" id="update">Update</button>
+                                <input type="submit" class="btn btn-primary" value="Submit">
                             </div>
-                
                         </form>
+                        
+            
                     </div>
                 </div>
             </div>
         </div>
 		
     </div>
+    
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'staff/js/popper.min.js' %}"></script>

@@ -232,9 +232,6 @@ class AssignGrampanchayat(models.Model):
         return f"Assignments for {self.staff.name}"
 
 
-
-
-
 #laboratory
 from django.db import models
 class Laboratory(models.Model):
@@ -305,15 +302,38 @@ class Appointment(models.Model):
         return f"{self.camp.campName} - {self.time_slot} - Booked by: {donor_name}"
     
 
-    from django.db import models
+from django.db import models
+from .models import Appointment, Donor  # Import your Appointment and Donor models here
 
-class DonatedDonor(models.Model):
-    user = models.OneToOneField(Donor, on_delete=models.CASCADE, null=True)
-    quantity = models.PositiveIntegerField()
-    donation_date = models.DateField()
+class DonorDetails(models.Model):
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE)
+    donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
+    date_of_donation = models.DateField()
     expiry_date = models.DateField()
+    sample_name = models.CharField(max_length=100)
+    quantity = models.PositiveIntegerField()  # Add the quantity field
+    
+    # Add other fields as needed
+
     def __str__(self):
-        return self.expiry_date
+        return self.donor.full_name
+
+
+
+from django.db import models
+from .models import Appointment, Donor  # Import your Appointment and Donor models here
+
+class NotDonatedReason(models.Model):
+    appointment = models.OneToOneField(Appointment, on_delete=models.CASCADE)
+    donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
+    reason = models.TextField()
+
+    def __str__(self):
+        return self.donor.full_name
+    
+
+
+
 
 class Payment(models.Model):
     PAYMENT_STATUS_CHOICES = [

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Not Donated Reasons</title>
+</head>
+<body>
+    <h1>Not Donated Reasons</h1>
+    
+    <p>Donor: {{ donor_name }}</p>
+    
+    <form method="post" action="{% url 'notdonateddetails' appointment.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="notdonatedreason">Reason for not donating: <span class="text-danger">*</span></label>
+            <textarea name="notdonatedreason" id="notdonatedreason" rows="4" required></textarea>
+        </div>
+        <input type="submit" class="btn btn-primary" value="Submit">
+    </form>
+</body>
+</html>

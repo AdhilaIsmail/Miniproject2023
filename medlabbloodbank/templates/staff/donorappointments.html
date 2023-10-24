@@ -259,12 +259,19 @@
 											<td>{{ appointment.camp.organizedBy.full_name }}</td>
 											<td>{{ appointment.camp.campDate }}</td>
 											<td>{{ appointment.time_slot }}</td>
+											{% comment %} <td>
+												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
+													<button class="status-btn donated-btn" data-redirect-url="{% url 'donateddetails' appointment.id %}">Donated</button>
+													<button class="status-btn not-donated-btn">Not Donated</button>
+												</div>
+											</td> {% endcomment %}
 											<td>
 												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
 													<button class="status-btn donated-btn" data-redirect-url="{% url 'donateddetails' appointment.id %}">Donated</button>
 													<button class="status-btn not-donated-btn">Not Donated</button>
 												</div>
 											</td>
+											<td id="status-{{ appointment.id }}">{{ appointment.status }}</td>
 										</tr>
 									{% endfor %}
 								</tbody>
@@ -278,35 +285,40 @@
 		</div>
     </div>
 	<script>
+		// Function to update the status using AJAX
+		function updateStatus(appointmentId) {
+			fetch(`/check-appointment-status/${appointmentId}/`)
+				.then(response => response.json())
+				.then(data => {
+					const statusElement = document.getElementById(`status-${appointmentId}`);
+					statusElement.textContent = data.status;
+				});
+		}
+	
 		document.addEventListener('DOMContentLoaded', function () {
 			var statusButtons = document.querySelectorAll('.status-buttons');
 	
 			statusButtons.forEach(function (buttonsContainer) {
 				var donatedBtn = buttonsContainer.querySelector('.donated-btn');
 				var notDonatedBtn = buttonsContainer.querySelector('.not-donated-btn');
+				var appointmentId = buttonsContainer.getAttribute('data-appointment-id');
 	
 				donatedBtn.addEventListener('click', function () {
-					// Get the redirect URL from the button's data attribute
 					var redirectUrl = donatedBtn.getAttribute('data-redirect-url');
-					
-					// Check if a valid URL is specified
 					if (redirectUrl) {
 						window.location.href = redirectUrl;
 					}
 				});
 	
 				notDonatedBtn.addEventListener('click', function () {
-					// Toggle visibility of status text and buttons
-					var statusTexts = buttonsContainer.querySelectorAll('.status-text');
-					statusTexts.forEach(function (statusText) {
-						statusText.style.display = 'block';
-					});
-					donatedBtn.style.display = 'none';
-					notDonatedBtn.style display = 'none';
+					// Implement your logic to save the reason here
+					// After saving the reason, update the status
+					updateStatus(appointmentId);
 				});
 			});
 		});
 	</script>
+	
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'staff/js/popper.min.js' %}"></script>
