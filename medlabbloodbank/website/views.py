@@ -423,7 +423,14 @@ def uploadresult(request):
 #admin dashboard
 
 def adminindex(request):
-    return render(request, 'mainuser/index.html')
+    donors = Donor.objects.all()
+    Request=BloodRequest.objects.all()
+    staffs=Staff.objects.all()
+    donor_count = donors.count() 
+    request_count= Request.count()
+    staff_count= staffs.count()
+
+    return render(request, 'mainuser/index.html',{'donors': donors, 'donor_count': donor_count,'request_count':request_count,'staff_count':staff_count})
 
 def activities(request):
     return render(request, 'mainuser/activities.html')
@@ -926,7 +933,13 @@ def blood_request_list(request):
 
 #staff
 def staffindex(request):
-    return render(request, 'staff/index.html')
+    donors = Donor.objects.all()
+    Request=BloodRequest.objects.all()
+    staffs=Staff.objects.all()
+    donor_count = donors.count() 
+    request_count= Request.count()
+    staff_count= staffs.count()
+    return render(request, 'staff/index.html',{'donors': donors, 'donor_count': donor_count,'request_count':request_count,'staff_count':staff_count})
 
 def activities(request):
     return render(request, 'staff/activities.html')
