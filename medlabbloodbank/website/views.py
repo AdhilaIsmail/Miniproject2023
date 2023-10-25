@@ -92,8 +92,10 @@ def loginn(request):
             else:
                 return redirect('index')  # Redirect to the custom dashboard for non-admin users
         else:
-            messages.error(request, "Invalid Login")
-            return redirect('loginn')
+            # messages.error(request, "Invalid Login")
+            # return redirect('loginn')
+            error_message = "Invalid login credentials."
+            return render(request,'login.html', {'error_message': error_message})
     else:
         return render(request, 'login.html')
     
@@ -1311,9 +1313,11 @@ def update_approval_status(request):
 
 from django.shortcuts import render
 from .models import BloodCamp
+
+
 def campschedulesfordonor(request):
-    camps = BloodCamp.objects.all()
-    BloodCamp.objects.all().count()
+    current_date = timezone.now().date()  # Get the current date
+    camps = BloodCamp.objects.filter(campDate__gte=current_date)  # Filter camps with campDate >= current_date
     return render(request, 'campschedulesfordonor.html', {'schedules': camps})
 
 # def confirmpage(request):
@@ -1468,7 +1472,13 @@ def paymenthandler(request, blood_request_id):
         return HttpResponse("Invalid request method", status=405)
 
 
-
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from datetime import datetime
+from .models import BloodRequest
 @csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
 
 def bloodrequest(request, is_immediate):

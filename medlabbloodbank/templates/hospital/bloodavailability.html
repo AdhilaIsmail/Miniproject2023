@@ -83,7 +83,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <div class="navbar-nav ms-auto py-0">
-                <a href="#" class="nav-item nav-link ">Home</a>
+                <a href="{% url 'hospitalhome'%}" class="nav-item nav-link ">Home</a>
                 {% if user.is_authenticated %}
                 <a href="{% url 'bloodavailability' %}" class="nav-item nav-link active">Blood Availability</a>
                 <a href="{% url 'requestblood' %}" class="nav-item nav-link">Blood Request</a>

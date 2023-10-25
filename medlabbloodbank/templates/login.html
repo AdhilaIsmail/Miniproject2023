@@ -34,8 +34,14 @@
     <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
       <div class="col-md-6">
         <div class="container form-container">
+          {% if error_message %}
+          <div class="d-flex justify-content-center">
+            <p class="text-danger mt-2 fs-4 fw-bold">{{error_message}}</p>
+          </div>
+          {% endif %} 
           <h1 class="text-center">Login</h1>
          
+
              <!-- <h3 style="color: blue">messages </h3> -->
          
           <form  action="{% url 'loginn' %}" id="loginForm" method="POST">
