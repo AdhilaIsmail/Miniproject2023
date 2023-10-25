@@ -210,40 +210,37 @@
 										<th>Organized By</th>
 										<th>Date</th>
 										<th>Time </th>
+										<th>Action</th>
 										<th>Status</th>
 										
 									</tr>
 								</thead>
 								<tbody>
 									{% for appointment in appointments %}
-										<tr>
-											<td>
-												{% if appointment.booked_by_donor %}
-													{{ appointment.booked_by_donor.full_name }}
-												{% else %}
-													Not booked by any donor
-												{% endif %}
-											</td>
-											<td>{{ appointment.camp.campName }}</td>
-											<td>{{ appointment.camp.campAddress }}</td>
-											<td>{{ appointment.camp.campDistrict }}</td>
-											<td>{{ appointment.camp.organizedBy.full_name }}</td>
-											<td>{{ appointment.camp.campDate }}</td>
-											<td>{{ appointment.time_slot }}</td>
-											{% comment %} <td>
-												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
-													<button class="status-btn donated-btn" data-redirect-url="{% url 'donateddetails' appointment.id %}">Donated</button>
-													<button class="status-btn not-donated-btn">Not Donated</button>
-												</div>
-											</td> {% endcomment %}
-											<td>
-												<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
-													<button class="status-btn donated-btn" data-redirect-url="{% url 'donateddetails' appointment.id %}">Donated</button>
-													<button class="status-btn not-donated-btn">Not Donated</button>
-												</div>
-											</td>
-											<td id="status-{{ appointment.id }}">{{ appointment.status }}</td>
-										</tr>
+										{% if appointment.camp.organizedBy == request.user.staff %}
+											<tr>
+												<td>
+													{% if appointment.booked_by_donor %}
+														{{ appointment.booked_by_donor.full_name }}
+													{% else %}
+														Not booked by any donor
+													{% endif %}
+												</td>
+												<td>{{ appointment.camp.campName }}</td>
+												<td>{{ appointment.camp.campAddress }}</td>
+												<td>{{ appointment.camp.campDistrict }}</td>
+												<td>{{ appointment.camp.organizedBy.name }}</td>
+												<td>{{ appointment.camp.campDate }}</td>
+												<td>{{ appointment.time_slot }}</td>
+												<td>
+													<div class="status-buttons" data-appointment-id="{{ appointment.id }}">
+														<a href="{% url 'donateddetails' appointment.id %}" class="status-btn donated-btn">Donated</a><br>
+														<a href="{% url 'notdonated' appointment.id %}" class="status-btn not-donated-btn">Not Donated</a>
+													</div>
+												</td>
+												<td>{{ appointment.status }}</td>
+											</tr>
+										{% endif %}
 									{% endfor %}
 								</tbody>
 							</table>
@@ -256,41 +253,34 @@
 		</div>
     </div>
 	<script>
-		// Function to update the status using AJAX
-		function updateStatus(appointmentId) {
-			fetch(`/check-appointment-status/${appointmentId}/`)
-				.then(response => response.json())
-				.then(data => {
-					const statusElement = document.getElementById(`status-${appointmentId}`);
-					statusElement.textContent = data.status;
-				});
-		}
+		$(document).ready(function () {
+			$('.status-buttons').on('click', '.donated-btn', function () {
+				var appointmentId = $(this).closest('.status-buttons').data('appointment-id');
+				var url = `/donated/${appointmentId}/`;  // Replace with your actual URL
+				window.location.href = url;  // Redirect to the "Donated" view
+			});
 	
-		document.addEventListener('DOMContentLoaded', function () {
-			var statusButtons = document.querySelectorAll('.status-buttons');
-	
-			statusButtons.forEach(function (buttonsContainer) {
-				var donatedBtn = buttonsContainer.querySelector('.donated-btn');
-				var notDonatedBtn = buttonsContainer.querySelector('.not-donated-btn');
-				var appointmentId = buttonsContainer.getAttribute('data-appointment-id');
-	
-				donatedBtn.addEventListener('click', function () {
-					var redirectUrl = donatedBtn.getAttribute('data-redirect-url');
-					if (redirectUrl) {
-						window.location.href = redirectUrl;
-					}
-				});
-	
-				notDonatedBtn.addEventListener('click', function () {
-					// Implement your logic to save the reason here
-					// After saving the reason, update the status
-					updateStatus(appointmentId);
-				});
+			$('.status-buttons').on('click', '.not-donated-btn', function () {
+				var appointmentId = $(this).closest('.status-buttons').data('appointment-id');
+				var url = `/notdonated/${appointmentId}/`;  // Replace with your actual URL
+				window.location.href = url;  // Redirect to the "Not Donated" view
 			});
 		});
 	</script>
 	
+	
     <div class="sidebar-overlay" data-reff=""></div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
+	<script src="{% static 'staff/js/popper.min.js' %}"></script>
+    <script src="{% static 'staff/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'staff/js/jquery.slimscroll.js' %}"></script>
+    <script src="{% static 'staff/js/select2.min.js' %}"></script>
+    <script src="{% static 'staff/js/app.js' %}"></script>
+</body>
+	
+    <div class="sidebar-overlay" data-reff=""></div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
 	<script src="{% static 'staff/js/popper.min.js' %}"></script>
     <script src="{% static 'staff/js/bootstrap.min.js' %}"></script>

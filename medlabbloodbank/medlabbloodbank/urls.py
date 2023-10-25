@@ -144,7 +144,7 @@ urlpatterns = [
     path('donorappointments',donorappointments, name='donorappointments'),
     path('paymenthandler/<int:blood_request_id>/', views.paymenthandler, name='paymenthandler'),
     path('donateddetails/<int:appointment_id>/', views.donateddetails, name='donateddetails'),
-    path('notdonateddetails/<int:appointment_id>/', views.notdonateddetails, name='notdonateddetails'),
+    path('notdonated/<int:appointment_id>/', views.notdonated, name='notdonated'),
     path('check-appointment-status/<int:appointment_id>/', views.check_appointment_status, name='check_appointment_status'),
     
     path('view_profile/', views.view_profile, name='view_profile'),

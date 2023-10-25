@@ -142,6 +142,24 @@
                                                         <div class="error" data-error-for="bloodgroup"></div>
                                                     </div>
                                                     
+                                                    
+                                                    <div class="mb-3">
+                                                        <label for="isFirstTime">Is this your first time donating?</label>
+                                                        <select id="isFirstTime" name="isFirstTime" class="form-select" required>
+                                                            <option value="yes">Yes</option>
+                                                            <option value="no">No</option>
+                                                        </select>
+                                                        <div class="error" style="color: red; font-size: 12px;" data-error-for="isFirstTime"></div>
+                                                    </div>
+                                                    
+                                                    <div class="mb-3" id="lastDonationDateField" style="display: none;">
+                                                        <label for="lastDonationDate">Last Donation Date:</label>
+                                                        <input type="date" id="lastDonationDate" name="lastDonationDate" class="form-control">
+                                                        <div class="error" style="color: red; font-size: 12px;" data-error-for="lastDonationDate"></div>
+                                                        <div id="cannotDonateMessage" style="display: none; color: red; font-size: 12px;">You can't donate blood. Click to know more</div>
+                                                    </div>
+                                                    
+                                                    
 
                                                     <div class="mb-3">
                                                         <input type="number" id="weight" name="weight" class="form-control" placeholder="Weight(in kg)" required>
@@ -297,48 +315,34 @@
             }
         });
     </script>
+    <script>
+        const isFirstTimeSelect = document.getElementById("isFirstTime");
+        const lastDonationDateField = document.getElementById("lastDonationDateField");
+        const lastDonationDateInput = document.getElementById("lastDonationDate");
+        const cannotDonateMessage = document.getElementById("cannotDonateMessage");
     
-    
-    {% comment %} <script>
-        const registrationForm = document.getElementById('registrationForm');
-    
-        registrationForm.addEventListener('keyup', function (event) {
-            if (event.target.tagName === 'INPUT') {
-                validateInput(event.target);
+        isFirstTimeSelect.addEventListener("change", function () {
+            if (isFirstTimeSelect.value === "no") {
+                lastDonationDateField.style.display = "block";
+            } else {
+                lastDonationDateField.style.display = "none";
             }
         });
     
-        function validateInput(input) {
-            const inputValue = input.value.trim();
-            const fieldName = input.getAttribute('name');
-            const errorElement = document.querySelector(`[data-error-for="${fieldName}"]`);
+        lastDonationDateInput.addEventListener("change", function () {
+            const selectedDate = new Date(lastDonationDateInput.value);
+            const today = new Date();
+            const daysDifference = Math.ceil((today - selectedDate) / (1000 * 60 * 60 * 24));
     
-            if (inputValue === '') {
-                errorElement.textContent = 'This field is required.';
+            if (daysDifference < 57) {
+                cannotDonateMessage.style.display = "block";
             } else {
-                errorElement.textContent = '';
+                cannotDonateMessage.style.display = "none";
             }
+        });
+    </script>
+
     
-            // Add specific validation for each field
-            switch (fieldName) {
-                case 'full_name':
-                    // Check if full name contains only letters and spaces
-                    if (!/^[A-Za-z\s]+$/.test(inputValue)) {
-                        errorElement.textContent = 'Full Name must contain only letters and spaces.';
-                    }
-                    break;
-                
-                case 'blood_group':
-                    // Check if blood group format is valid (e.g., A+, AB-, etc.)
-                    if (!/^(A|B|AB|O)[+-]$/.test(inputValue)) {
-                        errorElement.textContent = 'Invalid Blood Group format.';
-                    }
-                    break;
-                
-                // Add validation for other fields similarly
-            }
-        }
-    </script> {% endcomment %}
     
 
      <!-- JavaScript Libraries -->

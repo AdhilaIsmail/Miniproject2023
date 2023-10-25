@@ -324,14 +324,10 @@
                             <script>
                                 document.getElementById('campDate').addEventListener('input', function () {
                                     const selectedDate = new Date(this.value);
-                                    const currentDate = new Date(); // Get the current date
                                     const errorContainer = document.getElementById('dateError');
-                            
+                        
                                     if (selectedDate.getDay() !== 0) {
                                         errorContainer.textContent = 'Please select a Sunday.';
-                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
-                                    } else if (selectedDate < currentDate) {
-                                        errorContainer.textContent = 'Please select a future date.';
                                         this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
                                     } else {
                                         errorContainer.textContent = '';  // Clear the error message
@@ -355,24 +351,7 @@
                                     }
                                 });
                             </script>
-                            <script>
-                                document.getElementById('campDate').addEventListener('input', function () {
-                                    const selectedDate = new Date(this.value);
-                                    const currentDate = new Date(); // Get the current date
-                                    const errorContainer = document.getElementById('dateError');
                             
-                                    if (selectedDate.getDay() !== 0) {
-                                        errorContainer.textContent = 'Please select a Sunday.';
-                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
-                                    } else if (selectedDate < currentDate) {
-                                        errorContainer.textContent = 'Please select a future date.';
-                                        this.setCustomValidity('Invalid');  // Set a custom validity to trigger the browser's validation
-                                    } else {
-                                        errorContainer.textContent = '';  // Clear the error message
-                                        this.setCustomValidity('');  // Reset the custom validity
-                                    }
-                                });
-                            </script>
                             <script>
                                 document.getElementById('startTime').addEventListener('input', function () {
                                     const startTimeValue = this.value;

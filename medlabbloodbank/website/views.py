@@ -1154,41 +1154,46 @@ from django.contrib import messages
 
 #     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
 
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Appointment
 
 def donateddetails(request, appointment_id):
-    appointment = Appointment.objects.get(pk=appointment_id)
+    appointment = get_object_or_404(Appointment, id=appointment_id)
 
     if request.method == 'POST':
         # Retrieve donor details
-        donor = appointment.booked_by_donor
-        donor_name = donor.full_name if donor else "Unknown Donor"
-
-        # Retrieve other form fields
         date_of_donation = request.POST.get('date_of_donation')
         expiry_date = request.POST.get('expiry_date')
         sample_name = request.POST.get('sample_name')
         quantity = request.POST.get('quantity')
 
-        # Create a DonorDetails instance and save it to the database
-        donor_details = DonorDetails(
-            appointment=appointment,
-            donor=donor,
-            date_of_donation=date_of_donation,
-            expiry_date=expiry_date,
-            sample_name=sample_name,
-            quantity=quantity,
-            # Add other fields as needed
-        )
-        donor_details.save()
-        appointment.status = 'donated'
-        appointment.save()
-        # Optionally, you can add a success message
-        messages.success(request, 'Donor details saved successfully.')
+        # Check if the provided data is valid (you can add your validation logic)
+        if date_of_donation and expiry_date and sample_name and quantity:
+            # Update the appointment status to "Donated"
+            appointment.status = "DONATED"
+            appointment.save()
 
-        # Redirect to the "Donor Appointments" page to update the status
-        return redirect('donorappointments')
+            # Optionally, create a DonorDetails instance and save it to the database
+            # Only if you want to store the donor details
+            donor_details = DonorDetails(
+                appointment=appointment,
+                donor=appointment.booked_by_donor,
+                date_of_donation=date_of_donation,
+                expiry_date=expiry_date,
+                sample_name=sample_name,
+                quantity=quantity,
+                # Add other fields as needed
+            )
+            donor_details.save()
+
+            return redirect('donorappointments')  # Redirect to the "Donor Appointments" page
+        else:
+            # Handle validation errors or show an error message
+            # You can customize this part to display error messages to the user
+            return render(request, 'staff/filldonordetails.html', {'appointment': appointment, 'error_message': 'Please fill in all required fields'})
 
     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
+
 
 
 
@@ -1205,29 +1210,32 @@ def check_appointment_status(request, appointment_id):
 
 
 
-
-from django.shortcuts import render, redirect
-from .models import Appointment, NotDonatedReason, Donor
-
-def notdonateddetails(request, appointment_id):
-    appointment = Appointment.objects.get(pk=appointment_id)
+from django.shortcuts import get_object_or_404, redirect, render
+from .models import Appointment, NotDonatedReason
+# Update your view to match the form field name
+def notdonated(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
 
     if request.method == 'POST':
-        
-        donor_name = appointment.booked_by_donor.full_name if appointment.booked_by_donor else "Unknown Donor"
-        reason = request.POST.get('not_donated_reason')
-        notdonatedreason = NotDonatedReason(
-            appointment=appointment,
-            donor=Donor.objects.get(pk=appointment.booked_by_donor.id) if appointment.booked_by_donor else None,
-            reason=reason,
-        )
-        notdonatedreason.save()
+        # Retrieve the reason for not donating from the form field
+        reason = request.POST.get('notdonatedreason')  # Update field name to match the form
 
-        # Redirect to a success page or another appropriate URL
-        return redirect('success_page')  # Change 'success_page' to your desired URL name
+        if reason:
+            not_donated_reason = NotDonatedReason(
+                appointment=appointment,
+                donor=appointment.booked_by_donor,
+                reason=reason
+            )
+            not_donated_reason.save()
 
-    return render(request, 'notdonateddetails.html', {'appointment': appointment, 'donor_name': donor_name})
+            appointment.status = "NOT DONATED"
+            appointment.save()
 
+            return redirect('donorappointments')
+        else:
+            return render(request, 'staff/notdonateddetails.html', {'appointment': appointment, 'error_message': 'Please provide a reason for not donating'})
+
+    return render(request, 'staff/notdonateddetails.html', {'appointment': appointment})
 
 
 
@@ -1298,6 +1306,8 @@ def update_approval_status(request):
             return JsonResponse({'message': 'File not found.'}, status=404)
 
     return JsonResponse({'message': 'Invalid request.'}, status=400)
+
+
 
 from django.shortcuts import render
 from .models import BloodCamp
