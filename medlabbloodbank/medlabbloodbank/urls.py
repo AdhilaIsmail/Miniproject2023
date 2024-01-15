@@ -27,6 +27,7 @@ from website.views import registereddonortable, search_by_name, search_by_place,
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
 from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules,update_approval_status
+from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -41,6 +42,7 @@ urlpatterns = [
     path('register_donor/', register_donor, name='register_donor'),
     path('donatenow',donatenow, name='donatenow'),
     path('homebloodbank',homebloodbank, name='homebloodbank'),
+    path('homelab',homelab,name='homelab'),
     path('registration',register, name='registration'),
     path('register/', register_donor, name='register_donor'),
     path('registereddonortodonatenow', registereddonortodonatenow, name='registereddonortodonatenow'),
@@ -52,7 +54,9 @@ urlpatterns = [
     path('uploadresult2/<str:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('waitforemail',waitforemail,name='waitforemail'),
     path('confirmpage', confirmpage, name='confirmpage'),
-   
+    path('upload_prescription_view',upload_prescription_view, name='upload_prescription_view'),
+    path('download_report_view', download_report_view,name='download_report_view'),
+    path('find_lab_view',find_lab_view,name='find_lab_view'),
 
     # path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),
@@ -125,6 +129,7 @@ urlpatterns = [
     path('donorappointments', donorappointments, name='donorappointments'),
     path('bloodbankcamps', bloodbankcamps, name='bloodbankcamps'),
     path('bloodinventorystaff',bloodinventorystaff,name="bloodinventorystaff"),
+    path('blood_inventory/', views.blood_inventory_view, name='blood_inventory'),
     path('staffliat', views.stafflist, name='stafflist'),
     path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),

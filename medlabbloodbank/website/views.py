@@ -817,6 +817,15 @@ def bloodinventory(request):
     return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types})
 
 
+from django.shortcuts import render
+from .models import BloodInventory  # Import your BloodInventory model
+
+def blood_inventory_view(request):
+    blood_inventory = BloodInventory.objects.all()  # Fetch blood inventory data from the database
+    return render(request, 'staff/bloodinventorystaff.html', {'blood_inventory': blood_inventory})
+
+
+
 from django.shortcuts import render, redirect
 from .models import BloodRequest  # Import your model
 from datetime import datetime 
@@ -872,7 +881,6 @@ def verify_hospital(request,blood_request_id):
 
     # Render the OTP verification page
     return render(request, 'hospital/verify_otp.html')
-
 
 
 
@@ -1545,3 +1553,16 @@ def bloodrequest(request, is_immediate):
     return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
 
 
+
+#laboratory
+def homelab(request):
+    return render(request, 'labhome.html')
+
+def upload_prescription_view(request):
+    return render(request, 'labhome.html')
+
+def download_report_view(request):
+    return render(request, 'labhome.html')
+
+def find_lab_view(request):
+    return render(request, 'labhome.html')
