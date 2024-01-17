@@ -1566,3 +1566,11 @@ def download_report_view(request):
 
 def find_lab_view(request):
     return render(request, 'labhome.html')
+
+
+
+
+# admin laboratory
+
+def laboratory(request):
+    return render(request,'labmainpage.html')
