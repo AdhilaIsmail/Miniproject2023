@@ -27,7 +27,7 @@ from website.views import registereddonortable, search_by_name, search_by_place,
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
 from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules,update_approval_status
-from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view,laboratory
+from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view,laboratory,laboratory_test_package_registration,special_package_registration,save_laboratory_test
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -89,6 +89,11 @@ urlpatterns = [
     path('registeredhospitaltable/', registeredhospitaltable, name='registeredhospitaltable'),
     path('bloodinventory', bloodinventory, name='bloodinventory'),
     path('laboratory', laboratory, name='laboratory'),
+    path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
+
+    path('laboratory_test_package_registration',laboratory_test_package_registration,name='laboratory_test_package_registration'),
+    path('special_package_registration',special_package_registration,name='special_package_registration'),
+    # path('add_test_details',add_test_details,name='add_test_details'),
     path('addnewgroup', addnewgroup, name='addnewgroup'),
     path('addblood/', addblood, name='addblood'),
     path('requests', requests, name='requests'),

@@ -1573,4 +1573,136 @@ def find_lab_view(request):
 # admin laboratory
 
 def laboratory(request):
-    return render(request,'labmainpage.html')
+    return render(request,'mainuser/labmainpage.html')
+
+def laboratory_test_package_registration(request):
+    return render(request,'mainuser/labmainpage.html')
+
+def special_package_registration(request):
+    return render(request,'mainuser/labmainpage.html')
+
+
+def laboratory_test_package_registration(request):
+    return render(request,'mainuser/labmainpage.html')
+
+def special_package_registration(request):
+    return render(request,'mainuser/labmainpage.html')
+
+# def add_test_details(request):
+#     return render(request,'mainuser/labmainpage.html')
+
+
+# views.py
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import LaboratoryTest
+
+import json
+
+# def save_laboratory_test(request):
+#     if request.method == 'POST':
+#         test_name = request.POST.get('testName')
+#         test_price = request.POST.get('testPrice')
+#         package_details_json = request.POST.get('packageDetails')
+
+#         # Convert JSON string to a Python list
+#         package_details = json.loads(package_details_json)
+
+#         # Save data to the database
+#         laboratory_test = LaboratoryTest.objects.create(
+#             test_name=test_name,
+#             test_price=test_price,
+#             package_details=package_details
+#         )
+
+#         return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+# from django.shortcuts import render
+# from django.http import JsonResponse
+# from .models import LaboratoryTest
+
+# import json
+
+# def save_laboratory_test(request):
+#     if request.method == 'POST':
+#         # Handle laboratory test package form
+#         if 'labTestName' in request.POST:
+#             test_name = request.POST.get('labTestName')
+#             test_price = request.POST.get('labTestPrice')
+#             package_details_json = request.POST.get('packageDetails')
+
+#             # Convert JSON string to a Python list
+#             package_details = json.loads(package_details_json)
+
+#             # Save data to the database
+#             laboratory_test = LaboratoryTest.objects.create(
+#                 test_name=test_name,
+#                 test_price=test_price,
+#                 package_details=package_details
+#             )
+
+#             return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+
+#         # Handle special package form
+#         elif 'specialPackageName' in request.POST:
+#             # Extract data from the special package form
+#             package_name = request.POST.get('specialPackageName')
+#             package_price = request.POST.get('specialPackagePrice')
+
+#             # Process the data as needed
+#             # Add your code to handle special package data
+
+#             return JsonResponse({'status': 'success', 'message': 'Special package data saved successfully'})
+
+#         # Handle test details form
+#         elif 'testName' in request.POST:
+#             # Extract data from the test details form
+#             test_name = request.POST.get('testName')
+#             test_price = request.POST.get('testPrice')
+
+#             # Process the data as needed
+#             # Add your code to handle test details data
+
+#             return JsonResponse({'status': 'success', 'message': 'Test details data saved successfully'})
+
+#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+# Import necessary modules
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from .models import LaboratoryTest
+
+# Define the view function
+@csrf_exempt
+def save_laboratory_test(request):
+    if request.method == 'POST':
+        # Retrieve form data
+        test_name = request.POST.get('labTestName')
+        test_price = request.POST.get('labTestPrice')
+        package_details_json = request.POST.get('packageDetails')
+
+        try:
+            # Parse JSON data
+            package_details = json.loads(package_details_json)
+
+            # Create a LaboratoryTest object and save it to the database
+            laboratory_test = LaboratoryTest(
+                test_name=test_name,
+                test_price=test_price,
+                package_details=package_details
+            )
+            laboratory_test.save()
+
+            # Return a JSON response indicating success
+            return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
+        except json.JSONDecodeError as e:
+            # Handle JSON decoding error
+            return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+    else:
+        # Handle other request methods (GET, etc.) if needed
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})

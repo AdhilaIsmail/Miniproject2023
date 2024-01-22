@@ -370,3 +370,15 @@ class Payment(models.Model):
 
     def _str_(self):
         return f"Payment ID: {self.id}, Status: {self.payment_status}"
+
+
+
+from django.db import models
+
+class LaboratoryTest(models.Model):
+    test_name = models.CharField(max_length=255)
+    test_price = models.DecimalField(max_digits=10, decimal_places=2)
+    package_details = models.JSONField()
+
+    def __str__(self):
+        return self.test_name
