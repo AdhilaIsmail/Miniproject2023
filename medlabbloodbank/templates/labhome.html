@@ -1,58 +1,25 @@
 {% extends 'baselab.html' %}
 {% block content %}
-{% comment %} <style>
-    .btn-container {
-        margin-right: 10px; /* Adjust the margin between buttons if needed */
-    }
-
-    .icon-box {
-        background-color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .special-packages-section {
-        background-color: #f8f9fa;
-        padding: 60px 0;
-    }
-
-    .special-package-item {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-        margin: 0 10px;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .special-packages-carousel .carousel-inner {
-        display: flex;
-        flex-wrap: nowrap;
-    }
-
-    .special-packages-carousel .carousel-item {
-        width: calc(100% / 3); /* Show only 3 items at a time */
-        overflow: hidden;
-    }
-</style> {% endcomment %}
+{% load static %}
 <style>
-    .btn-container {
+    .btn-container 
+    {
         margin-right: 10px; /* Adjust the margin between buttons if needed */
     }
-
-    .icon-box {
+    .icon-box 
+    {
         background-color: white;
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    .special-packages-section {
+    .special-packages-section 
+    {
         background-color: #f8f9fa;
         padding: 60px 0;
     }
-
-    .special-package-item {
+    .special-package-item 
+    {
         background-color: white;
         border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -60,18 +27,71 @@
         margin: 0 10px;
         transition: transform 0.3s ease-in-out;
     }
-
-    .special-packages-carousel .carousel-inner {
+   .special-packages-carousel .carousel-inner 
+    {
         display: flex;
         flex-wrap: nowrap;
     }
-
-    .special-packages-carousel .carousel-item {
+    .special-packages-carousel .carousel-item 
+    {
         width: calc(100% / 3); /* Show only 3 items at a time */
         overflow: hidden;
+    }
+    .test-box 
+    {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+    .test-box-container
+    {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .test-box 
+    {
+        width: calc(32% - 10px); /* 32% width for each box with some margin in between */
+        margin-bottom: 20px;
+    }
+    .test-box h3 
+    {
+        margin-bottom: 10px;
+        color: #333;
+    } 
+    .test-box p 
+    {
+        color: #777;
+    }   
+    .know-more-btn 
+    {
+        background-color: #007bff;
+        color: #fff;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .know-more-btn:hover 
+    {
+        background-color: #0056b3;
+    }
+    .carousel-item 
+    {
+        display: flex;
+        justify-content: space-between;
+    }
+    .test-box 
+    {
+        width: calc(32% - 10px); /* 32% width for each box with some margin in between */
+        margin-bottom: 20px;
     }
 </style>
-{% load static %}
+
     <!-- Full Screen Search Start -->
     <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog modal-fullscreen">
@@ -155,141 +175,25 @@
     </div>
     <!-- Carousel End -->
 
-    <!-- Specialized Health Packages Section Start -->
-    {% comment %} <div class="special-packages-section">
-        <div class="container">
-            <h2 class="text-center mb-5">Specialized Health Packages</h2>
-
-            <!-- Specialized Health Packages Carousel -->
-            <div id="specialPackagesCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Package 1 -->
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                   
-                                   
-                                    <h5 class="text-center mt-3">DIABETIC PACKAGE 1(1400)</h5>
-                                    <p class="text-center">₹1630</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    
-                                   
-                                    <h5 class="text-center mt-3">SAMPOORNA WELL WOMEN(TMT,USG A&P)</h5>
-                                    <p class="text-center">₹7410</p>
-                                </div>
-                            </div>
-                            
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                   
-                                    
-                                    <h5 class="text-center mt-3">SAMPOORNA AROGYASREE HEALTHY MAN(TUSGT)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                  
-                                    
-                                    <h5 class="text-center mt-3">WELL WOMAN BASIC PACKAGE 2(FBS)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                   
-                                    
-                                    <h5 class="text-center mt-3">EXECUTIVE PACKAGE ABOVE 40(2090)</h5>
-                                    <p class="text-center">₹2200</p>
-                                </div>
-                            </div>
-                            <!-- Add two more columns for Package 2 and Package 3 -->
-                            <!-- Repeat the structure for other packages -->
-                        </div>
-                    </div>
-                    <!-- Add more carousel items for additional packages -->
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#specialPackagesCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#specialPackagesCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
+    <div class="container">
+        <h2 class="text-center mb-5">Specialized Health Packages</h2>
+        
+        <!-- Display data from the model -->
+        {% for test in lab_tests %}
+            <div class="test-box">
+                <h3>{{ test.test_name }}</h3>
+                <p>Price: ${{ test.test_price }}</p>
+                <button class="know-more-btn">Know More</button>
             </div>
-        </div>
-    </div> {% endcomment %}
-    <!-- Specialized Health Packages Section End -->
-    <!-- Specialized Health Packages Section Start -->
-    <div class="special-packages-section">
-        <div class="container">
-            <h2 class="text-center mb-5">Specialized Health Packages</h2>
-
-            <!-- Specialized Health Packages Carousel -->
-            <div id="specialPackagesCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    <!-- Package 1 -->
-                    <div class="carousel-item active">
-                        <div class="row">
-                            <!-- Repeat this structure for other packages -->
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">DIABETIC PACKAGE 1(1400)</h5>
-                                    <p class="text-center">₹1630</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">SAMPOORNA WELL WOMEN(TMT,USG A&P)</h5>
-                                    <p class="text-center">₹7410</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">SAMPOORNA AROGYASREE HEALTHY MAN(TUSGT)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">WELL WOMAN BASIC PACKAGE 2(FBS)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">SAMPOORNA AROGYASREE HEALTHY MAN(TUSGT)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="special-package-item">
-                                    <h5 class="text-center mt-3">EXECUTIVE PACKAGE ABOVE 40(2090)</h5>
-                                    <p class="text-center">₹5880</p>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <!-- Add more carousel items for additional packages -->
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#specialPackagesCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#specialPackagesCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-            </div>
-        </div>
+        {% endfor %}
     </div>
-<!-- Specialized Health Packages Section End -->
+    
+    
+    
+    
+    
+ 
+
 
     <!-- About Start -->
     {% comment %} <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
@@ -329,21 +233,7 @@
     <!-- About End -->
 
 
-    <!-- Offer Start -->
-    {% comment %} <div class="container-fluid bg-offer my-5 py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-7 wow zoomIn" data-wow-delay="0.6s">
-                    <div class="offer-text text-center rounded p-5">
-                        <h1 class="display-5 text-white">Get Free Basic Health Checkup on Blood Donation</h1>
-                        <p class="text-white mb-4">Eirmod sed tempor lorem ut dolores sit kasd ipsum. Dolor ea et dolore et at sea ea at dolor justo ipsum duo rebum sea. Eos vero eos vero ea et dolore eirmod diam duo lorem magna sit dolore sed et.</p>
-                        <a href="" class="btn btn-light py-3 px-5">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
-    <!-- Offer End -->
+   
 
     <!-- Testimonial Start -->
     <div class="container-fluid bg-primary bg-testimonial py-5 my-5 wow fadeInUp" data-wow-delay="0.1s">

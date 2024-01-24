@@ -1555,8 +1555,44 @@ def bloodrequest(request, is_immediate):
 
 
 #laboratory
+
+
+from django.shortcuts import render
+from .models import LaboratoryTest
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 def homelab(request):
-    return render(request, 'labhome.html')
+    print("View function executed!")
+    # Retrieve all LaboratoryTest objects from the database
+    lab_tests = LaboratoryTest.objects.all()
+    print("Number of records:", lab_tests.count())
+
+    # Split lab_tests into chunks of 3
+    paginator = Paginator(lab_tests, 3)
+    
+    # Get the current page from the request's GET parameters
+    page = request.GET.get('page', 1)
+
+    try:
+        # Get the specified page
+        lab_tests_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page
+        lab_tests_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results
+        lab_tests_page = paginator.page(paginator.num_pages)
+
+    # Pass the lab_tests_page data to the template context
+    context = {
+        'lab_tests_page': lab_tests_page,
+    }
+
+    # Render the HTML template with the data
+    return render(request, 'labhome.html', context)
+
+
 
 def upload_prescription_view(request):
     return render(request, 'labhome.html')
@@ -1564,8 +1600,12 @@ def upload_prescription_view(request):
 def download_report_view(request):
     return render(request, 'labhome.html')
 
+
+
 def find_lab_view(request):
     return render(request, 'labhome.html')
+
+
 
 
 
@@ -1600,76 +1640,7 @@ from .models import LaboratoryTest
 
 import json
 
-# def save_laboratory_test(request):
-#     if request.method == 'POST':
-#         test_name = request.POST.get('testName')
-#         test_price = request.POST.get('testPrice')
-#         package_details_json = request.POST.get('packageDetails')
 
-#         # Convert JSON string to a Python list
-#         package_details = json.loads(package_details_json)
-
-#         # Save data to the database
-#         laboratory_test = LaboratoryTest.objects.create(
-#             test_name=test_name,
-#             test_price=test_price,
-#             package_details=package_details
-#         )
-
-#         return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
-
-#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
-
-
-# from django.shortcuts import render
-# from django.http import JsonResponse
-# from .models import LaboratoryTest
-
-# import json
-
-# def save_laboratory_test(request):
-#     if request.method == 'POST':
-#         # Handle laboratory test package form
-#         if 'labTestName' in request.POST:
-#             test_name = request.POST.get('labTestName')
-#             test_price = request.POST.get('labTestPrice')
-#             package_details_json = request.POST.get('packageDetails')
-
-#             # Convert JSON string to a Python list
-#             package_details = json.loads(package_details_json)
-
-#             # Save data to the database
-#             laboratory_test = LaboratoryTest.objects.create(
-#                 test_name=test_name,
-#                 test_price=test_price,
-#                 package_details=package_details
-#             )
-
-#             return JsonResponse({'status': 'success', 'message': 'Data saved successfully'})
-
-#         # Handle special package form
-#         elif 'specialPackageName' in request.POST:
-#             # Extract data from the special package form
-#             package_name = request.POST.get('specialPackageName')
-#             package_price = request.POST.get('specialPackagePrice')
-
-#             # Process the data as needed
-#             # Add your code to handle special package data
-
-#             return JsonResponse({'status': 'success', 'message': 'Special package data saved successfully'})
-
-#         # Handle test details form
-#         elif 'testName' in request.POST:
-#             # Extract data from the test details form
-#             test_name = request.POST.get('testName')
-#             test_price = request.POST.get('testPrice')
-
-#             # Process the data as needed
-#             # Add your code to handle test details data
-
-#             return JsonResponse({'status': 'success', 'message': 'Test details data saved successfully'})
-
-#     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 # Import necessary modules
 from django.http import JsonResponse
@@ -1706,3 +1677,22 @@ def save_laboratory_test(request):
     else:
         # Handle other request methods (GET, etc.) if needed
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+
+from django.shortcuts import render
+from .models import LaboratoryTest
+
+def show_lab_tests(request):
+    print("View function executed!")
+    # Retrieve all LaboratoryTest objects from the database
+    lab_tests = LaboratoryTest.objects.all()
+    print("Number of records:", lab_tests.count())
+
+    # Pass the lab_tests data to the template context
+    context = {
+        'lab_tests': lab_tests,
+    }
+
+    # Render the HTML template with the data
+    return render(request, 'labhome.html', context)

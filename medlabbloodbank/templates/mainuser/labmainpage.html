@@ -479,6 +479,7 @@
                 console.log('Response:', data);
                 if (data.status === 'success') {
                     alert('Data saved successfully');
+                    resetForm(formId);
                     // You can perform additional actions after successful submission
                 } else {
                     alert('Error saving data: ' + data.message);
@@ -505,7 +506,12 @@
             }
             return cookieValue;
         }
-        
+        function resetForm(formId) {
+            var form = document.getElementById(formId);
+            if (form && form.tagName === 'FORM') {
+                form.reset();
+            }
+        }
         
     </script>
     
