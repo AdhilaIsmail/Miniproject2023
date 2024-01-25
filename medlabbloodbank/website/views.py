@@ -789,22 +789,49 @@ def staff_registration(request):
         return render(request, 'mainuser/staffregistration.html')
 
 
+# from django.shortcuts import render, redirect
+# from .forms import BloodTypeForm
+# from django.db import IntegrityError  # Import IntegrityError
+
+# def addblood(request):
+#     if request.method == 'POST':
+#         form = BloodTypeForm(request.POST)
+#         if form.is_valid():
+#             try:
+#                 form.save()
+#                 return redirect('bloodinventory')
+#             except IntegrityError:
+#                 form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
+#     else:
+#         form = BloodTypeForm()
+#     return render(request, 'mainuser/addnewgroup.html', {'form': form})
+
+#new
 from django.shortcuts import render, redirect
 from .forms import BloodTypeForm
-from django.db import IntegrityError  # Import IntegrityError
+from django.db import IntegrityError
+from .models import BloodInventory  # Import BloodInventory model
 
 def addblood(request):
     if request.method == 'POST':
         form = BloodTypeForm(request.POST)
         if form.is_valid():
             try:
-                form.save()
+                blood_type = form.save()
+
+                # Create a corresponding BloodInventory entry for the new blood type
+                BloodInventory.objects.create(blood_type=blood_type)
+
                 return redirect('bloodinventory')
             except IntegrityError:
                 form.add_error('blood_type', 'Blood type already exists.')  # Add a form error
+
     else:
         form = BloodTypeForm()
+
     return render(request, 'mainuser/addnewgroup.html', {'form': form})
+
+
 
 
 # views.py
@@ -1137,48 +1164,74 @@ def view_camp_schedules(request):
 
 
 
-from django.utils import timezone
-from django.shortcuts import render, redirect
-from .models import Appointment, DonorDetails
-from django.contrib import messages
+# from django.utils import timezone
+# from django.shortcuts import render, redirect
+# from .models import Appointment, DonorDetails
+# from django.contrib import messages
+
+
+# from django.shortcuts import get_object_or_404, redirect, render
+# from .models import Appointment, DonorDetails, BloodInventory,BloodType
 
 # def donateddetails(request, appointment_id):
-#     appointment = Appointment.objects.get(pk=appointment_id)
+#     appointment = get_object_or_404(Appointment, id=appointment_id)
 
 #     if request.method == 'POST':
 #         # Retrieve donor details
-#         donor = appointment.booked_by_donor
-#         donor_name = donor.full_name if donor else "Unknown Donor"
-
-#         # Retrieve other form fields
 #         date_of_donation = request.POST.get('date_of_donation')
 #         expiry_date = request.POST.get('expiry_date')
 #         sample_name = request.POST.get('sample_name')
 #         quantity = request.POST.get('quantity')
 
-#         # Create a DonorDetails instance and save it to the database
-#         donor_details = DonorDetails(
-#             appointment=appointment,
-#             donor=donor,
-#             date_of_donation=date_of_donation,
-#             expiry_date=expiry_date,
-#             sample_name=sample_name,
-#             quantity=quantity,
-#             # Add other fields as needed
-#         )
-#         donor_details.save()
-#         appointment.status = 'donated'
-#         appointment.save()
-#         # Optionally, you can add a success message
-#         messages.success(request, 'Donor details saved successfully.')
+#         print(appointment.booked_by_donor)
+#         print(appointment.booked_by_donor.blood_group)
 
-#         # Redirect to a success page or another appropriate URL
-#         return redirect('staffindex')  # Change 'staffindex' to your desired URL name
+#         # Check if the provided data is valid (you can add your validation logic)
+#         if date_of_donation and expiry_date and sample_name and quantity:
+#             # Update the appointment status to "Donated"
+#             appointment.status = "DONATED"
+#             appointment.save()
+
+#             quantity_ml = int(quantity) * 450
+#             units_donated = quantity_ml // 450
+
+#             # Update the BloodInventory
+#             blood_type = appointment.booked_by_donor.blood_group
+#             # Inside the donateddetails view
+#             blood_type_instance = BloodType.objects.get(blood_type=blood_group)
+#             print(f"Blood Type: {blood_type}")
+            
+
+#             blood_inventory, created = BloodInventory.objects.get_or_create(blood_type=blood_type_instance)
+#             blood_inventory.quantity += units_donated
+#             blood_inventory.save()
+
+#             # Optionally, create a DonorDetails instance and save it to the database
+#             # Only if you want to store the donor details
+#             donor_details = DonorDetails(
+#                 appointment=appointment,
+#                 donor=appointment.booked_by_donor,
+#                 date_of_donation=date_of_donation,
+#                 expiry_date=expiry_date,
+#                 sample_name=sample_name,
+#                 quantity=quantity,
+#                 # Add other fields as needed
+#             )
+#             donor_details.save()
+
+#             return redirect('donorappointments')  # Redirect to the "Donor Appointments" page
+#         else:
+#             # Handle validation errors or show an error message
+#             # You can customize this part to display error messages to the user
+#             return render(request, 'staff/filldonordetails.html', {'appointment': appointment, 'error_message': 'Please fill in all required fields'})
 
 #     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
 
-from django.shortcuts import get_object_or_404, redirect, render
-from .models import Appointment
+
+from django.utils import timezone
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Appointment, DonorDetails, BloodInventory, BloodType
+from django.contrib import messages
 
 def donateddetails(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -1195,6 +1248,18 @@ def donateddetails(request, appointment_id):
             # Update the appointment status to "Donated"
             appointment.status = "DONATED"
             appointment.save()
+
+            quantity_ml = int(quantity) * 450
+            units_donated = quantity_ml // 450
+
+            # Retrieve the BloodType instance based on the donor's blood group
+            blood_group = appointment.booked_by_donor.user.donor.blood_group
+            blood_type_instance = BloodType.objects.get(blood_type=blood_group)
+
+            # Retrieve or create the BloodInventory
+            blood_inventory, created = BloodInventory.objects.get_or_create(blood_type=blood_type_instance)
+            blood_inventory.quantity += units_donated
+            blood_inventory.save()
 
             # Optionally, create a DonorDetails instance and save it to the database
             # Only if you want to store the donor details
@@ -1216,6 +1281,23 @@ def donateddetails(request, appointment_id):
             return render(request, 'staff/filldonordetails.html', {'appointment': appointment, 'error_message': 'Please fill in all required fields'})
 
     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
+
+
+
+
+
+#new
+from django.shortcuts import render
+from .models import BloodInventory
+
+def view_blood_inventory(request):
+    blood_inventory = BloodInventory.objects.all()
+    return render(request, 'your_template.html', {'blood_inventory': blood_inventory})
+
+
+
+
+
 
 
 

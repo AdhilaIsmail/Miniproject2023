@@ -196,12 +196,13 @@
         </div>
         <div class="page-wrapper">
             <div class="content">
-                <button id="addBloodGroupBtn"  class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
+                <button id="addBloodGroupBtn" class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
                 <h1>Blood Groups</h1>
                 <div class="row">
                     {% for blood_type in blood_types %}
                         <div class="blood-group-box">
-                            {{ blood_type.blood_type }}
+                            <h3>{{ blood_type.blood_type }}</h3>
+                            <p>Available Units: {% with blood_inventory=blood_type.bloodinventory %}{{ blood_inventory.quantity }}{% endwith %}</p>
                         </div>
                         {% if forloop.counter|divisibleby:4 %}
                             </div><div class="row">
@@ -212,6 +213,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'mainuser/js/jquery-3.2.1.min.js' %}"></script>

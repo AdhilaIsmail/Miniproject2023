@@ -133,21 +133,58 @@ class HospitalRegister(models.Model):
 
 
 #blood type model
+# from django.db import models
+# class BloodType(models.Model):
+#     blood_type = models.CharField(max_length=10, unique=True)
+
+#     def __str__(self):
+#         return self.blood_type
+    
 from django.db import models
+
 class BloodType(models.Model):
     blood_type = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.blood_type
+
+    
+
+
+
+
+
+
+
+
+
     
 #blood inventory
+# class BloodInventory(models.Model):
+#     blood_type = models.OneToOneField(BloodType, on_delete=models.CASCADE, primary_key=True)
+#     quantity = models.IntegerField(default=0)
+
+#     def __str__(self):
+#         return f"{self.blood_type} - {self.quantity} units available"
+    
+
+
+
+from django.db import models
+
 class BloodInventory(models.Model):
     blood_type = models.OneToOneField(BloodType, on_delete=models.CASCADE, primary_key=True)
     quantity = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.blood_type} - {self.quantity} units available"
-    
+
+    def update_quantity(self, units):
+        self.quantity += units
+        self.save()
+
+
+
 
 #blood request model
 from datetime import datetime 
@@ -305,21 +342,22 @@ class Appointment(models.Model):
     status = models.CharField(max_length=20, choices=[('donated', 'Donated'), ('not_donated', 'Not Donated')],  null=True, blank=True)
     # Add other fields for the Appointment model as needed
 
-
     def is_expired(self):
         current_date = timezone.now().date()
-        if self.camp.campDate < current_date:
-            return True
-        return False
+        return self.camp.campDate < current_date
 
     def save(self, *args, **kwargs):
         if self.is_expired():
             self.status = 'expired'
         super(Appointment, self).save(*args, **kwargs)
 
+    def get_donor_name(self):
+        return self.booked_by_donor.full_name if self.booked_by_donor else 'Anonymous'
+
     def __str__(self):
-        donor_name = self.booked_by_donor.full_name if self.booked_by_donor else 'Anonymous'
+        donor_name = self.get_donor_name()
         return f"{self.camp.campName} - {self.time_slot} - Booked by: {donor_name}"
+
     
 
 from django.db import models
