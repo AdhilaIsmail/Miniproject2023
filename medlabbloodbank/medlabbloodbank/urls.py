@@ -28,7 +28,7 @@ from website.views import registereddonortable, search_by_name, search_by_place,
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
 from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
 from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules,update_approval_status
-from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view,laboratory,laboratory_test_package_registration,special_package_registration,save_laboratory_test,show_lab_tests
+from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view,laboratory,laboratory_test_package_registration,special_package_registration,save_laboratory_test,show_lab_tests,show_test_details,book_now,submit_booking
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -45,6 +45,11 @@ urlpatterns = [
     path('homebloodbank',homebloodbank, name='homebloodbank'),
     path('homelab',homelab,name='homelab'),
     path('show_lab_tests/', show_lab_tests, name='show_lab_tests'),
+    path('show_lab_tests/', show_lab_tests, name='show_lab_tests'),
+    path('show_test_details/<int:test_id>/', show_test_details, name='show_test_details'),
+    
+    path('book_now/<str:test_name>/<test_price>/', views.book_now, name='book_now'),
+    path('submit_booking/', submit_booking, name='submit_booking'),
     path('test/', lambda request: HttpResponse("Test view"), name='test_view'),
     path('registration',register, name='registration'),
     path('register/', register_donor, name='register_donor'),

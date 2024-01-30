@@ -202,7 +202,13 @@
                     {% for blood_type in blood_types %}
                         <div class="blood-group-box">
                             <h3>{{ blood_type.blood_type }}</h3>
-                            <p>Available Units: {% with blood_inventory=blood_type.bloodinventory %}{{ blood_inventory.quantity }}{% endwith %}</p>
+                            {% with blood_inventory=blood_type.bloodinventory.quantity %}
+                                {% if blood_inventory %}
+                                    <p>Available Units: {{ blood_inventory|divisibleby:450 }}</p>
+                                {% else %}
+                                    <p>No blood units available.</p>
+                                {% endif %}
+                            {% endwith %}
                         </div>
                         {% if forloop.counter|divisibleby:4 %}
                             </div><div class="row">
@@ -213,6 +219,16 @@
                 </div>
             </div>
         </div>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
     </div>
     <div class="sidebar-overlay" data-reff=""></div>

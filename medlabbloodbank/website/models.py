@@ -420,3 +420,26 @@ class LaboratoryTest(models.Model):
 
     def __str__(self):
         return self.test_name
+    
+
+# models.py
+from django.db import models
+
+class Patient(models.Model):
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    address = models.TextField()
+    gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
+    date_of_birth = models.DateField()
+
+    def __str__(self):
+        return self.full_name
+
+
+class Booking(models.Model):
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    booked_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Booking for {self.patient.full_name} on {self.booked_date}"

@@ -1,5 +1,6 @@
 {% extends 'baselab.html' %}
 {% block content %}
+
 {% load static %}
 <style>
     .btn-container 
@@ -37,37 +38,37 @@
         width: calc(100% / 3); /* Show only 3 items at a time */
         overflow: hidden;
     }
-    .test-box 
-    {
+
+    .test-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .test-box {
+        flex: 0 0 30%; /* Adjust the width as needed */
         border: 1px solid #ccc;
         padding: 15px;
         margin: 10px;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         background-color: #fff;
-    }
-    .test-box-container
-    {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
         justify-content: space-between;
     }
-    .test-box 
-    {
-        width: calc(32% - 10px); /* 32% width for each box with some margin in between */
-        margin-bottom: 20px;
-    }
-    .test-box h3 
-    {
+
+    .test-box h3 {
         margin-bottom: 10px;
         color: #333;
-    } 
-    .test-box p 
-    {
+    }
+
+    .test-box p {
         color: #777;
-    }   
-    .know-more-btn 
-    {
+    }
+
+    .know-more-btn {
+        margin-top: auto; /* Move the button to the bottom */
         background-color: #007bff;
         color: #fff;
         padding: 8px 15px;
@@ -76,8 +77,8 @@
         cursor: pointer;
         transition: background-color 0.3s;
     }
-    .know-more-btn:hover 
-    {
+
+    .know-more-btn:hover {
         background-color: #0056b3;
     }
     .carousel-item 
@@ -174,19 +175,34 @@
         </div>
     </div>
     <!-- Carousel End -->
-
+    
+    
     <div class="container">
         <h2 class="text-center mb-5">Specialized Health Packages</h2>
-        
-        <!-- Display data from the model -->
-        {% for test in lab_tests %}
-            <div class="test-box">
-                <h3>{{ test.test_name }}</h3>
-                <p>Price: ${{ test.test_price }}</p>
-                <button class="know-more-btn">Know More</button>
-            </div>
-        {% endfor %}
+        <div class="test-container">
+            {% if lab_tests_page %}
+                {% for test in lab_tests_page %}
+                    {% comment %} <div class="test-box">
+                        <h3>{{ test.test_name }}</h3>
+                        <p>Price: ${{ test.test_price }}</p>
+                        <button class="know-more-btn">Know More</button>
+                    </div> {% endcomment %}
+                    <div class="test-box">
+                        <h3>{{ test.test_name }}</h3>
+                        <p>Price: ${{ test.test_price }}</p>
+                        <a href="{% url 'show_test_details' test.id %}" class="know-more-btn">Know More</a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No data available.</p>
+            {% endif %}
+        </div>
     </div>
+    
+    
+    
+    
+    
     
     
     
@@ -195,42 +211,7 @@
  
 
 
-    <!-- About Start -->
-    {% comment %} <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-7">
-                    <div class="section-title mb-4">
-                        <h5 class="position-relative d-inline-block text-primary text-uppercase">About Our Online Blood Bank Management System</h5>
-                        <h1 class="display-5 mb-0">Empowering Lifesaving: The Leading Online Blood Bank Management Solution</h1>
-                    </div>
-                    <h4 class="text-body fst-italic mb-4">Advancing blood donation and healthcare for better lives.</h4>
-                    <p class="mb-4">Our state-of-the-art online platform seamlessly connects blood donors, recipients, and medical professionals, forming a unified system that accelerates blood donation processes and enhances patient care. Our commitment to excellence drives us to provide:</p>
-                    <div class="row g-3">
-                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.3s">
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Efficient Blood Matching</h5>
-                            <p>From blood typing and compatibility checking to real-time availability tracking, our comprehensive services ensure successful and timely blood transfusions.</p>
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>User-Friendly Interface</h5>
-                            <p>Our user-friendly platform allows donors and recipients to easily navigate and manage their profiles, appointments, and blood requests with convenience.</p>
-                        </div>
-                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.6s">
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Rapid Response</h5>
-                            <p>Time is critical in emergencies, and our online system ensures swift communication between donors, recipients, and medical facilities, expediting the blood donation process.</p>
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Data Security</h5>
-                            <p>We prioritize the security of donor and recipient information. Our robust system ensures the confidentiality and integrity of sensitive data.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5" style="min-height: 500px;">
-                    <div class="position-relative h-100">
-                        <img class="position-absolute w-100 h-100 rounded wow zoomIn" data-wow-delay="0.9s" src="{% static 'img/4363.jpg' %}" style="object-fit: cover;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
     
-    <!-- About End -->
 
 
    
@@ -259,5 +240,8 @@
         </div>
     </div>
     
-    
+    <!-- Add these script tags to your HTML file -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     {% endblock %}

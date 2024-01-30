@@ -461,16 +461,7 @@ def addlab(request):
     return render(request, 'mainuser/addlab.html')
 
 
-# def assign_staff(request):
 
-#     staff_members = Staff.objects.all()
-#     grampanchayats = Grampanchayat.objects.all()
-#     context = {
-#         'staff_members': staff_members,
-#         'grampanchayats': grampanchayats,
-#     }
-#     return render(request, 'mainuser/assigninggptostaff.html', context)
-#.....................................
 from django.shortcuts import render, redirect
 from .models import Staff, Grampanchayat, AssignGrampanchayat
 
@@ -596,8 +587,54 @@ def search_by_blood_group(request):
     return render(request, 'mainuser/registereddonortable.html', {'donors': donors})
 
 
+# def bloodinventory(request):
+#     return render(request, 'mainuser/bloodinventory.html')
+from django.shortcuts import render
+from .models import BloodType
+
+# def bloodinventory(request):
+#     blood_types = BloodType.objects.all()
+#     return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types})
+
+
+
+from django.shortcuts import render
+from .models import BloodType, BloodInventory
+
 def bloodinventory(request):
-    return render(request, 'mainuser/bloodinventory.html')
+    blood_types = BloodType.objects.all()
+
+    # Calculate units for each blood type
+    blood_inventory_units = {}
+    for blood_type in blood_types:
+        try:
+            blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
+            units = blood_inventory.quantity // 450
+        except BloodInventory.DoesNotExist:
+            units = 0
+        blood_inventory_units[blood_type] = units
+
+    return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types, 'blood_inventory_units': blood_inventory_units})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def registeredstafftable(request):
     return render(request, 'mainuser/registeredstafftable.html')
@@ -836,12 +873,7 @@ def addblood(request):
 
 # views.py
 
-from django.shortcuts import render
-from .models import BloodType
 
-def bloodinventory(request):
-    blood_types = BloodType.objects.all()
-    return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types})
 
 
 from django.shortcuts import render
@@ -1164,74 +1196,13 @@ def view_camp_schedules(request):
 
 
 
-# from django.utils import timezone
-# from django.shortcuts import render, redirect
-# from .models import Appointment, DonorDetails
-# from django.contrib import messages
-
-
-# from django.shortcuts import get_object_or_404, redirect, render
-# from .models import Appointment, DonorDetails, BloodInventory,BloodType
-
-# def donateddetails(request, appointment_id):
-#     appointment = get_object_or_404(Appointment, id=appointment_id)
-
-#     if request.method == 'POST':
-#         # Retrieve donor details
-#         date_of_donation = request.POST.get('date_of_donation')
-#         expiry_date = request.POST.get('expiry_date')
-#         sample_name = request.POST.get('sample_name')
-#         quantity = request.POST.get('quantity')
-
-#         print(appointment.booked_by_donor)
-#         print(appointment.booked_by_donor.blood_group)
-
-#         # Check if the provided data is valid (you can add your validation logic)
-#         if date_of_donation and expiry_date and sample_name and quantity:
-#             # Update the appointment status to "Donated"
-#             appointment.status = "DONATED"
-#             appointment.save()
-
-#             quantity_ml = int(quantity) * 450
-#             units_donated = quantity_ml // 450
-
-#             # Update the BloodInventory
-#             blood_type = appointment.booked_by_donor.blood_group
-#             # Inside the donateddetails view
-#             blood_type_instance = BloodType.objects.get(blood_type=blood_group)
-#             print(f"Blood Type: {blood_type}")
-            
-
-#             blood_inventory, created = BloodInventory.objects.get_or_create(blood_type=blood_type_instance)
-#             blood_inventory.quantity += units_donated
-#             blood_inventory.save()
-
-#             # Optionally, create a DonorDetails instance and save it to the database
-#             # Only if you want to store the donor details
-#             donor_details = DonorDetails(
-#                 appointment=appointment,
-#                 donor=appointment.booked_by_donor,
-#                 date_of_donation=date_of_donation,
-#                 expiry_date=expiry_date,
-#                 sample_name=sample_name,
-#                 quantity=quantity,
-#                 # Add other fields as needed
-#             )
-#             donor_details.save()
-
-#             return redirect('donorappointments')  # Redirect to the "Donor Appointments" page
-#         else:
-#             # Handle validation errors or show an error message
-#             # You can customize this part to display error messages to the user
-#             return render(request, 'staff/filldonordetails.html', {'appointment': appointment, 'error_message': 'Please fill in all required fields'})
-
-#     return render(request, 'staff/filldonordetails.html', {'appointment': appointment})
-
-
 from django.utils import timezone
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Appointment, DonorDetails, BloodInventory, BloodType
 from django.contrib import messages
+from django.db.models import Sum
+
+from django.db import transaction
 
 def donateddetails(request, appointment_id):
     appointment = get_object_or_404(Appointment, id=appointment_id)
@@ -1245,34 +1216,41 @@ def donateddetails(request, appointment_id):
 
         # Check if the provided data is valid (you can add your validation logic)
         if date_of_donation and expiry_date and sample_name and quantity:
-            # Update the appointment status to "Donated"
-            appointment.status = "DONATED"
-            appointment.save()
+            try:
+                quantity_ml = int(quantity) * 450
+                units_donated = quantity_ml // 450
 
-            quantity_ml = int(quantity) * 450
-            units_donated = quantity_ml // 450
+                # Use atomic transaction to ensure consistency
+                with transaction.atomic():
+                    # Update the appointment status to "Donated"
+                    appointment.status = "DONATED"
+                    appointment.save()
 
-            # Retrieve the BloodType instance based on the donor's blood group
-            blood_group = appointment.booked_by_donor.user.donor.blood_group
-            blood_type_instance = BloodType.objects.get(blood_type=blood_group)
+                    # Retrieve the BloodType instance based on the donor's blood group
+                    blood_group = appointment.booked_by_donor.user.donor.blood_group
+                    blood_type_instance = BloodType.objects.get(blood_type=blood_group)
 
-            # Retrieve or create the BloodInventory
-            blood_inventory, created = BloodInventory.objects.get_or_create(blood_type=blood_type_instance)
-            blood_inventory.quantity += units_donated
-            blood_inventory.save()
+                    # Retrieve or create the BloodInventory
+                    blood_inventory, created = BloodInventory.objects.get_or_create(blood_type=blood_type_instance)
+                    blood_inventory.quantity += units_donated
+                    blood_inventory.save()
 
-            # Optionally, create a DonorDetails instance and save it to the database
-            # Only if you want to store the donor details
-            donor_details = DonorDetails(
-                appointment=appointment,
-                donor=appointment.booked_by_donor,
-                date_of_donation=date_of_donation,
-                expiry_date=expiry_date,
-                sample_name=sample_name,
-                quantity=quantity,
-                # Add other fields as needed
-            )
-            donor_details.save()
+                    # Optionally, create a DonorDetails instance and save it to the database
+                    # Only if you want to store the donor details
+                    donor_details = DonorDetails(
+                        appointment=appointment,
+                        donor=appointment.booked_by_donor,
+                        date_of_donation=date_of_donation,
+                        expiry_date=expiry_date,
+                        sample_name=sample_name,
+                        quantity=quantity_ml,
+                        # Add other fields as needed
+                    )
+                    donor_details.save()
+
+            except ValueError:
+                # Handle invalid quantity (non-integer) entered by the user
+                return render(request, 'staff/filldonordetails.html', {'appointment': appointment, 'error_message': 'Invalid quantity entered'})
 
             return redirect('donorappointments')  # Redirect to the "Donor Appointments" page
         else:
@@ -1286,13 +1264,16 @@ def donateddetails(request, appointment_id):
 
 
 
+
+
+
 #new
 from django.shortcuts import render
 from .models import BloodInventory
 
 def view_blood_inventory(request):
     blood_inventory = BloodInventory.objects.all()
-    return render(request, 'your_template.html', {'blood_inventory': blood_inventory})
+    return render(request, 'mainuser/bloodinventory.html', {'blood_inventory': blood_inventory})
 
 
 
@@ -1725,12 +1706,12 @@ import json
 
 
 # Import necessary modules
+from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import LaboratoryTest
 
-# Define the view function
 @csrf_exempt
 def save_laboratory_test(request):
     if request.method == 'POST':
@@ -1756,9 +1737,15 @@ def save_laboratory_test(request):
         except json.JSONDecodeError as e:
             # Handle JSON decoding error
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data'})
+    elif request.method == 'GET':
+        # Handle GET requests to display laboratory test data
+        lab_tests = LaboratoryTest.objects.all()
+        context = {'lab_tests': lab_tests}
+        return render(request, 'labhome.html', context)
     else:
-        # Handle other request methods (GET, etc.) if needed
+        # Handle other request methods (e.g., PUT, DELETE) if needed
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
 
 
 
@@ -1766,10 +1753,9 @@ from django.shortcuts import render
 from .models import LaboratoryTest
 
 def show_lab_tests(request):
-    print("View function executed!")
     # Retrieve all LaboratoryTest objects from the database
     lab_tests = LaboratoryTest.objects.all()
-    print("Number of records:", lab_tests.count())
+    print("Number of records:", lab_tests.count())  # Add this line to print the count
 
     # Pass the lab_tests data to the template context
     context = {
@@ -1778,3 +1764,62 @@ def show_lab_tests(request):
 
     # Render the HTML template with the data
     return render(request, 'labhome.html', context)
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import LaboratoryTest
+
+def show_test_details(request, test_id):
+    # Retrieve the specific LaboratoryTest object using the test_id
+    lab_test = get_object_or_404(LaboratoryTest, pk=test_id)
+
+    # Pass the lab_test data to the template context
+    context = {
+        'lab_test': lab_test,
+    }
+
+    # Render the HTML template with the data
+    return render(request, 'test_details.html', context)
+
+from django.shortcuts import render
+
+def book_now(request, test_name, test_price):
+    # Add any logic for the "Book Now" view
+
+    # Pass the test details to the template context
+    context = {
+        'test_name': test_name,
+        'test_price': test_price,
+    }
+
+    # Render the book_now.html template with the test details
+    return render(request, 'book_now.html', context)
+
+
+
+# views.py
+from django.shortcuts import render, redirect
+from .models import Patient
+
+def submit_booking(request):
+    if request.method == 'POST':
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        gender = request.POST.get('gender')
+        date_of_birth = request.POST.get('date_of_birth')
+
+        # Save the patient details to the database
+        Patient.objects.create(
+            full_name=full_name,
+            email=email,
+            phone=phone,
+            address=address,
+            gender=gender,
+            date_of_birth=date_of_birth
+        )
+
+        return render(request, 'booking_success.html')  # You can customize this success page
+
+    return render(request, 'booking_form.html')
