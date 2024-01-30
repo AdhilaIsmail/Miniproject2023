@@ -173,7 +173,7 @@
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
 								<li><a href="{% url 'stafflist' %}">Staffs List</a></li>
-							</ul>
+							</ul> 
 						</li> 
                     </ul>
                 </div>
@@ -181,20 +181,30 @@
         </div>
         <div class="page-wrapper">
             <div class="content">
-                {% comment %} <button id="addBloodGroupBtn"  class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button> {% endcomment %}
-                <h1>Blood Inventory</h1>
+                <button id="addBloodGroupBtn" class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
+                <h1>Blood Groups</h1>
                 <div class="row">
-                    {% for inventory_item in blood_inventory %}
-                    <div class="blood-group-box">
-                        <h2>{{ inventory_item.blood_type }}</h2>
-                        <p>Quantity: {{ inventory_item.quantity }}</p>
-                    </div>
+                    {% for blood_type in blood_types %}
+                        <div class="blood-group-box">
+                            <h3>{{ blood_type.blood_type }}</h3>
+                            {% with blood_inventory=blood_type.bloodinventory.quantity %}
+                                {% if blood_inventory %}
+                                    <p>Available Units: {{ blood_inventory|divisibleby:450 }}</p>
+                                {% else %}
+                                    <p>No blood units available.</p>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                        {% if forloop.counter|divisibleby:4 %}
+                            </div><div class="row">
+                        {% endif %}
                     {% empty %}
-                        <p>No blood inventory available.</p>
+                        <p>No blood groups available.</p>
                     {% endfor %}
                 </div>
             </div>
         </div>
+        
     </div>
     <div class="sidebar-overlay" data-reff=""></div>
     <script src="{% static 'staff/js/jquery-3.2.1.min.js' %}"></script>
