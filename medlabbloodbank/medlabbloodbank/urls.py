@@ -43,11 +43,11 @@ urlpatterns = [
     path('register_donor/', register_donor, name='register_donor'),
     path('donatenow',donatenow, name='donatenow'),
     path('homebloodbank',homebloodbank, name='homebloodbank'),
-    path('homelab',homelab,name='homelab'),
+    path('homelab/',homelab,name='homelab'),
     path('show_lab_tests/', show_lab_tests, name='show_lab_tests'),
     path('show_lab_tests/', show_lab_tests, name='show_lab_tests'),
     path('show_test_details/<int:test_id>/', show_test_details, name='show_test_details'),
-    
+    path('booking_form/', views.submit_booking, name='booking_form'),
     path('book_now/<str:test_name>/<test_price>/', views.book_now, name='book_now'),
     path('submit_booking/', submit_booking, name='submit_booking'),
     path('test/', lambda request: HttpResponse("Test view"), name='test_view'),

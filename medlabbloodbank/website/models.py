@@ -432,6 +432,7 @@ class Patient(models.Model):
     address = models.TextField()
     gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')])
     date_of_birth = models.DateField()
+    selected_test = models.ForeignKey(LaboratoryTest, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.full_name

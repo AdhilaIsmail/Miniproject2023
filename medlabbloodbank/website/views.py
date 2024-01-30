@@ -1716,6 +1716,7 @@ from .models import LaboratoryTest
 def save_laboratory_test(request):
     if request.method == 'POST':
         # Retrieve form data
+        
         test_name = request.POST.get('labTestName')
         test_price = request.POST.get('labTestPrice')
         package_details_json = request.POST.get('packageDetails')
@@ -1799,7 +1800,8 @@ def book_now(request, test_name, test_price):
 
 # views.py
 from django.shortcuts import render, redirect
-from .models import Patient
+from django.http import JsonResponse
+from .models import Patient, Booking
 
 def submit_booking(request):
     if request.method == 'POST':
@@ -1809,17 +1811,25 @@ def submit_booking(request):
         address = request.POST.get('address')
         gender = request.POST.get('gender')
         date_of_birth = request.POST.get('date_of_birth')
+        selected_test_id = request.POST.get('selected_test')  # Assuming the field name is 'selected_test' in the form
 
         # Save the patient details to the database
-        Patient.objects.create(
+        patient = Patient.objects.create(
             full_name=full_name,
             email=email,
             phone=phone,
             address=address,
             gender=gender,
-            date_of_birth=date_of_birth
+            date_of_birth=date_of_birth,
+            selected_test_id=selected_test_id
         )
 
-        return render(request, 'booking_success.html')  # You can customize this success page
+        # Create a Booking object
+        Booking.objects.create(patient=patient)
 
-    return render(request, 'booking_form.html')
+        # Return a JSON response indicating success
+        return JsonResponse({'success': True})
+
+    # If the request method is not POST, render the booking form
+    lab_tests = LaboratoryTest.objects.all()
+    return render(request, 'booking_form.html', {'success': False, 'lab_tests': lab_tests})
