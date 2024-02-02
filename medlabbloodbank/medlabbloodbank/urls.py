@@ -26,7 +26,7 @@ from django.contrib.auth import views as auth_views
 from website.views import adminindex, activities, appointments, donors, departments, employees, profile1, editprofile,requestsent,campschedulesfordonor,confirmpage,donorappointments,bloodinventorystaff
 from website.views import registereddonortable, search_by_name, search_by_place, search_by_blood_group, addhospitals, hospitalregistration,waitforemail,view_uploaded_files,viewlabresults
 from website.views import hospital_registration, registeredhospitaltable, bloodrequest, registeredstafftable, staff_registration,getlaboratories,send_confirmation_email,download_file, get_assigned_gram_panchayats
-from website.views import bloodinventory, addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat
+from website.views import addnewgroup, addblood, requests, requestblood,donorappointments,hospitalhome, bloodavailability, hospitalabout, blood_request_list, verify_hospital, staffindex,validate_assign_grampanchayat,blood_inventory
 from website.views import registereddonortablestaff, bloodbankcamps, assign_staff, listgps, addgps, grampanchayat_registration, grampanchayat_list,addlab,update_status,create_blood_camp,view_camp_schedules,update_approval_status
 from website.views import homelab,upload_prescription_view,download_report_view,find_lab_view,laboratory,laboratory_test_package_registration,special_package_registration,save_laboratory_test,show_lab_tests,show_test_details,book_now,submit_booking
 
@@ -95,7 +95,10 @@ urlpatterns = [
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
     path('registeredhospitaltable/', registeredhospitaltable, name='registeredhospitaltable'),
-    path('bloodinventory', bloodinventory, name='bloodinventory'),
+    # path('bloodinventory', bloodinventory, name='bloodinventory'),
+
+    # path('bloodinventory/', blood_inventory, name='bloodinventory'),
+    path('bloodinventory/', blood_inventory, name='blood_inventory'),
     path('laboratory', laboratory, name='laboratory'),
     path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
 
@@ -143,7 +146,7 @@ urlpatterns = [
     path('donorappointments', donorappointments, name='donorappointments'),
     path('bloodbankcamps', bloodbankcamps, name='bloodbankcamps'),
     path('bloodinventorystaff',bloodinventorystaff,name="bloodinventorystaff"),
-    path('blood_inventory/', views.blood_inventory_view, name='blood_inventory'),
+    # path('blood_inventory/', views.blood_inventory_view, name='blood_inventory'),
     path('staffliat', views.stafflist, name='stafflist'),
     path('profile1', profile1, name='profile1'),
     path('editprofile', editprofile, name='editprofile'),

@@ -177,7 +177,7 @@
                             <a href="{% url 'view_uploaded_files' %}"><i class="fa fa-list-alt"></i> <span>View Lab Results</span></a>
                         </li>
                         <li class="active">
-                            <a href="{% url 'bloodinventory' %}"><i class="fa fa-tint"></i> <span>Blood Inventory</span></a>
+                            <a href="{% url 'blood_inventory' %}"><i class="fa fa-tint"></i> <span>Blood Inventory</span></a>
                         </li>
                         <li>
                             <a href="{% url 'laboratory' %}"><i class="fa fa-tint"></i> <span>Laboratory</span></a>
@@ -198,7 +198,7 @@
             <div class="content">
                 <button id="addBloodGroupBtn" class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
                 <h1>Blood Groups</h1>
-                <div class="row">
+                {% comment %} <div class="row">
                     {% for blood_type in blood_types %}
                         <div class="blood-group-box">
                             <h3>{{ blood_type.blood_type }}</h3>
@@ -216,7 +216,21 @@
                     {% empty %}
                         <p>No blood groups available.</p>
                     {% endfor %}
+                </div> {% endcomment %}
+                <div class="row">
+                    {% for data in blood_data %}
+                        <div class="blood-group-box">
+                            <h3>{{ data.blood_type }}</h3>  <!-- Display the blood type directly -->
+                            <p>Available Units: {{ data.available_units }}</p>
+                        </div>
+                        {% if forloop.counter|divisibleby:4 %}
+                            </div><div class="row">
+                        {% endif %}
+                    {% empty %}
+                        <p>No blood groups available.</p>
+                    {% endfor %}
                 </div>
+                
             </div>
         </div>
         

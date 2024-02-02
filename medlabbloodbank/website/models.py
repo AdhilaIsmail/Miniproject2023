@@ -149,27 +149,7 @@ class BloodType(models.Model):
         return self.blood_type
 
     
-
-
-
-
-
-
-
-
-
     
-#blood inventory
-# class BloodInventory(models.Model):
-#     blood_type = models.OneToOneField(BloodType, on_delete=models.CASCADE, primary_key=True)
-#     quantity = models.IntegerField(default=0)
-
-#     def __str__(self):
-#         return f"{self.blood_type} - {self.quantity} units available"
-    
-
-
-
 from django.db import models
 
 class BloodInventory(models.Model):
