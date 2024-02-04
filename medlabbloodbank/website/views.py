@@ -587,40 +587,9 @@ def search_by_blood_group(request):
     return render(request, 'mainuser/registereddonortable.html', {'donors': donors})
 
 
-# def bloodinventory(request):
-#     return render(request, 'mainuser/bloodinventory.html')
+
 from django.shortcuts import render
 from .models import BloodType
-
-# def bloodinventory(request):
-#     blood_types = BloodType.objects.all()
-#     return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types})
-
-
-##needed
-# from django.shortcuts import render
-# from .models import BloodType, BloodInventory
-
-# def bloodinventory(request):
-#     blood_types = BloodType.objects.all()
-#     # Calculate units for each blood type
-#     blood_inventory_units = {}
-#     for blood_type in blood_types:
-#         try:
-#             blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
-#             units = blood_inventory.quantity // 450
-
-#         except BloodInventory.DoesNotExist:
-#             units = 0
-#         blood_inventory_units[blood_type] = units
-
-#     return render(request, 'mainuser/bloodinventory.html', {'blood_types': blood_types, 'blood_inventory_units': blood_inventory_units})
-
-
-
-
-#testing code
-
 
 def blood_inventory(request):
     blood_types = BloodType.objects.all()
@@ -1068,9 +1037,29 @@ def profile(request):
 from django.shortcuts import render
 from .models import BloodType
 
+# def bloodinventorystaff(request):
+#     blood_types = BloodType.objects.all()
+#     return render(request, 'staff/bloodinventorystaff.html', {'blood_types': blood_types})
 def bloodinventorystaff(request):
     blood_types = BloodType.objects.all()
-    return render(request, 'staff/bloodinventorystaff.html', {'blood_types': blood_types})
+    blood_data = []
+
+    for blood_type in blood_types:
+        try:
+            blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
+            available_units = blood_inventory.quantity // 450
+            blood_data.append({'blood_type': blood_type.blood_type, 'available_units': available_units})
+        except BloodInventory.DoesNotExist:
+            blood_data.append({'blood_type': blood_type.blood_type, 'available_units': 0})
+
+    # Print debug statements
+    print("Blood Types:", blood_types)
+    print("Blood Data:", blood_data)
+
+    context = {'blood_data': blood_data}
+    return render(request, 'staff/bloodinventorystaff.html', context)
+
+
 
 def editprofile(request):
     return render(request, 'staff/edit-profile.html')
@@ -1293,14 +1282,6 @@ def view_blood_inventory(request):
     return render(request, 'mainuser/bloodinventory.html', {'blood_inventory': blood_inventory})
 
 
-
-
-
-
-
-
-
-
 def check_appointment_status(request, appointment_id):
     try:
         appointment = Appointment.objects.get(pk=appointment_id)
@@ -1308,9 +1289,6 @@ def check_appointment_status(request, appointment_id):
         return JsonResponse({"status": status})
     except Appointment.DoesNotExist:
         return JsonResponse({"error": "Appointment not found"}, status=404)
-
-
-
 
 
 from django.shortcuts import get_object_or_404, redirect, render

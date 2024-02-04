@@ -198,25 +198,7 @@
             <div class="content">
                 <button id="addBloodGroupBtn" class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
                 <h1>Blood Groups</h1>
-                {% comment %} <div class="row">
-                    {% for blood_type in blood_types %}
-                        <div class="blood-group-box">
-                            <h3>{{ blood_type.blood_type }}</h3>
-                            {% with blood_inventory=blood_type.bloodinventory.quantity %}
-                                {% if blood_inventory %}
-                                    <p>Available Units: {{ blood_inventory|divisibleby:450 }}</p>
-                                {% else %}
-                                    <p>No blood units available.</p>
-                                {% endif %}
-                            {% endwith %}
-                        </div>
-                        {% if forloop.counter|divisibleby:4 %}
-                            </div><div class="row">
-                        {% endif %}
-                    {% empty %}
-                        <p>No blood groups available.</p>
-                    {% endfor %}
-                </div> {% endcomment %}
+                
                 <div class="row">
                     {% for data in blood_data %}
                         <div class="blood-group-box">
