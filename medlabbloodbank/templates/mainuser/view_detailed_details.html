@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Detailed Blood Donation Details for {{ blood_type }}</h1>
+
+    <p>Available Units: {{ available_units }}</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date of Donation</th>
+                <th>Expiry Date</th>
+                <th>Sample Name</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in donor_details %}
+                <tr>
+                    <td>{{ detail.date_of_donation }}</td>
+                    <td>{{ detail.expiry_date }}</td>
+                    <td>{{ detail.sample_name }}</td>
+                    <td>{{ detail.quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

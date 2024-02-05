@@ -610,6 +610,32 @@ def blood_inventory(request):
     context = {'blood_data': blood_data}
     return render(request, 'mainuser/bloodinventory.html', context)
 
+from django.shortcuts import render
+from .models import BloodType, BloodInventory, DonorDetails
+
+def view_detailed_details(request, blood_type):
+    try:
+        blood_type_obj = BloodType.objects.get(blood_type=blood_type)
+        blood_inventory = BloodInventory.objects.get(blood_type=blood_type_obj)
+        donor_details = DonorDetails.objects.filter(appointment__blood_type=blood_type_obj)
+        
+        context = {
+            'blood_type': blood_type_obj.blood_type,
+            'available_units': blood_inventory.quantity // 450,
+            'donor_details': donor_details,
+        }
+
+        return render(request, 'mainuser/view_detailed_details.html', context)
+    except BloodType.DoesNotExist:
+        # Handle case where blood type does not exist
+        pass
+
+
+from django.shortcuts import render
+
+def handle_empty_blood_type(request):
+    # Handle empty blood_type, e.g., redirect to an error page or show a message
+    return render(request, 'error.html', {'message': 'Blood type is empty'})
 
 
 

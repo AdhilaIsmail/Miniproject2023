@@ -68,7 +68,8 @@
                 <a href="{% url 'waitforemail' %}" class="nav-item nav-link">Donate Blood</a>
                 {% endif %}    
                 {% endif %} 
-                <a href="{% url 'campschedulesfordonor' %}" class="nav-item nav-link">Appointment</a>               
+                {% comment %} <a href="{% url 'campschedulesfordonor' %}" class="nav-item nav-link">Appointment</a> {% endcomment %}
+                <a href="{% url 'campschedulesfordonor' %}" class="nav-item nav-link {% if active_menu == 'appointment' %}active{% endif %}">Appointment</a>               
                 {% endif %}
                 <a href="{% url 'about' %}" class="nav-item nav-link">About Us</a>
                 <a href="{% url 'contact' %}" class="nav-item nav-link">Contact</a>

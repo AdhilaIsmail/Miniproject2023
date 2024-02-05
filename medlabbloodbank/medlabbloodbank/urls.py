@@ -99,6 +99,8 @@ urlpatterns = [
 
     # path('bloodinventory/', blood_inventory, name='bloodinventory'),
     path('bloodinventory/', blood_inventory, name='blood_inventory'),
+    path('view_detailed_details/<str:blood_type>/', views.view_detailed_details, name='view_detailed_details'),
+    path('view_detailed_details/', views.handle_empty_blood_type, name='handle_empty_blood_type'),
     path('laboratory', laboratory, name='laboratory'),
     path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
 

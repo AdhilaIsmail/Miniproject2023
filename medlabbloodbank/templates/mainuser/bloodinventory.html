@@ -95,7 +95,7 @@
             justify-content: space-between;
         }
 
-        .blood-group-box {
+        {% comment %} .blood-group-box {
             background-color: #b31923;
             color: white;
             padding: 20px;
@@ -104,6 +104,32 @@
             border-radius:5px;
             height:100px;
             flex-basis: calc(25% - 20px); /* 25% width with 20px margin on each side */
+        } {% endcomment %}
+        .blood-group-box {
+            background-color: #b31923;
+            color: white;
+            padding: 20px;
+            margin: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+            height: 150px;
+            flex-basis: calc(25% - 20px); /* 25% width with 20px margin on each side */
+            position: relative; /* Add this to enable absolute positioning */
+        }
+    
+        .blood-group-box button {
+            position: absolute;
+            background-color: white;
+            color:#b31923;
+            border:none;
+            font-weight: 600;
+            bottom: 10px; /* Adjust the bottom value to control the button's vertical position */
+            left: 50%; /* Center the button horizontally within the box */
+            transform: translateX(-50%); /* Center the button horizontally within the box */
+        }
+        .blood-group-box button:hover {
+            background-color: #d1bebc; /* Change background color on hover */
+            border:none;
         }
 	</style>   
 
@@ -197,21 +223,22 @@
         <div class="page-wrapper">
             <div class="content">
                 <button id="addBloodGroupBtn" class="btn btn btn-success btn-rounded float-right" onclick="location.href='{% url 'addnewgroup' %}'">Add Blood Group</button>
-                <h1>Blood Groups</h1>
+                <h1>Blood Availability</h1>
                 
                 <div class="row">
                     {% for data in blood_data %}
                         <div class="blood-group-box">
-                            <h3>{{ data.blood_type }}</h3>  <!-- Display the blood type directly -->
+                            <h3>{{ data.blood_type }}</h3>
                             <p>Available Units: {{ data.available_units }}</p>
+                            
+                            <button class="btn btn-primary" {% if data.blood_type %} onclick="location.href='{% url 'view_detailed_details' data.blood_type %}'" {% endif %}>
+                                View Details
+                            </button>
                         </div>
-                        {% if forloop.counter|divisibleby:4 %}
-                            </div><div class="row">
-                        {% endif %}
-                    {% empty %}
-                        <p>No blood groups available.</p>
                     {% endfor %}
                 </div>
+                
+                
                 
             </div>
         </div>
