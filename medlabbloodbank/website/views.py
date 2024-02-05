@@ -615,10 +615,15 @@ from .models import BloodType, BloodInventory, DonorDetails
 
 def view_detailed_details(request, blood_type):
     try:
+        # Find the BloodType instance
         blood_type_obj = BloodType.objects.get(blood_type=blood_type)
-        blood_inventory = BloodInventory.objects.get(blood_type=blood_type_obj)
-        donor_details = DonorDetails.objects.filter(appointment__blood_type=blood_type_obj)
         
+        # Query DonorDetails based on the indirect relationship through Appointment and Donor
+        donor_details = DonorDetails.objects.filter(appointment__booked_by_donor__blood_group=blood_type)
+
+        # Assuming you have a direct relationship between BloodType and BloodInventory
+        blood_inventory = BloodInventory.objects.get(blood_type=blood_type_obj)
+
         context = {
             'blood_type': blood_type_obj.blood_type,
             'available_units': blood_inventory.quantity // 450,
