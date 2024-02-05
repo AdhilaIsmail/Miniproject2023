@@ -95,15 +95,13 @@ urlpatterns = [
     path('search-by-place/', search_by_place, name='search_by_place'),
     path('search-by-blood-group/', search_by_blood_group, name='search_by_blood_group'),
     path('registeredhospitaltable/', registeredhospitaltable, name='registeredhospitaltable'),
-    # path('bloodinventory', bloodinventory, name='bloodinventory'),
-
-    # path('bloodinventory/', blood_inventory, name='bloodinventory'),
     path('bloodinventory/', blood_inventory, name='blood_inventory'),
     path('view_detailed_details/<str:blood_type>/', views.view_detailed_details, name='view_detailed_details'),
     path('view_detailed_details/', views.handle_empty_blood_type, name='handle_empty_blood_type'),
+
+    
     path('laboratory', laboratory, name='laboratory'),
     path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
-
     path('laboratory_test_package_registration',laboratory_test_package_registration,name='laboratory_test_package_registration'),
     path('special_package_registration',special_package_registration,name='special_package_registration'),
     # path('add_test_details',add_test_details,name='add_test_details'),

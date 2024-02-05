@@ -611,6 +611,8 @@ def blood_inventory(request):
     return render(request, 'mainuser/bloodinventory.html', context)
 
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 from .models import BloodType, BloodInventory, DonorDetails
 
 def view_detailed_details(request, blood_type):
@@ -621,28 +623,35 @@ def view_detailed_details(request, blood_type):
         # Query DonorDetails based on the indirect relationship through Appointment and Donor
         donor_details = DonorDetails.objects.filter(appointment__booked_by_donor__blood_group=blood_type)
 
-        # Assuming you have a direct relationship between BloodType and BloodInventory
-        blood_inventory = BloodInventory.objects.get(blood_type=blood_type_obj)
+        # Try to get the BloodInventory instance
+        try:
+            blood_inventory = BloodInventory.objects.get(blood_type=blood_type_obj)
+        except BloodInventory.DoesNotExist:
+            # Handle case where BloodInventory does not exist for the given blood type
+            blood_inventory = None
 
         context = {
             'blood_type': blood_type_obj.blood_type,
-            'available_units': blood_inventory.quantity // 450,
+            'available_units': blood_inventory.quantity // 450 if blood_inventory else 0,
             'donor_details': donor_details,
         }
 
         return render(request, 'mainuser/view_detailed_details.html', context)
     except BloodType.DoesNotExist:
         # Handle case where blood type does not exist
-        pass
+        return HttpResponse("Blood type does not exist.")
+    except ObjectDoesNotExist:
+        # Handle other DoesNotExist exceptions
+        return HttpResponse("Requested data not found.")
 
 
-from django.shortcuts import render
+
+# In views.py
+
+from django.http import HttpResponse
 
 def handle_empty_blood_type(request):
-    # Handle empty blood_type, e.g., redirect to an error page or show a message
-    return render(request, 'error.html', {'message': 'Blood type is empty'})
-
-
+    return HttpResponse("Handling empty blood type...")
 
 
 

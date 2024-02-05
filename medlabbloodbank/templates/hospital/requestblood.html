@@ -103,7 +103,7 @@
                                     <div class="error" data-error-for="phone"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="text" class="form-control" name="blood_group" placeholder="Blood Group" required>
+                                    <input type="text" class="form-control" name="blood_group" placeholder="Blood Group" oninput="updateQuantity()" required>
                                     <div class="error" data-error-for="blood_group"></div>
                                 </div>
                                 <div class="mb-3">
@@ -234,6 +234,25 @@
                     }
                 });
             });
+            </script>
+            <script>
+                function updateQuantity() {
+                    var bloodGroupInput = document.getElementById('blood_group');
+                    var quantityInput = document.getElementById('quantity');
+            
+                    // Assume you have a dictionary or a JSON object containing blood types and their quantities
+                    var bloodTypeQuantities = {
+                        'A+': 10,
+                        'B+': 20,
+                        'O-': 15,
+                        // Add other blood types and quantities as needed
+                    };
+            
+                    var selectedBloodType = bloodGroupInput.value.toUpperCase();
+                    var quantity = bloodTypeQuantities[selectedBloodType] || 0;
+            
+                    quantityInput.value = quantity;
+                }
             </script>
             
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
