@@ -7,35 +7,127 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
-
-    <!-- Favicon -->
-    {% comment %} <link href="img/favicon.ico" rel="icon"> {% endcomment %}
-
-    <!-- Google Web Fonts -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"> 
 
-    <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
     <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
     <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
     <link href="{% static 'lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' %}" rel="stylesheet" />
     <link href="{% static 'lib/twentytwenty/twentytwenty.css' %}" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-</head>
-
-<body>
+    <script>
+        $(document).ready(function () {
+            // Add a change event listener to the blood_group input
+            $('#blood_group').on('input', function () {
+                var bloodGroupInput = $(this).val().toUpperCase();
+                if (bloodGroupInput) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '{% url "get_blood_quantity" %}',
+                        data: {'blood_group': bloodGroupInput},
+                        dataType: 'json',
+                        success: function (response) {
+                            $('#blood_quantity_message').text('Available quantity: ' + response.quantity + ' units');
+                            // After fetching blood quantity, also validate the entered quantity
+                            validateQuantity();
+                        },
+                        error: function () {
+                            $('#blood_quantity_message').text('Error fetching quantity');
+                            // If there's an error fetching blood quantity, clear and validate the entered quantity
+                            validateQuantity();
+                        }
+                    });
+                } else {
+                    $('#blood_quantity_message').text('');  // Clear the message if blood group is empty
+                    // If blood group is empty, also validate the entered quantity
+                    validateQuantity();
+                }
+            });
     
-
-    <!-- Navbar Start -->
+            // Add a click event listener to the Immediate Request button
+            document.querySelector('.immediate-request-button').addEventListener('click', function () {
+                document.querySelector('input[name="is_immediate"]').value = "true";
+            });
+    
+            const quantityInput = document.getElementById("quantity");
+    
+            quantityInput.addEventListener("input", function () {
+                // Validate the entered quantity
+                validateQuantity();
+            });
+    
+            function updateQuantity() {
+                var bloodGroupInput = document.getElementById('blood_group');
+                var quantityInput = document.getElementById('quantity');
+                var messageDiv = document.getElementById('blood_quantity_message');
+                var errorDiv = document.querySelector(".error[data-error-for='quantity']");
+        
+                var selectedBloodType = bloodGroupInput.value.toUpperCase();
+        
+                // Make an AJAX request to get the blood quantity using jQuery
+                $.ajax({
+                    type: 'GET',
+                    url: `/hospital/get_blood_quantity/?blood_group=${selectedBloodType}`,
+                    success: function (response) {
+                        var availableQuantity = response.quantity;
+                        var maxQuantity = response.max_quantity;
+        
+                        // Display the message
+                        messageDiv.textContent = `Available quantity for ${selectedBloodType}: ${availableQuantity} units`;
+        
+                        // Validate the entered quantity
+                        validateQuantity(maxQuantity);
+                    },
+                    error: function (xhr) {
+                        console.error('Error fetching blood quantity:', xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
+        
+                        // Clear the quantity message and validate the entered quantity
+                        messageDiv.textContent = '';
+                        validateQuantity();
+                    }
+                });
+            }
+        
+            function validateQuantity(maxQuantity) {
+                const quantityInput = document.getElementById("quantity");
+                const errorDiv = document.querySelector(".error[data-error-for='quantity']");
+                const bloodQuantityMessage = document.getElementById("blood_quantity_message");
+        
+                const requestedQuantity = parseInt(quantityInput.value, 10);
+                const availableQuantity = parseInt(bloodQuantityMessage.textContent.split(":")[1]) || 0;
+        
+                if (isNaN(requestedQuantity) || requestedQuantity < 0 || requestedQuantity > maxQuantity) {
+                    errorDiv.textContent = `Invalid quantity. Must be between 0 and ${maxQuantity} units.`;
+                    quantityInput.setCustomValidity("Invalid");
+                } else {
+                    errorDiv.textContent = "";
+                    quantityInput.setCustomValidity("");
+                }
+            }
+        
+            document.addEventListener("DOMContentLoaded", function () {
+                const quantityInput = document.getElementById("quantity");
+        
+                quantityInput.addEventListener("input", function () {
+                    // Validate the entered quantity
+                    validateQuantity();
+                });
+            });
+        });
+    </script>
+    
+    
+    
+    
+</head>
+<body>    
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm px-5 py-3 py-lg-0">
         <a href="{% url 'homebloodbank' %}" class="navbar-brand p-0">
             <h4 class="m-0 text-danger"><img height="40px" width="70px" src="{% static 'img/logo.png' %}">Medlab Blood Bank</h4>
@@ -102,13 +194,15 @@
                                     <input type="tel" class="form-control" name="phone" placeholder="Phone Number" value="{{ user.phone }}" readonly required>
                                     <div class="error" data-error-for="phone"></div>
                                 </div>
+                               
                                 <div class="mb-3">
-                                    <input type="text" class="form-control" name="blood_group" placeholder="Blood Group" oninput="updateQuantity()" required>
-                                    <div class="error" data-error-for="blood_group"></div>
+                                    <input type="text" class="form-control" name="blood_group" id="blood_group" placeholder="Blood Group" oninput="updateQuantity()" required>
+                                    <div id="blood_quantity_message" class="text-muted"></div>
                                 </div>
                                 <div class="mb-3">
                                     <input type="text" class="form-control" name="quantity" id="quantity" placeholder="Quantity (units)" required>
-                                    <div class="error" data-error-for="quantity"></div>
+                                    
+                                    <div id="quantity_availability_message" class="text-muted"></div>
                                 </div>
                                 <div class="mb-3">
                                     <textarea class="form-control" name="purpose" id="purpose" placeholder="Purpose for Requesting Blood" rows="4" required></textarea>
@@ -136,8 +230,8 @@
                 <div class="col-lg-3 col-md-6">
                     <h3 class="text-white mb-4">Quick Links</h3>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
-                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
+                        <a class="text-light mb-2" href="{% url 'hospitalhome' %}"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
+                        <a class="text-light mb-2" href="{% url 'hospitalabout' %}"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
                         <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
                         <!-- <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Latest Blog</a> -->
                         <a class="text-light" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
@@ -146,8 +240,8 @@
                 <div class="col-lg-3 col-md-6">
                     <h3 class="text-white mb-4">Popular Links</h3>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
-                        <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
+                        <a class="text-light mb-2" href="{% url 'hospitalhome' %}"><i class="bi bi-arrow-right text-primary me-2"></i>Home</a>
+                        <a class="text-light mb-2" href="{% url 'hospitalabout' %}"><i class="bi bi-arrow-right text-primary me-2"></i>About Us</a>
                         <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Our Services</a>
                         {% comment %} <a class="text-light mb-2" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Latest Blog</a> {% endcomment %}
                         <a class="text-light" href="#"><i class="bi bi-arrow-right text-primary me-2"></i>Contact Us</a>
@@ -205,6 +299,20 @@
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const quantityInput = document.getElementById("quantity");
+                const errorDiv = document.querySelector(".error[data-error-for='quantity']");
+
+                quantityInput.addEventListener("input", function() {
+                    const inputValue = parseInt(quantityInput.value, 10);
+
+                    // Remove the validation for checking whether the quantity entered is between 0 and 10
+                    errorDiv.textContent = "";
+                    quantityInput.setCustomValidity("");
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const quantityInput = document.getElementById("quantity");
                 const purposeTextarea = document.getElementById("purpose");
                 const purposeErrorDiv = document.querySelector(".error[data-error-for='purpose']");
                 const quantityErrorDiv = document.querySelector(".error[data-error-for='quantity']");
@@ -212,13 +320,10 @@
                 quantityInput.addEventListener("input", function() {
                     const quantityValue = parseInt(quantityInput.value, 10);
             
-                    if (isNaN(quantityValue) || quantityValue < 0 || quantityValue > 10) {
-                        quantityErrorDiv.textContent = "Quantity must be a number between 0 and 10.";
-                        quantityInput.setCustomValidity("Invalid");
-                    } else {
+                    
                         quantityErrorDiv.textContent = "";
                         quantityInput.setCustomValidity("");
-                    }
+                    
                 });
             
                 purposeTextarea.addEventListener("input", function() {
@@ -234,41 +339,26 @@
                     }
                 });
             });
-            </script>
-            <script>
-                function updateQuantity() {
-                    var bloodGroupInput = document.getElementById('blood_group');
-                    var quantityInput = document.getElementById('quantity');
             
-                    // Assume you have a dictionary or a JSON object containing blood types and their quantities
-                    var bloodTypeQuantities = {
-                        'A+': 10,
-                        'B+': 20,
-                        'O-': 15,
-                        // Add other blood types and quantities as needed
-                    };
-            
-                    var selectedBloodType = bloodGroupInput.value.toUpperCase();
-                    var quantity = bloodTypeQuantities[selectedBloodType] || 0;
-            
-                    quantityInput.value = quantity;
-                }
+               
             </script>
             
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+            
+            
+    {% comment %} <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-    <script src="lib/tempusdominus/js/moment.min.js"></script>
-    <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-    <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-    <script src="lib/twentytwenty/jquery.event.move.js"></script>
-    <script src="lib/twentytwenty/jquery.twentytwenty.js"></script>
+    <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+    <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+    <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+    <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/moment-timezone.min.js' %}"></script>
+    <script src="{% static 'lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/twentytwenty/jquery.event.move.js' %}"></script>
+    <script src="{% static 'lib/twentytwenty/jquery.twentytwenty.js' %}"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
 </body>
 
 </html>

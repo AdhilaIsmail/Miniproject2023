@@ -99,7 +99,7 @@ urlpatterns = [
     path('view_detailed_details/<str:blood_type>/', views.view_detailed_details, name='view_detailed_details'),
     path('view_detailed_details/', views.handle_empty_blood_type, name='handle_empty_blood_type'),
 
-    
+
     path('laboratory', laboratory, name='laboratory'),
     path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
     path('laboratory_test_package_registration',laboratory_test_package_registration,name='laboratory_test_package_registration'),
@@ -136,7 +136,7 @@ urlpatterns = [
     path('verify_hospital/<int:blood_request_id>/', verify_hospital, name='verify_hospital'),
 
     path('requestsent/<int:blood_request_id>/', requestsent, name='requestsent'),
-    
+    path('get_blood_quantity/', views.get_blood_quantity, name='get_blood_quantity'),
   
     #staff
 

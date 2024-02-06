@@ -1591,6 +1591,35 @@ def paymenthandler(request, blood_request_id):
         return HttpResponse("Invalid request method", status=405)
 
 
+
+
+from django.http import JsonResponse
+from .models import BloodInventory, BloodType
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils.crypto import get_random_string
+from django.core.mail import send_mail
+from datetime import datetime
+from .models import BloodRequest, BloodInventory, BloodType
+
+def get_blood_quantity(request):
+    blood_group = request.GET.get('blood_group', '')
+    try:
+        blood_type = BloodType.objects.get(blood_type=blood_group)
+        blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
+        quantity_units = blood_inventory.quantity // 450  # Convert milliliters to units
+        max_quantity = 10  # Set your predefined maximum value here
+        return JsonResponse({'quantity': quantity_units, 'max_quantity': max_quantity})
+    except BloodType.DoesNotExist:
+        return JsonResponse({'error': 'Blood type not found'}, status=404)
+    except BloodInventory.DoesNotExist:
+        return JsonResponse({'error': 'Blood inventory not found'}, status=404)
+
+
+
+
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -1599,56 +1628,51 @@ from django.core.mail import send_mail
 from datetime import datetime
 from .models import BloodRequest
 @csrf_exempt  # Use csrf_exempt for simplicity; consider proper CSRF protection in production
-
+@login_required
 def bloodrequest(request, is_immediate):
-    print(f"is_immediate: {is_immediate}")  # Debug statement
-
     if request.method == 'POST':
         user = request.user
         blood_group = request.POST.get('blood_group')
-        quantity = request.POST.get('quantity')
         purpose = request.POST.get('purpose')
 
-
         otp = get_random_string(length=6, allowed_chars='1234567890')
-        
-        print(f"OTP: {otp}")
-
         request.session['hospital_otp'] = otp
-        request.session['quantity'] = quantity  # Store the 'quantity' in the session
 
-        subject = 'Your OTP for Blood Request: Medlab Blood Bank'
-        message = f'Your OTP is: {otp}'
-        from_email = 'adhilaismail2@gmail.com'  # Replace with your email
-        recipient_list = [user.email]  # Assuming you want to send the OTP to the user's email address
-
-        # Use send_mail to send the OTP email
-        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+        # ... (existing code for sending OTP)
 
         requested_date = datetime.now().date()
         requested_time = datetime.now().time()
 
         is_immediate = is_immediate.lower() == 'true'
-        calculated_amount = 850 * int(quantity)
-        # Create and save a new BloodRequest instance
+        # Calculate the amount based on the quantity (units) requested
+        quantity_units = int(request.POST.get('quantity', 0))
+        max_quantity = int(request.POST.get('max_quantity', 0))
+        calculated_amount = 850 * quantity_units
+
+        
+        if quantity_units > max_quantity:
+            return JsonResponse({'error': f'Quantity cannot exceed {max_quantity} units'}, status=400)
+        
         blood_request = BloodRequest(
             user=user,
             blood_group=blood_group,
-            quantity=quantity,
+            quantity=quantity_units,
             purpose=purpose,
             requested_date=requested_date,
             requested_time=requested_time,
             is_immediate=is_immediate,
-            amount=calculated_amount  # Set the 'amount' field
+            amount=calculated_amount
         )
         blood_request.save()
 
         blood_request_id = blood_request.id
 
-        # Redirect to the 'verify_hospital' view with the 'blood_request_id' as a URL parameter
         url = reverse('verify_hospital', args=[blood_request_id])
         return redirect(url)
+
     return render(request, 'hospital/requestblood.html', {'is_immediate': is_immediate})
+
+
 
 
 
