@@ -31,7 +31,7 @@
     <!-- Template Stylesheet -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
     <style>
-        /* Style for the container div */
+        {% comment %} /* Style for the container div */
         .blood-types {
             display: flex;
             flex-wrap: wrap;
@@ -66,7 +66,42 @@
         /* Hover effect for the button */
         .blood-type a:hover {
             background-color:#63b045;
+        } {% endcomment %}
+        .blood-inventory {
+            text-align: center;
         }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .blood-group-box {
+            background-color: #b31923;
+            color: white;
+            padding: 20px;
+            margin: 10px;
+            font-size: 20px;
+            border-radius: 5px;
+            height: 150px;
+            flex-basis: calc(25% - 20px); /* 25% width with 20px margin on each side */
+            position: relative; /* Add this to enable absolute positioning */
+        }
+    
+        .blood-group-box button {
+            position: absolute;
+            background-color: white;
+            color:#b31923;
+            border:none;
+            font-weight: 600;
+            bottom: 10px; /* Adjust the bottom value to control the button's vertical position */
+            left: 50%; /* Center the button horizontally within the box */
+            transform: translateX(-50%); /* Center the button horizontally within the box */
+        }
+        .blood-group-box button:hover {
+            background-color: #d1bebc; /* Change background color on hover */
+            border:none;
+        }
+
     </style>
 </head>
 
@@ -127,15 +162,15 @@
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100 h-75" src="{% static 'img/bg6.jpg' %}" alt="Image">
+                    <img class="w-100 h-75" src="{% static 'img/bgred.avif' %}" alt="Image">
                     <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
+                        <div class="p-3" style="max-width: 1200px;">
                              {% comment %} <h5 class="text-white text-uppercase mb-3 animated slideInDown">
                                 "Empowering Hospitals Through Digital Blood Bank Management: Efficient, Lifesaving, and Connected"
                             </h5>  {% endcomment %}
     
                             <!-- Loop through and display blood types -->
-                            <div class="blood-types">
+                            {% comment %} <div class="blood-types">
                                 {% for blood_type in blood_types %}
                                     <div class="blood-type">
                                         <p>{{ blood_type.blood_type }}</p>
@@ -145,6 +180,26 @@
                                         {% endif %}
                                     </div>
                                 {% endfor %}
+                            </div> {% endcomment %}
+                            <div class="page-wrapper">
+                                <div class="content">
+                                    
+                                    <h1>Available Blood</h1>
+                                    
+                                    <div class="row">
+                                        {% for data in blood_data %}
+                                            <div class="blood-group-box">
+                                                <h3>{{ data.blood_type }}</h3>
+                                                <p>Available Units: {{ data.available_units }}</p>
+                                                
+                                                
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    
+                                    
+                                    
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -154,86 +209,11 @@
     </div>
     
 
-    <!-- Carousel End -->
+   
 
-    <!-- About Start -->
-    {% comment %} <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container">
-            <div class="row g-5">
-                <div class="col-lg-7">
-                    <div class="section-title mb-4">
-                        <h5 class="position-relative d-inline-block text-primary text-uppercase">Enhancing Hospital Operations</h5>
-                        <h1 class="display-5 mb-0">Empowering Hospitals with Our Online Blood Bank Management System</h1>
-                    </div>
-                    <h4 class="text-body fst-italic mb-4">Elevating healthcare through efficient blood management.</h4>
-                    <p class="mb-4">Our state-of-the-art online platform is tailored to meet the specific needs of hospitals, optimizing blood donation processes and improving patient care. Here's how hospitals benefit:</p>
-                    <div class="row g-3">
-                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.3s">
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Streamlined Blood Requests</h5>
-                            <p>Hospitals can quickly request blood units, specify requirements, and receive timely deliveries, ensuring a seamless supply for critical procedures and emergencies.</p>
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Inventory Management</h5>
-                            <p>Efficiently manage blood inventory levels, track expiration dates, and reduce wastage by utilizing real-time data and predictive analytics.</p>
-                        </div>
-                        <div class="col-sm-6 wow zoomIn" data-wow-delay="0.6s">
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Resource Optimization</h5>
-                            <p>Maximize the utilization of available blood resources, ensuring that every unit is used effectively, minimizing shortages, and reducing costs.</p>
-                            <h5 class="mb-3"><i class="fa fa-check-circle text-primary me-3"></i>Data-Driven Insights</h5>
-                            <p>Access comprehensive data analytics to make informed decisions, improve blood management strategies, and enhance patient outcomes.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-5" style="min-height: 500px;">
-                    <div class="position-relative h-100">
-                        <img class="position-absolute w-100 h-100 rounded wow zoomIn" data-wow-delay="0.9s" src="{% static 'img/4363.jpg' %}" style="object-fit: cover;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
+
+   
     
-    
-    <!-- About End -->
-
-
-    <!-- Offer Start -->
-    {% comment %} <div class="container-fluid bg-offer my-5 py-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-7 wow zoomIn" data-wow-delay="0.6s">
-                    <div class="offer-text text-center rounded p-5">
-                        <h1 class="display-5 text-white">Get Free Basic Health Checkup on Blood Donation</h1>
-                        <p class="text-white mb-4">Eirmod sed tempor lorem ut dolores sit kasd ipsum. Dolor ea et dolore et at sea ea at dolor justo ipsum duo rebum sea. Eos vero eos vero ea et dolore eirmod diam duo lorem magna sit dolore sed et.</p>
-                        <a href="" class="btn btn-light py-3 px-5">Read More</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
-    <!-- Offer End -->
-
-    <!-- Testimonial Start -->
-    {% comment %} <div class="container-fluid bg-primary bg-testimonial py-5 my-5 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="container py-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-7">
-                    <div class="owl-carousel testimonial-carousel rounded p-5 wow zoomIn" data-wow-delay="0.6s">
-                        <div class="testimonial-item text-center text-dark">
-                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-1.jpg' %}" alt="">
-                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
-                            <hr class="mx-auto w-25">
-                            <h4 class="text-dark mb-0">Client Name</h4>
-                        </div>
-                        <div class="testimonial-item text-center text-dark">
-                            <img class="img-fluid mx-auto rounded mb-4" src="{% static 'img/testimonial-2.jpg' %}" alt="">
-                            <p class="fs-5">Dolores sed duo clita justo dolor et stet lorem kasd dolore lorem ipsum. At lorem lorem magna ut et, nonumy labore diam erat. Erat dolor rebum sit ipsum.</p>
-                            <hr class="mx-auto w-25">
-                            <h4 class="text-dark mb-0">Client Name</h4>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> {% endcomment %}
     
     
     <!-- Footer Start -->

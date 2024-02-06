@@ -804,10 +804,29 @@ def hospitalhome(request):
 def requestblood(request):
     return render(request, 'hospital/requestblood.html')
 
-from .models import BloodType
+# from .models import BloodType
+# def bloodavailability(request):
+#     blood_types = BloodType.objects.all()
+#     return render(request, 'hospital/bloodavailability.html', {'blood_types': blood_types})
+
 def bloodavailability(request):
     blood_types = BloodType.objects.all()
-    return render(request, 'hospital/bloodavailability.html', {'blood_types': blood_types})
+    blood_data = []
+
+    for blood_type in blood_types:
+        try:
+            blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
+            available_units = blood_inventory.quantity // 450
+            blood_data.append({'blood_type': blood_type.blood_type, 'available_units': available_units})
+        except BloodInventory.DoesNotExist:
+            blood_data.append({'blood_type': blood_type.blood_type, 'available_units': 0})
+
+    # Print debug statements
+    print("Blood Types:", blood_types)
+    print("Blood Data:", blood_data)
+
+    context = {'blood_data': blood_data}
+    return render(request, 'hospital/bloodavailability.html', context)
 
 def hospitalabout(request):
     return render(request, 'hospital/hospitalabout.html')
