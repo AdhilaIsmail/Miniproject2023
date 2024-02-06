@@ -201,9 +201,10 @@
                             <a href="{% url 'laboratory' %}"><i class="fa fa-tint"></i> <span>Laboratory</span></a>
                         </li>
 						<li class="submenu">
-							<a href="#"><i class="fa fa-user"></i> <span>mainusers </span> <span class="menu-arrow"></span></a>
+							<a href="#"><i class="fa fa-user"></i> <span>Staffs</span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
-								<li><a href="{% url 'registeredstafftable' %}">Staffs List</a></li>
+								<li><a href="{% url 'registeredstafftable' %}">Blood Bank Staff</a></li>
+                                <li><a href="{% url 'registeredstafftablelab' %}">Laboratory Staff</a></li>
                                 <li><a href="{% url 'listgps' %}">Add Gramapanchayats</a></li>
 								<li><a href="{% url 'assign_staff' %}">Assign Staffs</a></li>
 							</ul>
