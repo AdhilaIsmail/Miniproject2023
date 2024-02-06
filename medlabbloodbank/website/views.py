@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages,auth
 from django.contrib.auth import get_user_model
 from django.urls import reverse
-from .models import Donor
+from .models import Donor,Staff
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -661,9 +661,15 @@ def handle_empty_blood_type(request):
 
 
 
+from .models import Staff
 
 def registeredstafftable(request):
-    return render(request, 'mainuser/registeredstafftable.html')
+    staff_list= Staff.objects.all()
+    return render(request, 'mainuser/registeredstafftable.html',{'staff_list':staff_list})
+
+def registeredstafftablelab(request):
+    staff_list= Staff.objects.all()
+    return render(request, 'mainuser/registeredlabstafftable.html',{'staff_list':staff_list})
 
 # def listgps(request):
 #     return render(request, 'mainuser/listgps.html')
@@ -774,13 +780,13 @@ def registeredhospitaltable(request):
     hospitals = HospitalRegister.objects.all()
     return render(request, 'mainuser/registeredhospitaltable.html', {'hospitals': hospitals})
 
-from .models import Staff  # Import the Staff model
-def registeredstafftable(request):
-    # Retrieve the staff data from the database
-    staff_list = Staff.objects.all()
-    # Pass the staff data to the template
-    context = {'staff_list': staff_list}
-    return render(request, 'mainuser/registeredstafftable.html', context)
+# from .models import Staff  # Import the Staff model
+# def registeredstafftable(request):
+#     # Retrieve the staff data from the database
+#     staff_list = Staff.objects.all()
+#     # Pass the staff data to the template
+#     context = {'staff_list': staff_list}
+#     return render(request, 'mainuser/registeredstafftable.html', context)
 
 
 from .models import Staff  # Import the Staff model
@@ -819,21 +825,26 @@ def staff_registration(request):
         email = request.POST.get('email')
         phone = request.POST.get('phone')
         password = request.POST.get('password')
+        role = request.POST.get('role')
         
         if CustomUser.objects.filter(email=email).exists():
             return render(request, 'mainuser/staffregistration.html', {'error_message': 'Email address already exists.'})
         
-        if not name or not age or not gender or not dob or not email or not phone or not password:
+        if not name or not age or not gender or not dob or not email or not phone or not password or not role:
             return render(request, 'mainuser/staffregistration.html', {'error_message': 'Please fill in all required fields.'})
         
         try:
+            role_mapping = {
+                'LABSTAFF': CustomUser.LABSTAFF,
+                'BLOODBANKSTAFF': CustomUser.STAFF,  # Assuming staff in CustomUser model is blood bank staff
+            }
             # Create a CustomUser instance
             user = CustomUser.objects.create_user(email=email, phone=phone, password=password)
-            user.role = CustomUser.STAFF
+            user.role = role_mapping.get(role, CustomUser.STAFF)
             user.save()
 
             # Create a Staff instance and associate it with the user
-            staff = Staff(name=name, age=age, user=user, gender=gender, dob=dob)
+            staff = Staff(name=name, age=age, user=user, gender=gender, dob=dob, role=role)
             staff.save()
 
             subject = 'Medlab Blood Bank : Your Login Credentials'
@@ -842,6 +853,8 @@ def staff_registration(request):
             recipient_list = [email]
 
             send_mail(subject, message, from_email, recipient_list)
+
+            
 
             return redirect('registeredstafftable')
         

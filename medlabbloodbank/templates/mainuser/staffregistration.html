@@ -201,6 +201,15 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="form-group">
+                                        <label>Role <span class="text-danger">*</span></label>
+                                        <select class="form-control" name="role" required>
+                                            <option value="LABSTAFF">Lab Staff</option>
+                                            <option value="BLOODBANKSTAFF">Blood Bank Staff</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
                                         <label>Age <span class="text-danger">*</span></label>
                                         <input class="form-control" type="number" name="age" required>
                                     </div>
@@ -239,6 +248,7 @@
                                         <input class="form-control" type="password" name="password" required>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="m-t-20 text-center">
                                 <button class="btn btn-primary submit-btn">Register Staff</button>

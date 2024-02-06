@@ -34,12 +34,14 @@ class CustomUser(AbstractUser):
     HOSPITAL = 2
     STAFF = 3
     REGISTEREDDONOR = 4
+    LABSTAFF = 5
 
     ROLE_CHOICE = (
         (DONOR, 'DONOR'),
         (HOSPITAL, 'HOSPITAL'),
         (STAFF, 'STAFF'),
         (REGISTEREDDONOR, 'REGISTEREDDONOR'),
+        (LABSTAFF, 'LABSTAFF'),
     )
 
     username=None
@@ -195,6 +197,7 @@ class Staff(models.Model):
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
     dob = models.DateField()
+    role = models.CharField(max_length=20, choices=CustomUser.ROLE_CHOICE,blank=True,null=True)
     # phone = models.CharField(max_length=10)
     # email = models.EmailField(unique=True)
     # password = models.CharField(max_length=255)

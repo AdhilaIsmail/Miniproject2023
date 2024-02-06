@@ -203,8 +203,8 @@
 						<li class="submenu">
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs</span> <span class="menu-arrow"></span></a>
 							<ul style="display: none;">
-								<li class="active"><a href="{% url 'registeredstafftable' %}">Blood Bank Staff</a></li>
-                                <li><a href="{% url 'registeredstafftablelab' %}">Laboratory Staff</a></li>
+								<li><a href="{% url 'registeredstafftable' %}">Blood Bank Staff</a></li>
+                                <li class="active"><a href="{% url 'registeredstafftablelab' %}">Laboratory Staff</a></li>
                                 <li><a href="{% url 'listgps' %}">Add Gramapanchayats</a></li>
 								<li><a href="{% url 'assign_staff' %}">Assign Staffs</a></li>
 							</ul>
@@ -215,7 +215,7 @@
         </div>
         <div class="page-wrapper">
             <div class="col-sm-6 col-2 text-left m-b-15">
-                <h3 style="color: #a16767;margin-top: 20px;">Registered Blood Bank Staffs</h3>
+                <h3 style="color: #a16767;margin-top: 20px;">Registered Lab Staffs</h3>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -239,14 +239,12 @@
                                     <th>Phone</th>
                                     <th>Date of Birth</th>
                                     
-                                    
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for staff in staff_list %}
-                                    
-                                    {% if staff.role == 'BLOODBANKSTAFF' or staff.role is None %}
-        
+                                   
+                                    {% if staff.role == 'LABSTAFF' %}
                                         <tr>
                                             <td>{{ staff.name }}</td>
                                             <td>{{ staff.age }}</td>
@@ -254,8 +252,6 @@
                                             <td>{{ staff.user.email }}</td>
                                             <td>{{ staff.user.phone }}</td>
                                             <td>{{ staff.dob }}</td>
-                                           
-                                            <!-- Add other table data fields as needed -->
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
