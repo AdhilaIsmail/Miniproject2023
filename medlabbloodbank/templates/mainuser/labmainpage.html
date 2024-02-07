@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/style.css' %}">
-    <script src="https://kit.fontawesome.com/044329719f.js" crossorigin="anonymous"></script>
     <style>
         body {
             background-image: url("{% static 'img/9.jpg' %}"); /* Replace 'background.jpg' with your image file name */
@@ -192,7 +191,7 @@
                             <a href="{% url 'blood_inventory' %}"><i class="fa fa-tint"></i> <span>Blood Inventory</span></a>
                         </li>
                         <li  class="active" >
-                            <a href="{% url 'laboratory' %}"><i class="fa-solid fa-vials"></i><span>Laboratory</span></a>
+                            <a href="{% url 'laboratory' %}"><i class="fa fa-tint"></i> <span>Laboratory</span></a>
                         </li>
 						<li class="submenu">
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
@@ -229,7 +228,7 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label for="labTestName">Test Name:</label>
-                                            <input type="text" class="form-control" id="labTestName" placeholder="Enter test name">
+                                            <input type="text" class="form-control" name="labTestName" id="labTestName" placeholder="Enter test name">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -251,7 +250,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-12 mt-3">
-                                        <button type="button" class="btn btn-primary" onclick="submitForm('laboratoryTestPackageForm')">Submit</button>
+                                        <button type="submit" class="btn btn-primary" onclick="submitForm('laboratoryTestPackageForm')">Submit</button>
 
                                     </div>
                                 </div>
@@ -443,55 +442,54 @@
         });
     </script>
     
-    <script>
-        function submitForm(formId) {
-            var form = document.getElementById(formId);
-        
-            if (!form || form.tagName !== 'FORM') {
-                console.error('Invalid form element.');
-                return;
-            }
-        
-            var formData = new FormData(form);
-            formData.append('labTestName', document.getElementById('labTestName').value);
-            formData.append('labTestPrice', document.getElementById('labTestPrice').value);
-            console.log('Submitting form:', formId);
-            console.log('Form Data:', formData);
-        
-            // Convert packageDetails input values to an array
-            var packageDetails = [];
-            var packageDetailInputs = form.querySelectorAll('ul#packageDetailsList input');
-            packageDetailInputs.forEach(function (input) {
-                packageDetails.push(input.value);
-            });
-        
-            // Add packageDetails to formData
-            formData.append('packageDetails', JSON.stringify(packageDetails));
-            console.log(formData);
-            fetch('/save_laboratory_test/', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    
-                    'X-CSRFToken': getCookie('csrftoken'),
-                },
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
-                if (data.status === 'success') {
-                    alert('Data saved successfully');
-                    resetForm(formId);
-                    // You can perform additional actions after successful submission
-                } else {
-                    alert('Error saving data: ' + data.message);
-                    // You can handle errors or display appropriate messages
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+    function submitForm(formId) {
+        var form = document.getElementById(formId);
+    
+        if (!form || form.tagName !== 'FORM') {
+            console.error('Invalid form element.');
+            return;
         }
+    
+        var formData = new FormData(form);
+        formData.append('labTestName', document.getElementById('labTestName').value);
+        formData.append('labTestPrice', document.getElementById('labTestPrice').value);
+        console.log('Submitting form:', formId);
+        console.log('Form Data:', formData);
+    
+        // Convert packageDetails input values to an array
+        var packageDetails = [];
+        var packageDetailInputs = form.querySelectorAll('ul#packageDetailsList input');
+        packageDetailInputs.forEach(function (input) {
+            packageDetails.push(input.value);
+        });
+    
+        // Add packageDetails to formData
+        formData.append('packageDetails', JSON.stringify(packageDetails));
+        console.log(formData);
+        fetch('/save_laboratory_test/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response:', data);
+            if (data.status === 'success') {
+                alert('Data saved successfully');
+                resetForm(formId);
+                // You can perform additional actions after successful submission
+            } else {
+                alert('Error saving data: ' + data.message);
+                // You can handle errors or display appropriate messages
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
         
         // Function to get CSRF token from cookies
         function getCookie(name) {

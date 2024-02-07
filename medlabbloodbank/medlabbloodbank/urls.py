@@ -65,6 +65,9 @@ urlpatterns = [
     path('upload_prescription_view',upload_prescription_view, name='upload_prescription_view'),
     path('download_report_view', download_report_view,name='download_report_view'),
     path('find_lab_view',find_lab_view,name='find_lab_view'),
+    path('labtestbookings',views.labtestbookings, name='labtestbookings'),
+    path('labstaffindex',views.labstaffindex,name='labstaffindex'),
+   
 
     # path('uploadresult2/<path:lab_selection_timestamp>/', uploadresult2, name='uploadresult2'),
     path('loggout', loggout, name='loggout'),
@@ -99,7 +102,7 @@ urlpatterns = [
     path('bloodinventory/', blood_inventory, name='blood_inventory'),
     path('view_detailed_details/<str:blood_type>/', views.view_detailed_details, name='view_detailed_details'),
     path('view_detailed_details/', views.handle_empty_blood_type, name='handle_empty_blood_type'),
-
+    path('campviewadmin', views.campviewadmin, name='campviewadmin'),
 
     path('laboratory', laboratory, name='laboratory'),
     path('save_laboratory_test/', save_laboratory_test, name='save_laboratory_test'),
