@@ -63,64 +63,36 @@
                 validateQuantity();
             });
     
-            function updateQuantity() {
-                var bloodGroupInput = document.getElementById('blood_group');
-                var quantityInput = document.getElementById('quantity');
-                var messageDiv = document.getElementById('blood_quantity_message');
-                var errorDiv = document.querySelector(".error[data-error-for='quantity']");
-        
-                var selectedBloodType = bloodGroupInput.value.toUpperCase();
-        
-                // Make an AJAX request to get the blood quantity using jQuery
+            
+        });
+    </script>
+    <script>
+        function checkQuantityAvailability() {
+            var bloodGroup = $('#blood_group').val();
+            var quantity = $('#quantity').val();
+    
+            if (bloodGroup && quantity) {
                 $.ajax({
-                    type: 'GET',
-                    url: `/hospital/get_blood_quantity/?blood_group=${selectedBloodType}`,
-                    success: function (response) {
-                        var availableQuantity = response.quantity;
-                        var maxQuantity = response.max_quantity;
-        
-                        // Display the message
-                        messageDiv.textContent = `Available quantity for ${selectedBloodType}: ${availableQuantity} units`;
-        
-                        // Validate the entered quantity
-                        validateQuantity(maxQuantity);
+                    url: '/get_blood_quantity/',  // Replace with the correct URL
+                    data: { 'blood_group': bloodGroup },
+                    dataType: 'json',
+                    success: function (data) {
+                        var availableQuantity = data.quantity;
+                        if (quantity > availableQuantity) {
+                            $('#quantity_availability_message').text('Not available that much quantity');
+                            $('#submitButton').prop('disabled', true);  // Disable submit button
+                        } else {
+                            $('#quantity_availability_message').text('');
+                            $('#submitButton').prop('disabled', false);  // Enable submit button
+                        }
                     },
-                    error: function (xhr) {
-                        console.error('Error fetching blood quantity:', xhr.responseJSON ? xhr.responseJSON.error : 'Unknown error');
-        
-                        // Clear the quantity message and validate the entered quantity
-                        messageDiv.textContent = '';
-                        validateQuantity();
+                    error: function () {
+                        $('#quantity_availability_message').text('Error checking quantity availability');
+                        $('#submitButton').prop('disabled', true);  // Disable submit button on error
                     }
                 });
             }
-        
-            function validateQuantity(maxQuantity) {
-                const quantityInput = document.getElementById("quantity");
-                const errorDiv = document.querySelector(".error[data-error-for='quantity']");
-                const bloodQuantityMessage = document.getElementById("blood_quantity_message");
-        
-                const requestedQuantity = parseInt(quantityInput.value, 10);
-                const availableQuantity = parseInt(bloodQuantityMessage.textContent.split(":")[1]) || 0;
-        
-                if (isNaN(requestedQuantity) || requestedQuantity < 0 || requestedQuantity > maxQuantity) {
-                    errorDiv.textContent = `Invalid quantity. Must be between 0 and ${maxQuantity} units.`;
-                    quantityInput.setCustomValidity("Invalid");
-                } else {
-                    errorDiv.textContent = "";
-                    quantityInput.setCustomValidity("");
-                }
-            }
-        
-            document.addEventListener("DOMContentLoaded", function () {
-                const quantityInput = document.getElementById("quantity");
-        
-                quantityInput.addEventListener("input", function () {
-                    // Validate the entered quantity
-                    validateQuantity();
-                });
-            });
-        });
+        }
     </script>
     
     
@@ -196,12 +168,11 @@
                                 </div>
                                
                                 <div class="mb-3">
-                                    <input type="text" class="form-control" name="blood_group" id="blood_group" placeholder="Blood Group" oninput="updateQuantity()" required>
+                                    <input type="text" class="form-control" name="blood_group" id="blood_group" placeholder="Blood Group"  required>
                                     <div id="blood_quantity_message" class="text-muted"></div>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="text" class="form-control" name="quantity" id="quantity" placeholder="Quantity (units)" required>
-                                    
+                                    <input type="text" class="form-control" name="quantity" id="quantity" placeholder="Quantity (units)" required oninput="checkQuantityAvailability()">
                                     <div id="quantity_availability_message" class="text-muted"></div>
                                 </div>
                                 <div class="mb-3">

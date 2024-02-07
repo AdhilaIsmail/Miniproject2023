@@ -1568,6 +1568,7 @@ def requestsent(request,blood_request_id):
     }
     return render(request,'hospital/requestsent.html', context=context)
 
+from .models import BloodInventory, BloodType
 
 @csrf_exempt
 def paymenthandler(request, blood_request_id):
@@ -1609,7 +1610,16 @@ def paymenthandler(request, blood_request_id):
 
                 # Save payment details to the Payment model
                 # Assuming you have a Payment model defined
-               
+                
+                # Subtract the requested quantity from the blood inventory
+                blood_group = blood_request.blood_group
+                quantity_units = blood_request.quantity
+                blood_type = BloodType.objects.get(blood_type=blood_group)
+                blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
+                quantity_ml = quantity_units * 450  # Convert units to milliliters
+                blood_inventory.quantity -= quantity_ml
+                blood_inventory.save()
+
                 # Redirect to a success page with payment details
                 return redirect('hospitalhome')  # Replace 'orders' with your actual success page name or URL
             else:
@@ -1642,8 +1652,8 @@ def get_blood_quantity(request):
         blood_type = BloodType.objects.get(blood_type=blood_group)
         blood_inventory = BloodInventory.objects.get(blood_type=blood_type)
         quantity_units = blood_inventory.quantity // 450  # Convert milliliters to units
-        max_quantity = 10  # Set your predefined maximum value here
-        return JsonResponse({'quantity': quantity_units, 'max_quantity': max_quantity})
+       
+        return JsonResponse({'quantity': quantity_units})
     except BloodType.DoesNotExist:
         return JsonResponse({'error': 'Blood type not found'}, status=404)
     except BloodInventory.DoesNotExist:
@@ -1668,9 +1678,19 @@ def bloodrequest(request, is_immediate):
         purpose = request.POST.get('purpose')
 
         otp = get_random_string(length=6, allowed_chars='1234567890')
+        print(f"OTP: {otp}")
+
         request.session['hospital_otp'] = otp
 
-        # ... (existing code for sending OTP)
+          # Store the 'quantity' in the session
+
+        subject = 'Your OTP for Blood Request: Medlab Blood Bank'
+        message = f'Your OTP is: {otp}'
+        from_email = 'adhilaismail2@gmail.com'  # Replace with your email
+        recipient_list = [user.email]  # Assuming you want to send the OTP to the user's email address
+
+        # Use send_mail to send the OTP email
+        send_mail(subject, message, from_email, recipient_list, fail_silently=False)
 
         requested_date = datetime.now().date()
         requested_time = datetime.now().time()
@@ -1678,12 +1698,10 @@ def bloodrequest(request, is_immediate):
         is_immediate = is_immediate.lower() == 'true'
         # Calculate the amount based on the quantity (units) requested
         quantity_units = int(request.POST.get('quantity', 0))
-        max_quantity = int(request.POST.get('max_quantity', 0))
+       
         calculated_amount = 850 * quantity_units
 
         
-        if quantity_units > max_quantity:
-            return JsonResponse({'error': f'Quantity cannot exceed {max_quantity} units'}, status=400)
         
         blood_request = BloodRequest(
             user=user,

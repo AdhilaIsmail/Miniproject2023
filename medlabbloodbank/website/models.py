@@ -153,6 +153,7 @@ class BloodType(models.Model):
     
     
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class BloodInventory(models.Model):
     blood_type = models.OneToOneField(BloodType, on_delete=models.CASCADE, primary_key=True)
@@ -162,8 +163,11 @@ class BloodInventory(models.Model):
         return f"{self.blood_type} - {self.quantity} units available"
 
     def update_quantity(self, units):
-        self.quantity += units
-        self.save()
+        if self.quantity >= units:
+            self.quantity -= units
+            self.save()
+        else:
+            raise ValidationError("Not enough blood units available.")
 
 
 
@@ -174,7 +178,8 @@ class BloodRequest(models.Model):
 
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE, default=None)
     blood_group = models.CharField(max_length=5)
-    quantity = models.CharField(max_length=10,null=True,blank=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    
     purpose = models.TextField()
     is_immediate = models.BooleanField(default=False)
     requested_date = models.DateField(default=datetime.now)
