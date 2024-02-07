@@ -121,10 +121,7 @@ class HospitalRegister(models.Model):
     hospitalName = models.CharField(max_length=100,unique=True)
     contactPerson = models.CharField(max_length=100)
     user=models.OneToOneField(CustomUser,on_delete=models.CASCADE)
-    # email = models.EmailField(unique=True)
-    # phone = models.CharField(max_length=20)
     location = models.TextField()
-    # gpsCoordinates = models.CharField(max_length=50)
     ownership = models.CharField(max_length=100)
     hospitalURL = models.URLField(blank=True)
     status = models.CharField(max_length=20, default='Active')
@@ -134,13 +131,7 @@ class HospitalRegister(models.Model):
         return self.hospitalName
 
 
-#blood type model
-# from django.db import models
-# class BloodType(models.Model):
-#     blood_type = models.CharField(max_length=10, unique=True)
 
-#     def __str__(self):
-#         return self.blood_type
     
 from django.db import models
 
@@ -203,9 +194,6 @@ class Staff(models.Model):
     gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female'), ('other', 'Other')])
     dob = models.DateField()
     role = models.CharField(max_length=20, choices=CustomUser.ROLE_CHOICE,blank=True,null=True)
-    # phone = models.CharField(max_length=10)
-    # email = models.EmailField(unique=True)
-    # password = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

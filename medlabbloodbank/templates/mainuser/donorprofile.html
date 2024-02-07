@@ -12,6 +12,7 @@
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/bootstrap.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/font-awesome.min.css' %}">
         <link rel="stylesheet" type="text/css" href="{% static 'mainuser/css/style.css' %}">
+        <script src="https://kit.fontawesome.com/044329719f.js" crossorigin="anonymous"></script>
         <style>
             body {
                 background-image: url("{% static 'img/9.jpg' %}"); /* Replace 'background.jpg' with your image file name */
@@ -164,7 +165,7 @@
                             <a href="{% url 'blood_inventory' %}"><i class="fa fa-tint"></i> <span>Blood Inventory</span></a>
                         </li>
                         <li>
-                            <a href="{% url 'laboratory' %}"><i class="fa fa-tint"></i> <span>Laboratory</span></a>
+                            <a href="{% url 'laboratory' %}"><i class="fa-solid fa-vials"></i><span>Laboratory</span></a>
                         </li>
 						<li class="submenu">
 							<a href="#"><i class="fa fa-user"></i> <span>Staffs </span> <span class="menu-arrow"></span></a>
